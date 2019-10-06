@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             x:Class="CSM.Xam.Views.MainPage"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid>
+        <Grid ColumnSpacing="0" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            
+            <!--  Menu duoi  -->
+            <Grid
+                Grid.Row="1"
+                Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                  <!--Hamburger-->  
+                <mr:Grid
+                    IsEnabled="True"
+                    TappedCommand="{Binding}"
+                    TappedCommandParameter="Hamburger">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Text="" />
+                    <Label Text="Menu" />
+                    <Label
+   
+                        Text="Fix Width"
+                        TextColor="Transparent" />
+                </mr:Grid>
+                  <!--Hoa don-->  
+                <mr:Grid
+                    Grid.Column="1"
+                    BindingContext="{Binding}"
+                    IsEnabled="True"
+                    TappedCommand="{Binding}"
+                    TappedCommandParameter="HoaDon">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Text="" />
+                    <Label Text="Hóa đơn" />
+                    <Label
+             
+                        Text="Fix Width"
+                        TextColor="Transparent" />
+                </mr:Grid>
+
+                  <!--List thuc don-->  
+                <BoxView Grid.Column="2" />
+                <ScrollView Grid.Column="2" >
+                    <StackLayout BindableLayout.ItemsSource="{Binding ListMenuDuoiThucDon, Mode=OneWay}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                  <!--Thuc don-->  
+                                <mr:Grid
+                                    LongPressedCommand="{Binding BindingContext.LongPressMenuDuoiCommand, Source={x:Reference newMainPage}, Mode=OneWay}"
+                                    LongPressedCommandParameter="{Binding}"
+                                
+                                    TappedCommand="{Binding BindingContext.TapMenuDuoiCommand, Mode=OneWay}"
+                                    TappedCommandParameter="{Binding}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding BigText, Mode=OneWay}" />
+                                    <Label Text="{Binding SmallText, Mode=OneWay}" />
+                                    <Label
+                                     
+                                        Text="Fix Width"
+                                        TextColor="Transparent" />
+                                </mr:Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </ScrollView>
+
+                  <!--Thu Vien-->  
+                <mr:Grid
+                    Grid.Column="3"      
+                    TappedCommand="{Binding BindingContext.TapMenuDuoiCommand, Source={x:Reference newMainPage}, Mode=OneWay}"
+                    TappedCommandParameter="ThuVien">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Text="" />
+                    <Label Text="Thư viện" />
+                    <Label
+                        Text="Fix Width"
+                        TextColor="Transparent" />
+                </mr:Grid>
+            </Grid>
+        </Grid>
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource CommonBusyIndicator}" StyleClass="TelerikTheme" />
+    </Grid>
+</ContentPage>
