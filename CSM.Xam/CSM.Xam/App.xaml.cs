@@ -4,6 +4,7 @@ using CSM.Xam.ViewModels;
 using CSM.Xam.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using CSM.Xam.Models;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace CSM.Xam
@@ -28,6 +29,8 @@ namespace CSM.Xam
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.Register<InitParamVm>();
+
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
         }
