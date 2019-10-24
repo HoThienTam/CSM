@@ -5,6 +5,9 @@ using CSM.Xam.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using CSM.Xam.Models;
+using System.IO;
+using System;
+using System.Reflection;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace CSM.Xam
@@ -20,9 +23,26 @@ namespace CSM.Xam
 
         public App(IPlatformInitializer initializer) : base(initializer) { }
 
+        public string DbConnectionString { get; set; } = "";
+
         protected override async void OnInitialized()
         {
             InitializeComponent();
+
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data.db");
+            DbConnectionString = $"Data Source={dbPath};";
+            File.Delete(dbPath);
+            if (File.Exists(dbPath) == false)
+            {
+                var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
+                Stream stream = assembly.GetManifestResourceStream("CSM.Xam.Files.data.db");
+
+                using (var reader = new System.IO.MemoryStream())
+                {
+                    await stream.CopyToAsync(reader);
+                    File.WriteAllBytes(dbPath, reader.GetBuffer());
+                }
+            }
 
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }

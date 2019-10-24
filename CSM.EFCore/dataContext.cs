@@ -4,13 +4,22 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CSM.EFCore
 {
-    public partial class dbContext : DbContext
+    public partial class dataContext : DbContext
     {
-        public dbContext()
+        private DbContextOptionsBuilder<dataContext> _optionBuilder;
+        public dataContext(string connectionString) : base(
+            SqliteDbContextOptionsBuilderExtensions
+                .UseSqlite(new DbContextOptionsBuilder(), connectionString)
+                .Options
+            )
         {
         }
 
-        public dbContext(DbContextOptions<dbContext> options)
+        public dataContext()
+        {
+        }
+
+        public dataContext(DbContextOptions<dataContext> options)
             : base(options)
         {
         }
@@ -38,7 +47,7 @@ namespace CSM.EFCore
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlite("Data Source=E:\\BigProjects\\CSM\\CSM.Xam\\CSM.Xam\\Files\\db.db;");
+                optionsBuilder.UseSqlite("Data Source=E:\\BigProjects\\CSM\\CSM.Xam\\CSM.Xam\\Files\\data.db;");
             }
         }
 

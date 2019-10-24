@@ -6,16 +6,22 @@
 
   <ItemGroup>
     <None Remove="Files\9.png" />
+    <None Remove="Files\data.db" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Files\9.png" />
+    <EmbeddedResource Include="Files\data.db" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Telerik.XamainForms.UI" Version="2019.1.220" />
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.2.0.1367" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CSM.EFCore\CSM.EFCore.csproj" />
+    <ProjectReference Include="..\..\CSM.Logic\CSM.Logic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

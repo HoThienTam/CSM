@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
-             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:views="clr-namespace:CSM.Xam.Views"
              xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
              xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
              x:Class="CSM.Xam.Views.MainPage"
+             x:Name="mainPage"
              NavigationPage.HasNavigationBar="False">
-
     <Grid>
         <Grid RowSpacing="0" ColumnSpacing="{StaticResource CommonThickness}">
             <Grid.RowDefinitions>
@@ -22,9 +23,9 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-            <!--  Frame hoa don - khu vuc  -->
+              <!--Frame hoa don - khu vuc-->  
             <Grid BackgroundColor="{StaticResource BackgroundColor}"
-                IsVisible="False"
+                IsVisible="{Binding IsVisibleFrameHoaDonBindProp, Mode=OneWay}"
                 Grid.ColumnSpan="2"
                 Style="{StaticResource CommonWrapper}">
                 <Grid.RowDefinitions>
@@ -32,7 +33,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!--  Menu tren hoa don - khu vuc  -->
+                  <!--Menu tren hoa don - khu vuc-->  
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -41,32 +42,32 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!--  Hoa don  -->
+                      <!--Hoa don-->  
                     <mr:Grid Padding="{StaticResource CommonHorizontalThickness}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Label FontSize="Large" VerticalOptions="Center" Text="Hóa đơn" TextColor="{StaticResource MainTextColor}"/>
+                        <Label FontSize="Large" VerticalOptions="Center" Text="Hóa đơn"/>
                     </mr:Grid>
 
                     <BoxView BackgroundColor="{StaticResource BorderColor}" WidthRequest="1" Grid.Column="1"/>
 
-                    <!--  Danh sach menu khu vuc  -->
+                      <!--Danh sach menu khu vuc-->  
                     <ScrollView Grid.Column="2" Orientation="Horizontal" HorizontalOptions="Start">
                         <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}" Orientation="Horizontal">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
-                                    <!--  Khu vuc  -->
+                                      <!--Khu vuc-->  
                                     <mr:Grid Padding="{StaticResource CommonHorizontalThickness}">
-                                        <Label VerticalOptions="Center" FontSize="Large" Text="Khu vực" TextColor="{StaticResource MainTextColor}"/>
+                                        <Label VerticalOptions="Center" FontSize="Large" Text="Khu vực"/>
                                     </mr:Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
                     </ScrollView>
 
-                    <!--  DELETE BILL  -->
+                      <!--DELETE BILL-->  
                     <mr:Grid
                             Grid.Column="3"
                             Padding="{StaticResource CommonThickness}">
@@ -81,7 +82,7 @@
                     </mr:Grid>
                 </Grid>
                 <BoxView BackgroundColor="{StaticResource BorderColor}" HeightRequest="1" VerticalOptions="End"/>
-                <!--  Danh sach hoa don  -->
+                  <!--Danh sach hoa don-->  
                 <dataControls:RadListView
                     Grid.Row="1"
                     IsVisible="True"
@@ -147,8 +148,8 @@
                     </dataControls:RadListView.ItemTemplate>
                 </dataControls:RadListView>
 
-                <!--  Danh sach khu vuc ban  -->
-                <!--<dataControls:RadListView
+                  <!--Danh sach khu vuc ban-->  
+                <dataControls:RadListView
                     Grid.Row="1"
                     Margin="{StaticResource CommonThickness}"
                     IsVisible="True"
@@ -188,12 +189,12 @@
                             </listView:ListViewTemplateCell>
                         </DataTemplate>
                     </dataControls:RadListView.ItemTemplate>
-                </dataControls:RadListView>-->
+                </dataControls:RadListView>
             </Grid>
-            
-            <!--  Frame thuc don trai  -->
-            <Grid IsVisible="False">
-                <!--  List item  -->
+
+              <!--Frame thuc don trai-->
+            <Grid IsVisible="{Binding IsVisibleFrameThucDonBindProp, Mode=OneWay}">
+                  <!--List item-->  
                 <dataControls:RadListView
                     Margin="{StaticResource CommonThickness}"
                     ItemsSource="{Binding ListMenuBindProp, Mode=OneWay}">
@@ -206,7 +207,7 @@
                         <DataTemplate>
                             <listView:ListViewTemplateCell>
                                 <listView:ListViewTemplateCell.View>
-                                    <tlrPrimitives:RadBorder HeightRequest="120"> 
+                                    <tlrPrimitives:RadBorder HeightRequest="120">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*" />
@@ -222,13 +223,13 @@
                     </dataControls:RadListView.ItemTemplate>
                 </dataControls:RadListView>
             </Grid>
-            
-            <!--  Frame bill phai  -->
+
+              <!--Frame bill phai-->  
             <tlrPrimitives:RadBorder BackgroundColor="{StaticResource BackgroundColor}"
                 BorderThickness="0.5,0,0,0"
                 BorderColor="{StaticResource BorderColor}"
                 Grid.Column="1"
-                IsVisible="True">
+                IsVisible="{Binding IsVisibleFrameBillBindProp}">
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -238,7 +239,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!-- So nguoi, ban -->
+                     <!--So nguoi, ban--> 
                     <Grid Style="{StaticResource CommonWrapper}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -246,12 +247,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <!--  Title  -->
+                          <!--Title-->  
                         <Label Style="{StaticResource Bill_Table}" Text="Chọn bàn" />
 
-                        <!--  Seperate line  -->
+                          <!--Seperate line-->  
                         <BoxView Grid.Column="1" WidthRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
-                        <!--  Right icon  -->
+                          <!--Right icon-->  
 
                         <StackLayout Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}"/>
@@ -260,12 +261,12 @@
                         </StackLayout>
                     </Grid>
 
-                    <!--  Seperate line  -->
+                      <!--Seperate line-->  
                     <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
-                    
-                    <!--  Danh sach item tren bill -->
-                    <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundColor}">
-                        <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
+
+                      <!--Danh sach item tren bill--> 
+                    <ScrollView Grid.Row="2" BackgroundColor="{StaticResource BackgroundColor}">
+                        <StackLayout BindableLayout.ItemsSource="{Binding ListItemInBillBindProp, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="{StaticResource SmallVerticalThickness}">
@@ -274,10 +275,10 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label Style="{StaticResource Bill_ItemName}" Text="Abc 123" />
-                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="100,000d" />
+                                        <Label Style="{StaticResource Bill_ItemName}" Text="{Binding ItemName}" />
+                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding Price, StringFormat='{0:C}'}" />
 
-                                         <!--Danh sach sub item--> 
+                                        <!--Danh sach sub item-->
                                         <!--<StackLayout
                                             Grid.Row="1" Grid.ColumnSpan="3"
                                             BindableLayout.ItemsSource="{Binding ListSubItem, Mode=OneWay}"
@@ -302,18 +303,17 @@
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
                     </ScrollView>
-                    
-                    <!-- Tong tien  -->
+
+                     <!--Tong tien-->  
                     <StackLayout Margin="{StaticResource CommonLeftThickness}" Grid.Row="3" HorizontalOptions="StartAndExpand" VerticalOptions="End">
-                        <Label FontSize="Medium" Text="Tổng (0 mặt hàng)" TextColor="{StaticResource MainTextColor}" />
+                        <Label FontSize="Medium" Text="{Binding ItemCountBindProp, StringFormat='Tổng ({0} mặt hàng)'}"/>
                         <Label
                             FontAttributes="Bold"
-                            Text="100,000d"
-                            FontSize="Medium"
-                            TextColor="{StaticResource MainTextColor}" />
+                            Text="{Binding TotalPriceBindProp, StringFormat='{0:C}'}"
+                            FontSize="Medium" />
                     </StackLayout>
 
-                    <!--  Button luu, thanh toan  -->
+                      <!--Button luu, thanh toan-->  
                     <Grid Grid.Row="4" Style="{StaticResource CommonWrapper}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -327,8 +327,8 @@
                 </Grid>
             </tlrPrimitives:RadBorder>
 
-            <!--  Frame thu vien trai  -->
-            <tlrPrimitives:RadBorder IsVisible="True" BorderThickness="0,0,0.5,0" BorderColor="{StaticResource BorderColor}">
+              <!--Frame thu vien trai-->
+            <tlrPrimitives:RadBorder IsVisible="{Binding IsVisibleFrameThuVienBindProp}" BorderThickness="0,0,0.5,0" BorderColor="{StaticResource BorderColor}">
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -341,25 +341,24 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <!--  Title  -->
+                          <!--Title-->  
                         <Label Style="{StaticResource CommonHeaderText}" Text="Tất cả mặt hàng"/>
-                        <!--  Back icon  -->
-                        <Grid >
-                            <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
-                        </Grid>
+                        
+                          <!--Back icon-->  
+                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
 
-                        <!--  Right text  -->
+                          <!--Right text-->  
                         <Label Text="Chỉnh sửa" Style="{StaticResource CommonHeaderRightText}"/>
                     </Grid>
 
-                    <!--  Seperate line  -->
+                      <!--Seperate line-->  
                     <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
 
-                    <!--  List item -->
+                      <!--List item--> 
                     <dataControls:RadListView
                         Margin="{StaticResource CommonThickness}"
                         Grid.Row="2"
-                        ItemsSource="{Binding ListMenuBindProp, Mode=OneWay}">
+                        ItemsSource="{Binding ListItemBindProp, Mode=OneWay}">
                         <dataControls:RadListView.LayoutDefinition>
                             <listView:ListViewLinearLayout VerticalItemSpacing="1" />
                         </dataControls:RadListView.LayoutDefinition>
@@ -367,12 +366,16 @@
                             <DataTemplate>
                                 <listView:ListViewTemplateCell>
                                     <listView:ListViewTemplateCell.View>
-                                        <StackLayout Orientation="Horizontal">
+                                        <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.SelectItemCommand, Mode=OneWay, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
+                                            <!--Anh mat hang-->
                                             <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
-                                            <Label Text="Cà phê" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
-                                            <Label Text="15,000d" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
+                                            <!--Ten mat hang-->
+                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                            <!--Gia-->
+                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
+                                            <!--Icon bao thieu hang-->
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />
-                                        </StackLayout>
+                                        </mr:StackLayout>
                                     </listView:ListViewTemplateCell.View>
                                 </listView:ListViewTemplateCell>
                             </DataTemplate>
@@ -381,7 +384,7 @@
 
                 </Grid>
             </tlrPrimitives:RadBorder>
-            
+
             <!--Menu duoi-->
             <Grid
                 BackgroundColor="{StaticResource BottomMenuColor}"
@@ -407,11 +410,9 @@
                 </mr:Grid>
                 <!--Hoa don-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
-                    Grid.Column="1" BackgroundColor="#7f8c8d"
-                    BindingContext="{Binding}"
-                    IsEnabled="True"
-                    TappedCommand="{Binding}"
-                    TappedCommandParameter="HoaDon">
+                    Grid.Column="1" 
+                    TappedCommand="{Binding TapMenuCommand, Mode=OneWay}"
+                    TappedCommandParameter="hoadon">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -442,7 +443,9 @@
 
                 <!--Thu Vien-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
-                    Grid.Column="3"      >
+                    Grid.Column="3"
+                    TappedCommand="{Binding TapMenuCommand, Mode=OneWay}"
+                    TappedCommandParameter="thuvien">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />

@@ -55,7 +55,7 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="MR.Gestures">
-      <HintPath>..\..\..\..\ATSolution\at-pos\Libs\Portable\MR.Gestures.dll</HintPath>
+      <HintPath>..\..\Libs\Android\MR.Gestures.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,7 +69,7 @@
     <PackageReference Include="Telerik.XamainForms.UI">
       <Version>2019.1.220</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.851321-pre3" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
     <PackageReference Include="Xamarin.Android.Support.CustomTabs" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.3" />
@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSM.Xam\CSM.Xam.csproj">
-      <Project>{A682884C-CB44-4A89-B752-27BB634E0ABE}</Project>
+      <Project>{4ae90f37-b0b6-49df-bb9c-8c4850619497}</Project>
       <Name>CSM.Xam</Name>
     </ProjectReference>
   </ItemGroup>
