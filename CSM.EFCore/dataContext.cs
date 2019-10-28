@@ -6,15 +6,6 @@ namespace CSM.EFCore
 {
     public partial class dataContext : DbContext
     {
-        private DbContextOptionsBuilder<dataContext> _optionBuilder;
-        public dataContext(string connectionString) : base(
-            SqliteDbContextOptionsBuilderExtensions
-                .UseSqlite(new DbContextOptionsBuilder(), connectionString)
-                .Options
-            )
-        {
-        }
-
         public dataContext()
         {
         }
@@ -32,9 +23,8 @@ namespace CSM.EFCore
         public virtual DbSet<InvoiceItem> InvoiceItem { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemItemOption> ItemItemOption { get; set; }
+        public virtual DbSet<ItemMaterial> ItemMaterial { get; set; }
         public virtual DbSet<ItemOption> ItemOption { get; set; }
-        public virtual DbSet<ItemPrice> ItemPrice { get; set; }
-        public virtual DbSet<ItemPriceMaterial> ItemPriceMaterial { get; set; }
         public virtual DbSet<Material> Material { get; set; }
         public virtual DbSet<Menu> Menu { get; set; }
         public virtual DbSet<SystemSetting> SystemSetting { get; set; }
@@ -179,6 +169,23 @@ namespace CSM.EFCore
                     .HasColumnName("fk_ItemOption");
             });
 
+            modelBuilder.Entity<ItemMaterial>(entity =>
+            {
+                entity.ToTable("Item_Material");
+
+                entity.Property(e => e.CreationDate).IsRequired();
+
+                entity.Property(e => e.Creator).IsRequired();
+
+                entity.Property(e => e.FkItem)
+                    .IsRequired()
+                    .HasColumnName("fk_Item");
+
+                entity.Property(e => e.FkMaterial)
+                    .IsRequired()
+                    .HasColumnName("fk_Material");
+            });
+
             modelBuilder.Entity<ItemOption>(entity =>
             {
                 entity.Property(e => e.CreationDate).IsRequired();
@@ -190,36 +197,6 @@ namespace CSM.EFCore
                     .HasColumnName("fk_Store");
 
                 entity.Property(e => e.OptionName).IsRequired();
-            });
-
-            modelBuilder.Entity<ItemPrice>(entity =>
-            {
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkItem)
-                    .IsRequired()
-                    .HasColumnName("fk_Item");
-
-                entity.Property(e => e.PriceName).IsRequired();
-            });
-
-            modelBuilder.Entity<ItemPriceMaterial>(entity =>
-            {
-                entity.ToTable("ItemPrice_Material");
-
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkItemPrice)
-                    .IsRequired()
-                    .HasColumnName("fk_ItemPrice");
-
-                entity.Property(e => e.FkMaterial)
-                    .IsRequired()
-                    .HasColumnName("fk_Material");
             });
 
             modelBuilder.Entity<Material>(entity =>

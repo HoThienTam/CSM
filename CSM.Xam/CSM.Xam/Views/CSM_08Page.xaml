@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             mc:Ignorable="d"
+             x:Name="csm_08Page"
+             x:Class="CSM.Xam.Views.CSM_08Page"
+             NavigationPage.HasNavigationBar="False">
+    <Grid>
+        <Grid Style="{StaticResource CommonWrapper}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <!-- Navigation bar -->
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="Cài đặt"/>
+
+                    <!--Back icon-->
+                    <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+
+                    <!--Right text-->
+                    <Label Style="{StaticResource CommonHeaderRightText}"/>
+                </Grid>
+
+                <BoxView Grid.Row="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+
+                <ScrollView Grid.Row="2">
+                    <StackLayout>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                    </StackLayout>
+                </ScrollView>
+
+                <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
+                    <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất" BackgroundColor="{StaticResource BackgroundColor}"/>
+                </Grid>
+            </Grid>
+
+            <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" WidthRequest="0.5"/>
+
+            <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Style="{StaticResource CommonWrapper}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!--Title-->
+                        <Label Style="{StaticResource CommonHeaderText}" Text="Quản lý khu vực"/>
+
+                        <!--Back icon-->
+                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+
+                        <!--Right text-->
+                        <Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}"/>
+                    </Grid>
+
+                    <!--Seperate line-->
+                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
+                    <StackLayout Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
+                        <ScrollView>
+                            <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp}" Spacing="{StaticResource SmallThickness}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                                            <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
+                                            <Label Text="Tên khu vực" FontSize="Large"/>
+                                            <Label Text="{Binding ZoneName}" HorizontalOptions="EndAndExpand" FontSize="Large"/>
+                                            <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                                        </mr:StackLayout>
+                                        </tlrPrimitives:RadBorder>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </ScrollView>
+
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                            <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
+                                <Label Text="Tạo khu vực mới " FontSize="Large"/>
+                                <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="EndAndExpand" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+                    </StackLayout>
+                </Grid>
+            </Grid>
+        </Grid>
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+    </Grid>
+</ContentPage>

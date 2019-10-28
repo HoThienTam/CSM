@@ -19,8 +19,8 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
 
               <!--Frame hoa don - khu vuc-->  
@@ -87,7 +87,7 @@
                     Grid.Row="1"
                     IsVisible="True"
                     Margin="{StaticResource SmallThickness}"
-                    ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}">
+                    ItemsSource="{Binding ListInvoiceBindProp, Mode=OneWay}">
                     <dataControls:RadListView.LayoutDefinition>
                         <listView:ListViewGridLayout SpanCount="3" HorizontalItemSpacing="{StaticResource CommonThickness}" VerticalItemSpacing="{StaticResource CommonThickness}"/>
                     </dataControls:RadListView.LayoutDefinition>
@@ -121,11 +121,11 @@
                                         </Grid.ColumnDefinitions>
                                         <StackLayout Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.UsdCircle}" />
-                                            <Label Style="{StaticResource Invoice_BodyText}" Text="15,000đ" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding TotalPrice}" />
                                         </StackLayout>
                                         <StackLayout Grid.Column="1" Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" />
-                                            <Label Style="{StaticResource Invoice_BodyText}" Text="1 phút" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding CreationDate}" />
                                         </StackLayout>
                                     </Grid>
 
@@ -256,7 +256,7 @@
 
                         <StackLayout Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}"/>
-                            <Label VerticalOptions="Center" FontSize="Medium" Text="09" TextColor="Black"/>
+                            <Label VerticalOptions="Center" FontSize="Medium" Text="01" TextColor="Black"/>
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
                         </StackLayout>
                     </Grid>
@@ -320,9 +320,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Lưu" Style="{StaticResource Invoice_Button}"/>
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Lưu" Style="{StaticResource Invoice_Button}" Command="{Binding LuuHoaDonCommand, Mode=OneWay}"/>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Grid.Column="1" Text="Thanh toán" Style="{StaticResource Invoice_Button}" />
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Grid.Column="1" Text="Thanh toán" Style="{StaticResource Invoice_Button}" Command="{Binding ThanhToanCommand, Mode=OneWay}"/>
                     </Grid>
                 </Grid>
             </tlrPrimitives:RadBorder>
@@ -370,11 +370,11 @@
                                             <!--Anh mat hang-->
                                             <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
                                             <!--Ten mat hang-->
-                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"/>
                                             <!--Gia-->
-                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
+                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center"  FontSize="Medium" Margin="{StaticResource CommonHorizontalThickness}"/>
                                             <!--Icon bao thieu hang-->
-                                            <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />
+                                            <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
                                         </mr:StackLayout>
                                     </listView:ListViewTemplateCell.View>
                                 </listView:ListViewTemplateCell>

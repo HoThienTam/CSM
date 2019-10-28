@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace CSM.EFCore
 {
-    public partial class ItemPriceMaterial
+    public partial class ItemMaterial
     {
         public string Id { get; set; }
-        public string FkItemPrice { get; set; }
+        public string FkItem { get; set; }
         public string FkMaterial { get; set; }
         public string CreationDate { get; set; }
         public string Creator { get; set; }

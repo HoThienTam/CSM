@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using CSM.EFCore;
 using CSM.Logic;
 using System.Linq;
+using CSM.Logic;
 
 namespace CSM.Xam.ViewModels
 {
@@ -97,8 +98,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListInvoiceBindProp
-        private ObservableCollection<string> _ListInvoiceBindProp = null;
-        public ObservableCollection<string> ListInvoiceBindProp
+        private ObservableCollection<Invoice> _ListInvoiceBindProp = null;
+        public ObservableCollection<Invoice> ListInvoiceBindProp
         {
             get { return _ListInvoiceBindProp; }
             set { SetProperty(ref _ListInvoiceBindProp, value); }
@@ -172,6 +173,10 @@ namespace CSM.Xam.ViewModels
 
             try
             {
+                if (ListItemInBillBindProp == null)
+                {
+                    ListItemInBillBindProp = new ObservableCollection<ItemExtended>();
+                }
                 // Thuc hien cong viec tai day
                 if (obj is ItemExtended item)
                 {
@@ -249,6 +254,85 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region LuuHoaDonCommand
+
+        public DelegateCommand<object> LuuHoaDonCommand { get; private set; }
+        private async void OnLuuHoaDon(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var invoiceLogic = new InvoiceLogic(dbContext);
+                await invoiceLogic.CreateAsync(new Invoice
+                {
+                    TotalPrice = TotalPriceBindProp,
+                });
+                SetFramesInvisible();
+                IsVisibleFrameHoaDonBindProp = true;
+                ListItemInBillBindProp = null;
+                GetAllInvoice();
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitLuuHoaDonCommand()
+        {
+            LuuHoaDonCommand = new DelegateCommand<object>(OnLuuHoaDon);
+            LuuHoaDonCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region ThanhToanCommand
+
+        public DelegateCommand<object> ThanhToanCommand { get; private set; }
+        private async void OnThanhToan(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitThanhToanCommand()
+        {
+            ThanhToanCommand = new DelegateCommand<object>(OnThanhToan);
+            ThanhToanCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         #endregion
 
         #region Method
@@ -260,6 +344,18 @@ namespace CSM.Xam.ViewModels
             IsVisibleFrameMenuBindProp = false;
             IsVisibleFrameThucDonBindProp = false;
             IsVisibleFrameThuVienBindProp = false;
+        }
+
+        private async void GetAllInvoice()
+        {
+            var invoiceLogic = new InvoiceLogic(dbContext);
+            var listInvoice = await invoiceLogic.GetAllAsync();
+
+            ListInvoiceBindProp = new ObservableCollection<Invoice>();
+            foreach (var invoice in listInvoice)
+            {
+                ListInvoiceBindProp.Add(invoice);
+            }
         }
         #endregion
 
@@ -274,21 +370,16 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     var itemLogic = new ItemLogic(dbContext);
-                    var itemPriceLogic = new ItemPriceLogic(dbContext);
 
                     var listItem = await itemLogic.GetAllAsync(null);
-                    var listItemPrice = await itemPriceLogic.GetAllAsync(null);
                     ListItemBindProp = new ObservableCollection<ItemExtended>();
-                    ListItemInBillBindProp = new ObservableCollection<ItemExtended>();
                     foreach (var item in listItem)
                     {
-                        var itemPrice = listItemPrice.FirstOrDefault(h => h.FkItem == item.Id);
                         ListItemBindProp.Add(new ItemExtended
                         {
                             Id = item.Id,
                             ItemName = item.ItemName,
-                            PriceName = itemPrice.PriceName,
-                            Price = itemPrice.Price,
+                            Price = item.Price,
                         });
                     }
                     break;

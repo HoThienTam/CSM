@@ -16,5 +16,7 @@ namespace CSM.EFCore
         public string FkWeightUnit { get; set; }
         public long ManagementMethod { get; set; }
         public long IsChargedByWeight { get; set; }
+        public double Price { get; set; }
+        public long IsStaticPrice { get; set; }
     }
 }

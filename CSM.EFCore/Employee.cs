@@ -12,6 +12,6 @@ namespace CSM.EFCore
         public long IsDeleted { get; set; }
         public string FullName { get; set; }
         public string Password { get; set; }
-        public long EmployeeType { get; set; }
+        public long Role { get; set; }
     }
 }
