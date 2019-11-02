@@ -51,7 +51,7 @@
                         <Label FontSize="Large" VerticalOptions="Center" Text="Hóa đơn"/>
                     </mr:Grid>
 
-                    <BoxView BackgroundColor="{StaticResource BorderColor}" WidthRequest="1" Grid.Column="1"/>
+                    <BoxView BackgroundColor="{StaticResource SubColor}" WidthRequest="1" Grid.Column="1"/>
 
                       <!--Danh sach menu khu vuc-->  
                     <ScrollView Grid.Column="2" Orientation="Horizontal" HorizontalOptions="Start">
@@ -81,7 +81,7 @@
                         <Label FontSize="Large" Text="Hoàn tất" TextColor="LightGreen"/>
                     </mr:Grid>
                 </Grid>
-                <BoxView BackgroundColor="{StaticResource BorderColor}" HeightRequest="1" VerticalOptions="End"/>
+                <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" VerticalOptions="End"/>
                   <!--Danh sach hoa don-->  
                 <dataControls:RadListView
                     Grid.Row="1"
@@ -93,7 +93,7 @@
                     </dataControls:RadListView.LayoutDefinition>
                     <dataControls:RadListView.ItemTemplate>
                         <DataTemplate>
-                            <tlrPrimitives:RadBorder Style="{StaticResource Invoice_Border}">
+                            <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
                                 <mr:Grid VerticalOptions="FillAndExpand" ColumnSpacing="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -227,7 +227,7 @@
               <!--Frame bill phai-->  
             <tlrPrimitives:RadBorder BackgroundColor="{StaticResource BackgroundColor}"
                 BorderThickness="0.5,0,0,0"
-                BorderColor="{StaticResource BorderColor}"
+                BorderColor="{StaticResource SubColor}"
                 Grid.Column="1"
                 IsVisible="{Binding IsVisibleFrameBillBindProp}">
                 <Grid Style="{StaticResource CommonWrapper}">
@@ -251,18 +251,18 @@
                         <Label Style="{StaticResource Bill_Table}" Text="Chọn bàn" />
 
                           <!--Seperate line-->  
-                        <BoxView Grid.Column="1" WidthRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
+                        <BoxView Grid.Column="1" WidthRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
                           <!--Right icon-->  
 
                         <StackLayout Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}"/>
-                            <Label VerticalOptions="Center" FontSize="Medium" Text="01" TextColor="Black"/>
+                            <Label VerticalOptions="Center" Text="01"/>
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
                         </StackLayout>
                     </Grid>
 
                       <!--Seperate line-->  
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
 
                       <!--Danh sach item tren bill--> 
                     <ScrollView Grid.Row="2" BackgroundColor="{StaticResource BackgroundColor}">
@@ -277,27 +277,6 @@
 
                                         <Label Style="{StaticResource Bill_ItemName}" Text="{Binding ItemName}" />
                                         <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding Price, StringFormat='{0:C}'}" />
-
-                                        <!--Danh sach sub item-->
-                                        <!--<StackLayout
-                                            Grid.Row="1" Grid.ColumnSpan="3"
-                                            BindableLayout.ItemsSource="{Binding ListSubItem, Mode=OneWay}"
-                                            Spacing="0">
-                                            <BindableLayout.ItemTemplate>
-                                                <DataTemplate>
-                                                    <mr:Grid BackgroundColor="Transparent" Style="{StaticResource BillPhaiSubItem}">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*" />
-                                                            <ColumnDefinition Width="Auto" />
-                                                            <ColumnDefinition Width="Auto" />
-                                                        </Grid.ColumnDefinitions>
-
-                                                        <Label Style="{StaticResource BillPhaiSubItem_MainText}" Text="{Binding MainText}" />
-                                                        <Label IsVisible="{Binding IsVisibleRight}" Style="{StaticResource BillPhaiSubItem_Price}" Text="{Binding TotalPrice, Mode=OneWay, StringFormat='{0:N0}đ'}" />
-                                                    </mr:Grid>
-                                                </DataTemplate>
-                                            </BindableLayout.ItemTemplate>
-                                        </StackLayout>-->
                                     </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
@@ -306,11 +285,10 @@
 
                      <!--Tong tien-->  
                     <StackLayout Margin="{StaticResource CommonLeftThickness}" Grid.Row="3" HorizontalOptions="StartAndExpand" VerticalOptions="End">
-                        <Label FontSize="Medium" Text="{Binding ItemCountBindProp, StringFormat='Tổng ({0} mặt hàng)'}"/>
+                        <Label Text="{Binding ItemCountBindProp, StringFormat='Tổng ({0} mặt hàng)'}"/>
                         <Label
                             FontAttributes="Bold"
-                            Text="{Binding TotalPriceBindProp, StringFormat='{0:C}'}"
-                            FontSize="Medium" />
+                            Text="{Binding TotalPriceBindProp, StringFormat='{0:C}'}"/>
                     </StackLayout>
 
                       <!--Button luu, thanh toan-->  
@@ -328,7 +306,7 @@
             </tlrPrimitives:RadBorder>
 
               <!--Frame thu vien trai-->
-            <tlrPrimitives:RadBorder IsVisible="{Binding IsVisibleFrameThuVienBindProp}" BorderThickness="0,0,0.5,0" BorderColor="{StaticResource BorderColor}">
+            <tlrPrimitives:RadBorder IsVisible="{Binding IsVisibleFrameThuVienBindProp}" BorderThickness="0,0,0.5,0" BorderColor="{StaticResource SubColor}">
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -352,7 +330,7 @@
                     </Grid>
 
                       <!--Seperate line-->  
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
 
                       <!--List item--> 
                     <dataControls:RadListView
@@ -370,9 +348,9 @@
                                             <!--Anh mat hang-->
                                             <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
                                             <!--Ten mat hang-->
-                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"/>
+                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
                                             <!--Gia-->
-                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center"  FontSize="Medium" Margin="{StaticResource CommonHorizontalThickness}"/>
+                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
                                             <!--Icon bao thieu hang-->
                                             <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
                                         </mr:StackLayout>

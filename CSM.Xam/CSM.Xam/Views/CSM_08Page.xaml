@@ -13,10 +13,6 @@
              NavigationPage.HasNavigationBar="False">
     <Grid>
         <Grid Style="{StaticResource CommonWrapper}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
                 <ColumnDefinition Width="Auto" />
@@ -47,18 +43,18 @@
                     <Label Style="{StaticResource CommonHeaderRightText}"/>
                 </Grid>
 
-                <BoxView Grid.Row="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
 
                 <ScrollView Grid.Row="2">
                     <StackLayout>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
                     </StackLayout>
                 </ScrollView>
 
@@ -67,7 +63,7 @@
                 </Grid>
             </Grid>
 
-            <BoxView Grid.Column="1" BackgroundColor="{StaticResource BorderColor}" WidthRequest="0.5"/>
+            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="0.5"/>
 
             <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
                 <Grid Style="{StaticResource CommonWrapper}">
@@ -93,7 +89,7 @@
                     </Grid>
 
                     <!--Seperate line-->
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource BorderColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
                     <StackLayout Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
                         <ScrollView>
                             <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp}" Spacing="{StaticResource SmallThickness}">

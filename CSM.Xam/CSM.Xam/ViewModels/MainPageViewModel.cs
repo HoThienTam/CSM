@@ -8,6 +8,7 @@ using CSM.EFCore;
 using CSM.Logic;
 using System.Linq;
 using CSM.Logic;
+using CSM.Xam.Views;
 
 namespace CSM.Xam.ViewModels
 {
@@ -313,6 +314,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
+                await NavigationService.NavigateAsync(nameof(CSM_10Page));
             }
             catch (Exception e)
             {

@@ -44,7 +44,7 @@ namespace CSM.Xam
                 }
             }
 
-            await NavigationService.NavigateAsync("NavigationPage/CSM_08Page");
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -55,6 +55,7 @@ namespace CSM.Xam
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<CSM_08Page, CSM_08PageViewModel>();
             containerRegistry.RegisterForNavigation<CSM_08_01Page, CSM_08_01PageViewModel>();
+            containerRegistry.RegisterForNavigation<CSM_10Page, CSM_10PageViewModel>();
         }
     }
 }
