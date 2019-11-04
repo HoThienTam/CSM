@@ -150,10 +150,11 @@
         </Style>
 
         <Style x:Key="LoadingIndicator" TargetType="tlrPrimitives:RadBusyIndicator">
-            <Setter Property="HeightRequest" Value="200" />
-            <Setter Property="WidthRequest" Value="200" />
-            <Setter Property="AnimationType" Value="Animation8" />
+            <Setter Property="AnimationContentHeightRequest" Value="100" />
+            <Setter Property="AnimationContentWidthRequest" Value="100" />
+            <Setter Property="AnimationType" Value="Animation4" />
             <Setter Property="IsBusy" Value="True" />
+            <Setter Property="AnimationContentColor" Value="{StaticResource MainColor}"/>
             <Setter Property="IsVisible" Value="{Binding IsBusy, Mode=OneWay}" />
         </Style>
 

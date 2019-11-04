@@ -258,12 +258,21 @@ namespace CSM.Xam.ViewModels
         #region LuuHoaDonCommand
 
         public DelegateCommand<object> LuuHoaDonCommand { get; private set; }
-        private async void OnLuuHoaDon(object obj)
+        private bool CanExecuteLuuHoaDon(object obj)
         {
             if (IsBusy)
             {
-                return;
+                return false;
             }
+            if (ListItemInBillBindProp == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        private async void OnLuuHoaDon(object obj)
+        {
+           
 
             IsBusy = true;
 
@@ -293,8 +302,9 @@ namespace CSM.Xam.ViewModels
         [Initialize]
         private void InitLuuHoaDonCommand()
         {
-            LuuHoaDonCommand = new DelegateCommand<object>(OnLuuHoaDon);
-            LuuHoaDonCommand.ObservesCanExecute(() => IsNotBusy);
+            LuuHoaDonCommand = new DelegateCommand<object>(OnLuuHoaDon, CanExecuteLuuHoaDon);
+            LuuHoaDonCommand.ObservesProperty(() => IsNotBusy);
+            LuuHoaDonCommand.ObservesProperty(() => ListItemInBillBindProp);
         }
 
         #endregion
@@ -302,13 +312,20 @@ namespace CSM.Xam.ViewModels
         #region ThanhToanCommand
 
         public DelegateCommand<object> ThanhToanCommand { get; private set; }
-        private async void OnThanhToan(object obj)
+        private bool CanExecuteThanhToan(object obj)
         {
             if (IsBusy)
             {
-                return;
+                return false;
             }
-
+            if (ListItemInBillBindProp == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        private async void OnThanhToan(object obj)
+        {
             IsBusy = true;
 
             try
@@ -329,8 +346,9 @@ namespace CSM.Xam.ViewModels
         [Initialize]
         private void InitThanhToanCommand()
         {
-            ThanhToanCommand = new DelegateCommand<object>(OnThanhToan);
-            ThanhToanCommand.ObservesCanExecute(() => IsNotBusy);
+            ThanhToanCommand = new DelegateCommand<object>(OnThanhToan, CanExecuteThanhToan);
+            ThanhToanCommand.ObservesProperty(() => IsNotBusy);
+            ThanhToanCommand.ObservesProperty(() => ListItemInBillBindProp);
         }
 
         #endregion
