@@ -1,15 +1,21 @@
 ﻿using CSM.Xam.Models;
 using CSM.Xam.Views;
+using CSM.Logic;
 using Prism.Commands;
+using Prism.Navigation;
 using System;
+using System.Collections.ObjectModel;
+using CSM.EFCore;
+using CSM.Logic.Enums;
 
 namespace CSM.Xam.ViewModels
 {
     public class CSM_10PageViewModel : ViewModelBase
     {
+        private dataContext _dbContext;
         public CSM_10PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-            Title = "Thanh toan";
+            _dbContext = Helper.GetDataContext();
         }
         #region Property
 
@@ -46,6 +52,15 @@ namespace CSM.Xam.ViewModels
         {
             get { return _IsCompletedBindProp; }
             set { SetProperty(ref _IsCompletedBindProp, value); }
+        }
+        #endregion
+
+        #region ListItemInBillBindProp
+        private ObservableCollection<ItemExtended> _ListItemInBillBindProp = null;
+        public ObservableCollection<ItemExtended> ListItemInBillBindProp
+        {
+            get { return _ListItemInBillBindProp; }
+            set { SetProperty(ref _ListItemInBillBindProp, value); }
         }
         #endregion
 
@@ -105,7 +120,10 @@ namespace CSM.Xam.ViewModels
                             break;
                     }
                 }
-                ChangeMoneyBindProp = ReceivedMoneyBindProp - TotalMoneyBindProp;
+                if (ReceivedMoneyBindProp > TotalMoneyBindProp)
+                {
+                    ChangeMoneyBindProp = ReceivedMoneyBindProp - TotalMoneyBindProp;
+                }
             }
             catch (Exception e)
             {
@@ -146,6 +164,27 @@ namespace CSM.Xam.ViewModels
                 }
                 else
                 {
+                    var invoiceLogic = new InvoiceLogic(_dbContext);
+                    var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+
+                    var invoice = new Invoice
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        TotalPrice = TotalMoneyBindProp
+                    };
+
+                    await invoiceLogic.CreateAsync(invoice, false);
+                    foreach (var item in ListItemInBillBindProp)
+                    {
+                        await invoiceItemLogic.CreateAsync(new InvoiceItem
+                        {
+                            FkInvoice = invoice.Id,
+                            FkItem = item.Id,
+                            Id = Guid.NewGuid().ToString(),
+                            Quantity = 1
+                        }, false);
+                    }
+                    await _dbContext.SaveChangesAsync();
                     await NavigationService.NavigateAsync(nameof(MainPage));
                 }
                
@@ -169,6 +208,29 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #endregion
+
+        #region Navigate
+        public async override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            switch (parameters.GetNavigationMode())
+            {
+                case NavigationMode.Back:
+                    break;
+                case NavigationMode.New:
+                    TotalMoneyBindProp = (double) (parameters[Keys.TOTALPRICE] as double?);
+                    ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<ItemExtended>;
+                    break;
+                case NavigationMode.Forward:
+                    break;
+                case NavigationMode.Refresh:
+                    break;
+                default:
+                    break;
+            }
+        }
         #endregion
     }
 }

@@ -1,16 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
-             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
-             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
-             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
-             NavigationPage.HasNavigationBar="False"
-             mc:Ignorable="d"
-             x:Class="CSM.Xam.Views.CSM_10Page">
+<ContentPage
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+    xmlns="http://xamarin.com/schemas/2014/forms"   
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+    xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+    xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+    xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+    NavigationPage.HasNavigationBar="False"
+    mc:Ignorable="d"
+    x:Class="CSM.Xam.Views.CSM_10Page"
+    Padding="20">
     <ContentPage.Resources>
         <x:Double x:Key="CommonHeight">100</x:Double>
         <Color x:Key="CommonColor">#87CEFA</Color>
@@ -33,7 +36,7 @@
                     </Grid.ColumnDefinitions>
                     <!--Title-->
                     <Label Style="{StaticResource CommonHeaderText}"
-                           Text="{Binding Title}" />
+                           Text="{Binding TotalMoneyBindProp, StringFormat='Thanh toán - {0:C}'}" />
                     <!--Back icon-->
                     <mr:Grid TappedCommand="{Binding GoBackCommand}">
                         <Label Style="{StaticResource CommonHeaderLeftIcon}"
@@ -147,6 +150,7 @@
                                 Style="{StaticResource Number_Button}"
                                 BorderThickness="2,2,2,1"
                                 FontSize="Header"
+                                VerticalContentAlignment="Center"
                                 Command="{Binding TapNumberCommand}"
                                 CommandParameter="X"
                                 Text="X" />
@@ -224,6 +228,7 @@
                                 Style="{StaticResource Number_Button}"
                                 FontSize="Header" BorderThickness="2,1,2,2"
                                 Command="{Binding TapNumberCommand}"
+                                VerticalContentAlignment="Center"
                                 CommandParameter="C"
                                 Text="C" />
                             <!--  Số 0  -->

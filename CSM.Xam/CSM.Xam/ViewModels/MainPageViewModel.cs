@@ -7,14 +7,12 @@ using System.Collections.Generic;
 using CSM.EFCore;
 using CSM.Logic;
 using System.Linq;
-using CSM.Logic;
 using CSM.Xam.Views;
 
 namespace CSM.Xam.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
-        public dataContext dbContext = new dataContext((App.Current as App).DbConnectionString);
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
 
@@ -279,7 +277,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var invoiceLogic = new InvoiceLogic(dbContext);
+                var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
                 await invoiceLogic.CreateAsync(new Invoice
                 {
                     TotalPrice = TotalPriceBindProp,
@@ -331,7 +329,13 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                await NavigationService.NavigateAsync(nameof(CSM_10Page));
+
+                // Tao param de pass data sang trang khac
+                var param = new NavigationParameters();
+                param.Add(Keys.BILL, ListItemInBillBindProp);
+                param.Add(Keys.TOTALPRICE, TotalPriceBindProp);
+
+                await NavigationService.NavigateAsync(nameof(CSM_10Page), param);
             }
             catch (Exception e)
             {
@@ -368,7 +372,7 @@ namespace CSM.Xam.ViewModels
 
         private async void GetAllInvoice()
         {
-            var invoiceLogic = new InvoiceLogic(dbContext);
+            var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
             var listInvoice = await invoiceLogic.GetAllAsync();
 
             ListInvoiceBindProp = new ObservableCollection<Invoice>();
@@ -389,9 +393,9 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    var itemLogic = new ItemLogic(dbContext);
+                    var itemLogic = new ItemLogic(Helper.GetDataContext());
 
-                    var listItem = await itemLogic.GetAllAsync(null);
+                    var listItem = await itemLogic.GetAllAsync();
                     ListItemBindProp = new ObservableCollection<ItemExtended>();
                     foreach (var item in listItem)
                     {

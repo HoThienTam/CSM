@@ -4,6 +4,8 @@ using Android.OS;
 using Prism;
 using Prism.Ioc;
 using Android.Views;
+using System.IO;
+using System;
 
 namespace CSM.Xam.Droid
 {

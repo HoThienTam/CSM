@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace CSM.Logic
 {
-    public class InvoiceLogic : BaseLogic
+    public class InvoiceItemLogic : BaseLogic
     {
-        public InvoiceLogic(dataContext dbContext) : base(dbContext)
+        public InvoiceItemLogic(dataContext dbContext) : base(dbContext)
         {
 
         }
 
-        public Task<List<Invoice>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<InvoiceItem>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<InvoiceItem> query = _DbContext.InvoiceItem;
             if (tracking)
             {
 
@@ -33,9 +33,9 @@ namespace CSM.Logic
             return query.ToListAsync();
         }
 
-        public Task<Invoice> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<InvoiceItem> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<InvoiceItem> query = _DbContext.InvoiceItem;
             if (tracking)
             {
 
@@ -52,25 +52,20 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<Invoice> CreateAsync(Invoice vm, bool saveChange = true)
+        public async Task<InvoiceItem> CreateAsync(InvoiceItem vm, bool saveChange = true)
         {
-            var item = new Invoice
+            var item = new InvoiceItem
             {
-                Id = vm.Id,
-                CreationDate = DateTime.Now.ToString("HH:mm:ss"),
-                TotalPrice = vm.TotalPrice,
-                Creator = "Tam",
-                Status = 0,
-                FkStore = "fg",
-                CloseDate = DateTime.UtcNow.ToString(),
-                CustomerCount = 0,
-                FkTable = "1",
-                PaidAmount = 0,
-                RefundedAmount = 0,
-                Tip = 0,
+              Id = vm.Id,
+              CreationDate = DateTime.Now.ToString("HH:mm:ss"),
+              Creator = "Tam",
+              FkInvoice = vm.FkInvoice,
+              FkItem = vm.FkItem,
+              IsDeleted = (int)IsDelete.Normal,
+              Quantity = vm.Quantity
             };
 
-            _DbContext.Invoice.Add(item);
+            _DbContext.InvoiceItem.Add(item);
 
             try
             {
@@ -87,9 +82,9 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<Invoice> UpdateAsync(Invoice vm, bool saveChange = true)
+        public async Task<InvoiceItem> UpdateAsync(InvoiceItem vm, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == vm.Id);
+            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == vm.Id);
 
             try
             {
@@ -108,7 +103,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;

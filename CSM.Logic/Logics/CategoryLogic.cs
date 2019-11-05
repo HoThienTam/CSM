@@ -21,10 +21,8 @@ namespace CSM.Logic
 
         }
 
-        public Task<List<Category>> GetAllAsync(Employee employee, IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<Category>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            CheckRole(employee, ListAccessRoleCode);
-
             IQueryable<Category> query = _DbContext.Category;
             if (tracking)
             {

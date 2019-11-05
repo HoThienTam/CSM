@@ -20,10 +20,8 @@ namespace CSM.Logic
         {
 
         }
-        public Task<List<Item>> GetAllAsync(Employee employee, IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<Item>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            CheckRole(employee, ListAccessRoleCode);
-
             IQueryable<Item> query = _DbContext.Item;
             if (tracking)
             {
