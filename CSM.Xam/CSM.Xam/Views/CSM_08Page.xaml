@@ -43,27 +43,27 @@
                     <Label Style="{StaticResource CommonHeaderRightText}"/>
                 </Grid>
 
-                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
+                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                 <ScrollView Grid.Row="2">
                     <StackLayout>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="0.5"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                     </StackLayout>
                 </ScrollView>
 
                 <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
-                    <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất" BackgroundColor="{StaticResource BackgroundColor}"/>
+                    <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất"/>
                 </Grid>
             </Grid>
 
-            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="0.5"/>
+            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>
 
             <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
                 <Grid Style="{StaticResource CommonWrapper}">
@@ -89,7 +89,7 @@
                     </Grid>
 
                     <!--Seperate line-->
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
                     <StackLayout Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
                         <ScrollView>
                             <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp}" Spacing="{StaticResource SmallThickness}">

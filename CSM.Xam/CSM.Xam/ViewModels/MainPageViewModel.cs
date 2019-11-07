@@ -203,10 +203,10 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        #region TapMenuCommand
+        #region SelectViewCommand
 
-        public DelegateCommand<object> TapMenuCommand { get; private set; }
-        private async void OnTapMenu(object obj)
+        public DelegateCommand<object> SelectViewCommand { get; private set; }
+        private async void OnSelectView(object obj)
         {
             if (IsBusy)
             {
@@ -231,6 +231,11 @@ namespace CSM.Xam.ViewModels
                             IsVisibleFrameThuVienBindProp = true;
                             IsVisibleFrameBillBindProp = true;
                             break;
+                        case "chinhsua":
+                            SetFramesInvisible();
+                            IsVisibleFrameThuVienBindProp = true;
+                            IsVisibleFrameMenuBindProp = true;
+                            break;
                     }
                 }
             }
@@ -245,10 +250,64 @@ namespace CSM.Xam.ViewModels
 
         }
         [Initialize]
-        private void InitTapMenuCommand()
+        private void InitSelectViewCommand()
         {
-            TapMenuCommand = new DelegateCommand<object>(OnTapMenu);
-            TapMenuCommand.ObservesCanExecute(() => IsNotBusy);
+            SelectViewCommand = new DelegateCommand<object>(OnSelectView);
+            SelectViewCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region NavigateCommand
+
+        public DelegateCommand<object> NavigateCommand { get; private set; }
+        private async void OnNavigate(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (obj is string view)
+                {
+                    switch (view)
+                    {
+                        case "mathang":
+                            await NavigationService.NavigateAsync(nameof(CSM_02Page));
+                            break;
+                        case "giamgia":
+                            break;
+                        case "danhmuc":
+                            break;
+                        case "thucdon":
+                            break;
+                        case "hoantat":
+                            IsVisibleFrameMenuBindProp = false;
+                            IsVisibleFrameBillBindProp = true;
+                            break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitNavigateCommand()
+        {
+            NavigateCommand = new DelegateCommand<object>(OnNavigate);
+            NavigateCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion

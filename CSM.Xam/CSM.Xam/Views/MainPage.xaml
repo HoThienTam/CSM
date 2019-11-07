@@ -149,7 +149,7 @@
                 </dataControls:RadListView>
 
                   <!--Danh sach khu vuc ban-->  
-                <dataControls:RadListView
+                <!--<dataControls:RadListView
                     Grid.Row="1"
                     Margin="{StaticResource CommonThickness}"
                     IsVisible="True"
@@ -189,7 +189,7 @@
                             </listView:ListViewTemplateCell>
                         </DataTemplate>
                     </dataControls:RadListView.ItemTemplate>
-                </dataControls:RadListView>
+                </dataControls:RadListView>-->
             </Grid>
 
               <!--Frame thuc don trai-->
@@ -226,7 +226,7 @@
 
               <!--Frame bill phai-->  
             <tlrPrimitives:RadBorder BackgroundColor="{StaticResource BackgroundColor}"
-                BorderThickness="0.5,0,0,0"
+                BorderThickness="1,0,0,0"
                 BorderColor="{StaticResource SubColor}"
                 Grid.Column="1"
                 IsVisible="{Binding IsVisibleFrameBillBindProp}">
@@ -251,7 +251,7 @@
                         <Label Style="{StaticResource Bill_Table}" Text="Chọn bàn" />
 
                           <!--Seperate line-->  
-                        <BoxView Grid.Column="1" WidthRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
+                        <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
                           <!--Right icon-->  
 
                         <StackLayout Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
@@ -262,7 +262,7 @@
                     </Grid>
 
                       <!--Seperate line-->  
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
                       <!--Danh sach item tren bill--> 
                     <ScrollView Grid.Row="2" BackgroundColor="{StaticResource BackgroundColor}">
@@ -306,7 +306,7 @@
             </tlrPrimitives:RadBorder>
 
               <!--Frame thu vien trai-->
-            <tlrPrimitives:RadBorder IsVisible="{Binding IsVisibleFrameThuVienBindProp}" BorderThickness="0,0,0.5,0" BorderColor="{StaticResource SubColor}">
+            <tlrPrimitives:RadBorder IsVisible="{Binding IsVisibleFrameThuVienBindProp}" BorderThickness="0,0,1,0" BorderColor="{StaticResource SubColor}">
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -325,12 +325,12 @@
                           <!--Back icon-->  
                         <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
 
-                          <!--Right text-->  
-                        <Label Text="Chỉnh sửa" Style="{StaticResource CommonHeaderRightText}"/>
+                          <!--Right text-->
+                        <mr:Label Text="Chỉnh sửa" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="chinhsua"/>
                     </Grid>
 
                       <!--Seperate line-->  
-                    <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
+                    <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
                       <!--List item--> 
                     <dataControls:RadListView
@@ -363,6 +363,58 @@
                 </Grid>
             </tlrPrimitives:RadBorder>
 
+            <!-- Frame thu vien phai -->
+            <StackLayout Spacing="{StaticResource LargeThickness}" 
+                         VerticalOptions="Center" Grid.Column="1" 
+                         IsVisible="{Binding IsVisibleFrameMenuBindProp}"
+                         Margin="{StaticResource CommonRightThickness}">
+                
+                <tlrPrimitives:RadBorder 
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton 
+                        Text="Tạo mặt hàng"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="mathang" />
+                </tlrPrimitives:RadBorder>
+                
+                <tlrPrimitives:RadBorder 
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton 
+                        Text="Tạo giảm giá"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="giamgia"/>
+                </tlrPrimitives:RadBorder>
+
+                <tlrPrimitives:RadBorder 
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton 
+                        Text="Thêm/Chỉnh sửa danh mục"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="danhmuc" />
+                </tlrPrimitives:RadBorder>
+
+                <tlrPrimitives:RadBorder 
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton 
+                        Text="Thêm thực đơn"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="thucdon" />
+                </tlrPrimitives:RadBorder>
+
+                <tlrPrimitives:RadBorder 
+                    HorizontalOptions="FillAndExpand"
+                    Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton 
+                        Text="Hoàn tất chỉnh sửa"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="hoantat" />
+                </tlrPrimitives:RadBorder>
+            </StackLayout>
+            
             <!--Menu duoi-->
             <Grid
                 BackgroundColor="{StaticResource BottomMenuColor}"
@@ -389,7 +441,7 @@
                 <!--Hoa don-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
                     Grid.Column="1" 
-                    TappedCommand="{Binding TapMenuCommand, Mode=OneWay}"
+                    TappedCommand="{Binding SelectViewCommand, Mode=OneWay}"
                     TappedCommandParameter="hoadon">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -422,7 +474,7 @@
                 <!--Thu Vien-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
                     Grid.Column="3"
-                    TappedCommand="{Binding TapMenuCommand, Mode=OneWay}"
+                    TappedCommand="{Binding SelectViewCommand, Mode=OneWay}"
                     TappedCommandParameter="thuvien">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />

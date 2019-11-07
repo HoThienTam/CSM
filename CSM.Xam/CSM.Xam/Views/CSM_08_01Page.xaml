@@ -32,7 +32,7 @@
         </Grid>
 
         <!--Seperate line-->
-        <BoxView Grid.Row="1" HeightRequest="0.5" BackgroundColor="{StaticResource SubColor}"/>
+        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
         <Grid Style="{StaticResource CommonWrapper}" Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
             <Grid.RowDefinitions>

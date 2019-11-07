@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
     xmlns="http://xamarin.com/schemas/2014/forms"   
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://xamarin.com/schemas/2014/forms/design"
@@ -13,7 +12,7 @@
     NavigationPage.HasNavigationBar="False"
     mc:Ignorable="d"
     x:Class="CSM.Xam.Views.CSM_10Page"
-    Padding="20">
+    Padding="{StaticResource LargeThickness}">
     <ContentPage.Resources>
         <x:Double x:Key="CommonHeight">100</x:Double>
         <Color x:Key="CommonColor">#87CEFA</Color>
@@ -38,16 +37,15 @@
                     <Label Style="{StaticResource CommonHeaderText}"
                            Text="{Binding TotalMoneyBindProp, StringFormat='Thanh toán - {0:C}'}" />
                     <!--Back icon-->
-                    <mr:Grid TappedCommand="{Binding GoBackCommand}">
-                        <Label Style="{StaticResource CommonHeaderLeftIcon}"
-                               Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
-                    </mr:Grid>
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"
+                              Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" 
+                              TappedCommand="{Binding GoBackCommand}"/>
                     <!--Right text-->
                     <Label Style="{StaticResource CommonHeaderRightText}" />
                 </Grid>
                 <BoxView Grid.Row="1"
                          BackgroundColor="{StaticResource SubColor}"
-                         HeightRequest="0.5" />
+                         HeightRequest="1" />
                 <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
                     <ScrollView.Triggers>
                         <DataTrigger TargetType="ScrollView" Binding="{Binding IsCompletedBindProp}" Value="True">
@@ -109,13 +107,13 @@
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
                         </Grid>
-                        <Grid Grid.Row="1"
-                             Style="{StaticResource CommonWrapper}"
-                             Margin="{StaticResource CommonThickness}">
+                        <Grid
+                            Grid.Row="1" Padding="2"
+                            BackgroundColor="{StaticResource MainColor}"
+                            ColumnSpacing="2" RowSpacing="2"
+                            Margin="{StaticResource CommonThickness}">
                             <!--  Số 7  -->
                             <tlrInput:RadButton 
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="7">
                                 <tlrInput:RadButton.CommandParameter>
@@ -125,8 +123,6 @@
                             <!--  Số 8  -->
                             <tlrInput:RadButton 
                                 Grid.Column="1"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,2,2,2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="8">
                                 <tlrInput:RadButton.CommandParameter>
@@ -136,8 +132,6 @@
                             <!--  Số 9  -->
                             <tlrInput:RadButton 
                                 Grid.Column="2"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="9">
                                 <tlrInput:RadButton.CommandParameter>
@@ -147,9 +141,6 @@
                             <!--  Delete 1 số  -->
                             <tlrInput:RadButton 
                                 Grid.RowSpan="2" Grid.Column="3"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="2,2,2,1"
-                                FontSize="Header"
                                 VerticalContentAlignment="Center"
                                 Command="{Binding TapNumberCommand}"
                                 CommandParameter="X"
@@ -157,8 +148,6 @@
                             <!--  Số 4  -->
                             <tlrInput:RadButton 
                                 Grid.Row="1"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="2,0,2,2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="4">
                                 <tlrInput:RadButton.CommandParameter>
@@ -168,8 +157,6 @@
                             <!--  Số 5  -->
                             <tlrInput:RadButton 
                                 Grid.Row="1" Grid.Column="1"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,0,2,2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="5">
                                 <tlrInput:RadButton.CommandParameter>
@@ -180,8 +167,6 @@
                             <!--  Số 6  -->
                             <tlrInput:RadButton 
                                 Grid.Row="1" Grid.Column="2"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,0,0,2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="6">
                                 <tlrInput:RadButton.CommandParameter>
@@ -191,9 +176,7 @@
                             <!--  Số 1  -->
                             <tlrInput:RadButton 
                                 Grid.Row="2"
-                                Style="{StaticResource Number_Button}"
                                 Command="{Binding TapNumberCommand}"
-                                BorderThickness="2,1,2,0"
                                 Text="1">
                                 <tlrInput:RadButton.CommandParameter>
                                     <x:Decimal>1</x:Decimal>
@@ -202,8 +185,6 @@
                             <!--  Số 2  -->
                             <tlrInput:RadButton 
                                 Grid.Row="2" Grid.Column="1"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,1,2,0"
                                 Command="{Binding TapNumberCommand}"
                                 Text="2">
                                 <tlrInput:RadButton.CommandParameter>
@@ -213,8 +194,6 @@
                             <!--  Số 3  -->
                             <tlrInput:RadButton 
                                 Grid.Row="2" Grid.Column="2"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,1,0,0"
                                 Command="{Binding TapNumberCommand}"
                                 Text="3">
                                 <tlrInput:RadButton.CommandParameter>
@@ -225,17 +204,12 @@
                             <tlrInput:RadButton 
                                 Grid.Row="2" Grid.RowSpan="2"
                                 Grid.Column="3"
-                                Style="{StaticResource Number_Button}"
-                                FontSize="Header" BorderThickness="2,1,2,2"
                                 Command="{Binding TapNumberCommand}"
-                                VerticalContentAlignment="Center"
                                 CommandParameter="C"
                                 Text="C" />
                             <!--  Số 0  -->
                             <tlrInput:RadButton 
                                 Grid.Row="3"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="2"
                                 Command="{Binding TapNumberCommand}"
                                 Text="0">
                                 <tlrInput:RadButton.CommandParameter>
@@ -245,8 +219,6 @@
                             <!--  Số 00  -->
                             <tlrInput:RadButton 
                                 Grid.Row="3" Grid.Column="1"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,2,2,2"
                                 Command="{Binding TapNumberCommand}"
                                 CommandParameter="00"
                                 Text="00" />
@@ -254,8 +226,6 @@
                             <!--  Số 000  -->
                             <tlrInput:RadButton 
                                 Grid.Row="3" Grid.Column="2"
-                                Style="{StaticResource Number_Button}"
-                                BorderThickness="0,2"
                                 Command="{Binding TapNumberCommand}"
                                 CommandParameter="000"
                                 Text="000"/>
@@ -264,14 +234,10 @@
                         <!--  Xác nhận thanh toán  -->
                         <tlrPrimitives:RadBorder 
                             Grid.Row="2"
-                            Style="{StaticResource CommonButtonBorder}"
-                            Padding="{StaticResource CommonHorizontalThickness}">
+                            Style="{StaticResource CommonButtonBorder}">
                             <tlrInput:RadButton 
                                 Text="Xác nhận thanh toán"
-                                FontSize="Large"
-                                Command="{Binding CompeletePaymentCommand}"
-                                BackgroundColor="{StaticResource BackgroundColor}"
-                                TextColor="{StaticResource MainColor}" />
+                                Command="{Binding CompeletePaymentCommand}"/>
                         </tlrPrimitives:RadBorder>
                     </Grid>
                 </ScrollView>
@@ -317,14 +283,10 @@
                             </StackLayout>
                         </tlrPrimitives:RadBorder>
                         <tlrPrimitives:RadBorder 
-                            Style="{StaticResource CommonButtonBorder}"
-                            Padding="{StaticResource CommonHorizontalThickness}">
+                            Style="{StaticResource CommonButtonBorder}">
                             <tlrInput:RadButton 
                                 Text="Hoàn tất"
-                                FontSize="Large"   
-                                Command="{Binding CompeletePaymentCommand}"
-                                BackgroundColor="{StaticResource BackgroundColor}"
-                                TextColor="{StaticResource MainColor}" />
+                                Command="{Binding CompeletePaymentCommand}" />
                         </tlrPrimitives:RadBorder>
                     </StackLayout>
                 </ScrollView>
