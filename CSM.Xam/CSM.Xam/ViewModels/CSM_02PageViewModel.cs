@@ -1,6 +1,8 @@
-﻿using CSM.Xam.Models;
+﻿using CSM.EFCore;
+using CSM.Xam.Models;
 using CSM.Xam.Views;
 using Prism.Commands;
+using Prism.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +15,21 @@ namespace CSM.Xam.ViewModels
         {
 
         }
+
+        #region Bind Property
+
+        #region CategoryNameBindProp
+        private string _CategoryNameBindProp = string.Empty;
+        public string CategoryNameBindProp
+        {
+            get { return _CategoryNameBindProp; }
+            set { SetProperty(ref _CategoryNameBindProp, value); }
+        }
+        #endregion
+
+        #endregion
+
+        #region Command
 
         #region TapCategoryCommand
 
@@ -50,5 +67,31 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #endregion
+
+        #region Navigate
+        public async override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            switch (parameters.GetNavigationMode())
+            {
+                case NavigationMode.Back:
+                    if (parameters.ContainsKey(Keys.CATEGORY))
+                    {
+                        CategoryNameBindProp = parameters[Keys.CATEGORY] as string;
+                    }
+                    break;
+                case NavigationMode.New:
+                    break;
+                case NavigationMode.Forward:
+                    break;
+                case NavigationMode.Refresh:
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
     }
 }

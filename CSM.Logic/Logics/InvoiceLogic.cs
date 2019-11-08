@@ -52,13 +52,13 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<Invoice> CreateAsync(Invoice vm, bool saveChange = true)
+        public async Task<Invoice> CreateAsync(Invoice obj, bool saveChange = true)
         {
             var item = new Invoice
             {
-                Id = vm.Id,
+                Id = obj.Id,
                 CreationDate = DateTime.Now.ToString("HH:mm:ss"),
-                TotalPrice = vm.TotalPrice,
+                TotalPrice = obj.TotalPrice,
                 Creator = "Tam",
                 Status = 0,
                 FkStore = "fg",
@@ -87,9 +87,9 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<Invoice> UpdateAsync(Invoice vm, bool saveChange = true)
+        public async Task<Invoice> UpdateAsync(Invoice obj, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == vm.Id);
+            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {

@@ -5,11 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
         xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+        xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+        xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
+        xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
+        xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
         mc:Ignorable="d" x:Class="CSM.Xam.Views.CSM_02_01Page"
+        xmlns:lcModels="clr-namespace:CSM.Xam.Models" x:Name="csm_02_01Page"
         NavigationPage.HasNavigationBar="False"
         Padding="{StaticResource LargeThickness}">
     <ContentPage.Content>
-        <Grid Style="{StaticResource CommonWraper}"
+        <Grid Style="{StaticResource CommonWrapper}"
                 Margin="{StaticResource CommonThickness}">
             <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
                 <Grid Style="{StaticResource CommonWrapper}">
@@ -42,7 +47,8 @@
                             BackgroundColor="{StaticResource SubColor}"
                             HeightRequest="1" />
 
-                    <Grid Grid.Row="2" Style="{StaticResource CommonWrapper}">
+                    <Grid Grid.Row="2" Style="{StaticResource CommonWrapper}"
+                            Padding="{StaticResource LargeFrameThickness}">
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -52,11 +58,11 @@
                         <tlrPrimitives:RadBorder
                                 Style="{StaticResource CommonBorder}">
 
-                            <dataControls:RadListView
-                                    ItemsSource="{Binding ListCategory, Mode=OneWay}">
+                            <dataControls:RadListView SelectionMode="None"                                                     
+                                    ItemsSource="{Binding ListCategoryBindProp, Mode=OneWay}">
                                 <dataControls:RadListView.LayoutDefinition>
                                     <listView:ListViewLinearLayout
-                                            VerticalItemSpacing="1" />
+                                            VerticalItemSpacing="2" />
                                 </dataControls:RadListView.LayoutDefinition>
                                 <dataControls:RadListView.Commands>
                                     <commands:ListViewUserCommand
@@ -67,57 +73,36 @@
                                     <DataTemplate>
                                         <listView:ListViewTemplateCell>
                                             <listView:ListViewTemplateCell.View>
-                                                <Grid
-                                                        Style="{StaticResource ListThuVienTraiItem}">
+                                                <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition
-                                                                Width="Auto" />
-                                                        <ColumnDefinition
-                                                                Width="*" />
-                                                        <ColumnDefinition
-                                                                Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <Grid.Triggers>
-                                                        <DataTrigger
-                                                                Binding="{Binding IsCheckedNew, Mode=OneWay}"
-                                                                TargetType="Grid"
-                                                                Value="True">
-                                                            <Setter
-                                                                    Property="BackgroundColor"
-                                                                    Value="{Binding ColorBindable, Source={StaticResource ColorBinableResource_MenuBottom_BackgroundSelected}, Mode=OneWay}" />
-                                                        </DataTrigger>
-                                                    </Grid.Triggers>
-
-                                                    <BoxView
-                                                            Style="{StaticResource ListThuVienTraiItem_LeftBoxview}" />
-                                                    <Label
-                                                            Text="{Binding LeftTextNew, Mode=OneWay}"
-                                                            Style="{StaticResource ListThuVienTraiItem_LeftText}" />
+                                                    <BoxView BackgroundColor="{StaticResource SubColor}" />
+                                                    <Label Text="a" Style="{StaticResource CommonShortText}" />
 
                                                     <tlrInput:RadEntry
-                                                            Grid.Column="1"
-                                                            Margin="{StaticResource CommonThicknessExceptRight}"
-                                                            VerticalOptions="Center"
-                                                            WatermarkText="Tên danh mục"
-                                                            Text="{Binding MainTextNew, Mode=TwoWay}"
-                                                            StyleClass="TelerikTheme"
-                                                            IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference POS_04_05}, Mode=OneWay}" />
-                                                    <Label
-                                                            Text="{Binding MainTextNew, Mode=OneWay}"
-                                                            Style="{StaticResource ListThuVienTraiItem_MainText}"
-                                                            IsVisible="{Binding BindingContext.IsNotEditMode, Source={x:Reference POS_04_05}, Mode=OneWay}" />
+                                                        Grid.Column="1"
+                                                        IsVisible="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                        Style="{StaticResource CommonLeftEntry}"
+                                                        WatermarkText="Tên danh mục"
+                                                        Text="{Binding CategoryName, Mode=TwoWay}"/>
 
-                                                    <mr:Grid Grid.Column="2"
-                                                            Margin="{StaticResource CommonThicknessLeft}"
-                                                            IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference POS_04_05}, Mode=OneWay}"
-                                                            TappedCommand="{Binding BindingContext.DeleteCategoryCommand, Source={x:Reference POS_04_05}, Mode=OneWay}"
-                                                            TappedCommandParameter="{Binding}">
-                                                        <Label
-                                                                Text="{x:Static lcModels:FontAwesomePro5Solid.ThucDonItem_Xoa}"
-                                                                TextColor="Red"
-                                                                Style="{StaticResource CommonLabelIcon}" />
-                                                    </mr:Grid>
+                                                    <Label Grid.Column="1"
+                                                           IsVisible="False"
+                                                           Style="{StaticResource CommonLeftText}"
+                                                           Text="{Binding CategoryName, Mode=TwoWay}"/>
+                                                                                                        
+                                                    <mr:Label Grid.Column="2"
+                                                           IsVisible="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                           Margin="{StaticResource CommonRightThickness}"
+                                                           TappedCommand="{Binding BindingContext.DeleteCategoryCommand, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                           TappedCommandParameter="{Binding}"
+                                                           Text="{x:Static lcModels:FontAwesomeIcon.Trash}"
+                                                           TextColor="Red"
+                                                           Style="{StaticResource CommonLabelIcon}" />
 
                                                 </Grid>
                                             </listView:ListViewTemplateCell.View>
@@ -127,30 +112,22 @@
                             </dataControls:RadListView>
                         </tlrPrimitives:RadBorder>
 
+                        <!-- Them moi -->
                         <tlrPrimitives:RadBorder Grid.Row="1"
-                                Margin="{StaticResource CommonThicknessTop}"
-                                BorderColor="{StaticResource AccentColor1}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource CommonThicknessCornerRadius}">
-                            <Grid Padding="{StaticResource CommonThicknessAll}"
-                                    ColumnSpacing="0" RowSpacing="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <tlrInput:RadEntry VerticalOptions="Center"
+                                Margin="{StaticResource CommonVerticalThickness}"
+                                Style="{StaticResource CommonBorder}">
+                            <StackLayout Orientation="Horizontal">
+                                <tlrInput:RadEntry
+                                        Style="{StaticResource CommonLeftEntry}"
                                         WatermarkText="Tên danh mục thêm mới"
-                                        Text="{Binding NewCategoryName, Mode=TwoWay}"
-                                        StyleClass="TelerikTheme" />
-                                <mr:Grid Grid.Column="1"
-                                        Margin="{StaticResource CommonThicknessLeft}"
-                                        TappedCommand="{Binding AddCategoryCommand, Mode=OneWay}">
-                                    <Label
-                                            Text="{x:Static lcModels:FontAwesomePro5Solid.ThucDonItem_Them}"
-                                            Style="{StaticResource CommonLabelIcon}" />
-                                </mr:Grid>
-                            </Grid>
+                                        Text="{Binding NewCategoryNameBindProp, Mode=TwoWay}" />
+
+                                <mr:Label
+                                    TappedCommand="{Binding AddNewCategoryCommand}"
+                                    Margin="{StaticResource CommonRightThickness}"
+                                    Text="{x:Static lcModels:FontAwesomeIcon.Plus}"
+                                    Style="{StaticResource CommonLabelIcon}" />
+                            </StackLayout>
                         </tlrPrimitives:RadBorder>
                     </Grid>
                 </Grid>

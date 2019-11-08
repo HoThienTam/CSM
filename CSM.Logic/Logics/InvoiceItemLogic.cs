@@ -52,17 +52,17 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<InvoiceItem> CreateAsync(InvoiceItem vm, bool saveChange = true)
+        public async Task<InvoiceItem> CreateAsync(InvoiceItem obj, bool saveChange = true)
         {
             var item = new InvoiceItem
             {
-              Id = vm.Id,
+              Id = obj.Id,
               CreationDate = DateTime.Now.ToString("HH:mm:ss"),
               Creator = "Tam",
-              FkInvoice = vm.FkInvoice,
-              FkItem = vm.FkItem,
+              FkInvoice = obj.FkInvoice,
+              FkItem = obj.FkItem,
               IsDeleted = (int)IsDelete.Normal,
-              Quantity = vm.Quantity
+              Quantity = obj.Quantity
             };
 
             _DbContext.InvoiceItem.Add(item);
@@ -82,9 +82,9 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<InvoiceItem> UpdateAsync(InvoiceItem vm, bool saveChange = true)
+        public async Task<InvoiceItem> UpdateAsync(InvoiceItem obj, bool saveChange = true)
         {
-            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == vm.Id);
+            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {

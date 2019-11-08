@@ -7,13 +7,23 @@ namespace CSM.Xam.Models
     public class Keys
     {
         /// <summary>
-        /// List Item In Bill
+        /// Truyen cac item trong bill
         /// </summary>
-        public static string BILL = "BILL";
+        public const string BILL = "BILL";
 
         /// <summary>
-        /// Total Price
+        /// Truyen tong gia tien cua bill
         /// </summary>
-        public static string TOTALPRICE = "TOTALPRICE";
+        public const string TOTAL_PRICE = "TOTAL_PRICE";
+
+        /// <summary>
+        /// Chuyen trang voi che do chinh sua
+        /// </summary>
+        public const string IS_EDITING = "IS_EDITING";
+
+        /// <summary>
+        /// Truyen category name
+        /// </summary>
+        public const string CATEGORY = "CATEGORY";
     }
 }

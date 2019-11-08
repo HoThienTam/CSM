@@ -220,7 +220,7 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    TotalMoneyBindProp = (double) (parameters[Keys.TOTALPRICE] as double?);
+                    TotalMoneyBindProp = (double) (parameters[Keys.TOTAL_PRICE] as double?);
                     ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<ItemExtended>;
                     break;
                 case NavigationMode.Forward:

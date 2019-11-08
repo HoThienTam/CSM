@@ -283,6 +283,11 @@ namespace CSM.Xam.ViewModels
                         case "giamgia":
                             break;
                         case "danhmuc":
+
+                            var param = new NavigationParameters();
+                            param.Add(Keys.IS_EDITING, true); //Chinh sua
+
+                            await NavigationService.NavigateAsync(nameof(CSM_02_01Page), param);
                             break;
                         case "thucdon":
                             break;
@@ -392,7 +397,7 @@ namespace CSM.Xam.ViewModels
                 // Tao param de pass data sang trang khac
                 var param = new NavigationParameters();
                 param.Add(Keys.BILL, ListItemInBillBindProp);
-                param.Add(Keys.TOTALPRICE, TotalPriceBindProp);
+                param.Add(Keys.TOTAL_PRICE, TotalPriceBindProp);
 
                 await NavigationService.NavigateAsync(nameof(CSM_10Page), param);
             }

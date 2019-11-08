@@ -102,10 +102,16 @@
         <Color x:Key="SelectedColor">#e67e22</Color>
         <Color x:Key="SelectedBottomMenuColor">#7f8c8d</Color>
 
+        <tlrInput:BorderStyle x:Key="EntryBorderStyle" BorderThickness="0"/>
+        
         <!--  Common item -->
         <Style TargetType="Label">
             <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="Medium" />
+        </Style>
+        
+        <Style TargetType="tlrInput:RadEntry">
+            <Setter Property="BorderStyle" Value="{StaticResource EntryBorderStyle}" />
         </Style>
 
         <Style TargetType="tlrInput:RadButton">
@@ -198,6 +204,12 @@
             <Setter Property="BorderColor" Value="{StaticResource MainColor}" />
         </Style>
 
+        <Style x:Key="CommonShortText" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+
         <Style x:Key="CommonRightText" TargetType="Label">
             <Setter Property="HorizontalOptions" Value="EndAndExpand" />
             <Setter Property="HorizontalTextAlignment" Value="End" />
@@ -205,6 +217,15 @@
             <Setter Property="Margin"
                     Value="{StaticResource CommonHorizontalThickness}" />
         </Style>
+
+        <Style x:Key="CommonLeftEntry" TargetType="tlrInput:RadEntry">
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Margin"
+                    Value="{StaticResource CommonHorizontalThickness}" />
+        </Style>
+
         <Style x:Key="CommonRightEntry" TargetType="tlrInput:RadEntry">
             <Setter Property="HorizontalOptions" Value="EndAndExpand" />
             <Setter Property="HorizontalTextAlignment" Value="End" />

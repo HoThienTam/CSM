@@ -78,5 +78,15 @@ namespace CSM.Xam.Models
         /// Icon Arrow-Left
         /// </summary>
         public const string ArrowLeft = "\uf060";
+
+        /// <summary>
+        /// Icon Plus
+        /// </summary>
+        public const string Plus = "\uf067";
+
+        /// <summary>
+        /// Icon Plus
+        /// </summary>
+        public const string PlusCircle = "\uf055";
     }
 }
