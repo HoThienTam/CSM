@@ -10,6 +10,7 @@
         xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
         xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
         mc:Ignorable="d" x:Class="CSM.Xam.Views.CSM_02_01Page"
+        xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
         xmlns:lcModels="clr-namespace:CSM.Xam.Models" x:Name="csm_02_01Page"
         NavigationPage.HasNavigationBar="False"
         Padding="{StaticResource LargeThickness}">
@@ -39,8 +40,9 @@
                                 Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}"
                                 TappedCommand="{Binding GoBackCommand}" />
                         <!--Right text-->
-                        <Label Style="{StaticResource CommonHeaderRightText}"
-                                Text="Lưu" />
+                        <mr:Label Style="{StaticResource CommonHeaderRightText}"
+                                  TappedCommand="{Binding SaveCommand}"
+                                  Text="Lưu" />
                     </Grid>
 
                     <BoxView Grid.Row="1"
@@ -58,12 +60,15 @@
                         <tlrPrimitives:RadBorder
                                 Style="{StaticResource CommonBorder}">
 
-                            <dataControls:RadListView SelectionMode="None"                                                     
+                            <dataControls:RadListView SelectionMode="Single"                                               
                                     ItemsSource="{Binding ListCategoryBindProp, Mode=OneWay}">
                                 <dataControls:RadListView.LayoutDefinition>
                                     <listView:ListViewLinearLayout
                                             VerticalItemSpacing="2" />
                                 </dataControls:RadListView.LayoutDefinition>
+                                <dataControls:RadListView.SelectedItemStyle>
+                                    <listView:ListViewItemStyle BackgroundColor="{StaticResource SelectedColor}"/>
+                                </dataControls:RadListView.SelectedItemStyle>
                                 <dataControls:RadListView.Commands>
                                     <commands:ListViewUserCommand
                                             Command="{Binding SelectCategoryCommand, Mode=OneWay}"
@@ -85,16 +90,15 @@
 
                                                     <tlrInput:RadEntry
                                                         Grid.Column="1"
-                                                        IsVisible="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                        IsEnabled="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                         Style="{StaticResource CommonLeftEntry}"
                                                         WatermarkText="Tên danh mục"
-                                                        Text="{Binding CategoryName, Mode=TwoWay}"/>
+                                                        Text="{Binding CategoryName, Mode=TwoWay}">
+                                                        <tlrInput:RadEntry.Behaviors>
+                                                            <b:EventToCommandBehavior Command="{Binding BindingContext.TextChangedCommand, Source={x:Reference csm_02_01Page}}" CommandParameter="{Binding}" EventName="TextChanged"/>
+                                                        </tlrInput:RadEntry.Behaviors>
+                                                    </tlrInput:RadEntry>
 
-                                                    <Label Grid.Column="1"
-                                                           IsVisible="False"
-                                                           Style="{StaticResource CommonLeftText}"
-                                                           Text="{Binding CategoryName, Mode=TwoWay}"/>
-                                                                                                        
                                                     <mr:Label Grid.Column="2"
                                                            IsVisible="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                            Margin="{StaticResource CommonRightThickness}"

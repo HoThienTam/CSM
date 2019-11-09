@@ -87,6 +87,8 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Category.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            item.CategoryName = obj.CategoryName;
+
             try
             {
                 if (saveChange)

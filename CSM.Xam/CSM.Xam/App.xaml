@@ -7,6 +7,7 @@
         x:Class="CSM.Xam.App">
     <Application.Resources>
         <!-- Application resource dictionary -->
+
         <!-- Icon -->
         <OnPlatform x:Key="FontAwesomeBrands" x:TypeArguments="x:String">
             <On Platform="Android"
@@ -208,6 +209,7 @@
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="TextColor" Value="{StaticResource BackgroundColor}" />
         </Style>
 
         <Style x:Key="CommonRightText" TargetType="Label">
