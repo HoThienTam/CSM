@@ -322,18 +322,27 @@
                           <!--Title-->  
                         <Label Style="{StaticResource CommonHeaderText}" Text="Tất cả mặt hàng"/>
                         
-                          <!--Back icon-->  
-                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+                          <!--Back icon-->
+                        <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"
+                                  Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" 
+                                  TappedCommand="{Binding GoBackCategoryCommand}">
+                            <mr:Label.Triggers>
+                                <DataTrigger TargetType="mr:Label" Binding="{Binding IsVisibleListItemBindProp}" Value="False">
+                                    <Setter Property="Text" Value=""/>
+                                </DataTrigger>
+                            </mr:Label.Triggers>
+                        </mr:Label>
 
-                          <!--Right text-->
+                        <!--Right text-->
                         <mr:Label Text="Chỉnh sửa" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="chinhsua"/>
                     </Grid>
 
                       <!--Seperate line-->  
                     <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
-                      <!--List item--> 
+                      <!--List item --> 
                     <dataControls:RadListView
+                        IsVisible="{Binding IsVisibleListItemBindProp}"
                         Margin="{StaticResource CommonThickness}"
                         Grid.Row="2"
                         ItemsSource="{Binding ListItemBindProp, Mode=OneWay}">
@@ -354,6 +363,37 @@
                                             <!--Icon bao thieu hang-->
                                             <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
                                         </mr:StackLayout>
+                                    </listView:ListViewTemplateCell.View>
+                                </listView:ListViewTemplateCell>
+                            </DataTemplate>
+                        </dataControls:RadListView.ItemTemplate>
+                    </dataControls:RadListView>
+
+                    <!-- List category -->
+                    <dataControls:RadListView
+                        Margin="{StaticResource CommonThickness}"
+                        IsVisible="{Binding IsVisibleListCategoryBindProp}"
+                        Grid.Row="2"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding ListCategoryBindProp, Mode=OneWay}">
+                        <dataControls:RadListView.LayoutDefinition>
+                            <listView:ListViewLinearLayout VerticalItemSpacing="1" />
+                        </dataControls:RadListView.LayoutDefinition>
+                        <dataControls:RadListView.Commands>
+                            <commands:ListViewUserCommand
+                                            Command="{Binding TapCategoryCommand, Mode=OneWay}"
+                                            Id="ItemTap" />
+                        </dataControls:RadListView.Commands>
+                        <dataControls:RadListView.ItemTemplate>
+                            <DataTemplate>
+                                <listView:ListViewTemplateCell>
+                                    <listView:ListViewTemplateCell.View>
+                                        <StackLayout Orientation="Horizontal">
+                                            <!--Anh mat hang-->
+                                            <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                            <!--Ten mat hang-->
+                                            <Label Text="{Binding CategoryName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                        </StackLayout>
                                     </listView:ListViewTemplateCell.View>
                                 </listView:ListViewTemplateCell>
                             </DataTemplate>

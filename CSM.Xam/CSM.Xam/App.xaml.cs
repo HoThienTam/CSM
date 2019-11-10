@@ -8,6 +8,8 @@ using CSM.Xam.Models;
 using System.IO;
 using System;
 using System.Reflection;
+using System.Threading;
+using System.Globalization;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace CSM.Xam
@@ -28,6 +30,8 @@ namespace CSM.Xam
         protected override async void OnInitialized()
         {
             InitializeComponent();
+
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("vi-VN");
 
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data.db");
             DbConnectionString = $"Data Source={dbPath};";

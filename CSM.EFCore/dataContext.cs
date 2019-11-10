@@ -139,7 +139,9 @@ namespace CSM.EFCore
 
                 entity.Property(e => e.Creator).IsRequired();
 
-                entity.Property(e => e.FkCategory).HasColumnName("fk_Category");
+                entity.Property(e => e.FkCategory)
+                    .IsRequired()
+                    .HasColumnName("fk_Category");
 
                 entity.Property(e => e.FkStore)
                     .IsRequired()

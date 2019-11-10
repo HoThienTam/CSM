@@ -7,7 +7,6 @@ namespace CSM.Xam.Models
 {
     public class ItemExtended : Item
     {
-        public string PriceName { get; set; }
         public double Quantity { get; set; }
     }
 }

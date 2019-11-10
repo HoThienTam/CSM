@@ -37,8 +37,9 @@
                                 Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}"
                                 TappedCommand="{Binding GoBackCommand}" />
                         <!--Right text-->
-                        <Label Style="{StaticResource CommonHeaderRightText}"
-                                Text="Lưu" />
+                        <mr:Label Style="{StaticResource CommonHeaderRightText}"
+                                  TappedCommand="{Binding SaveCommand}"
+                                  Text="Lưu" />
                     </Grid>
 
                     <BoxView Grid.Row="1"
@@ -82,7 +83,7 @@
                                             Style="{StaticResource CommonLeftText}"/>
                                         <tlrInput:RadEntry
                                             Style="{StaticResource CommonRightEntry}"
-                                            Text="{Binding NameItemBindProp, Mode=TwoWay}"
+                                            Text="{Binding ItemNameBindProp, Mode=TwoWay}"
                                             WatermarkText="Tên mặt hàng" />
                                     </StackLayout>
                                 </tlrPrimitives:RadBorder>
@@ -101,7 +102,7 @@
 
                                         <tlrInput:RadEntry
                                             IsEnabled="False"
-                                            Text="{Binding CategoryNameBindProp, Mode=TwoWay}"
+                                            Text="{Binding CategoryBindProp.CategoryName, Mode=TwoWay}"
                                             Style="{StaticResource CommonRightEntry}"
                                             WatermarkText="Chọn danh mục" />
 
@@ -122,8 +123,10 @@
                                         <Label Style="{StaticResource CommonLeftText}"
                                                 Text="Giá niêm yết"
                                                 WidthRequest="200" />
-                                        <Label Text="1000d"
-                                               Style="{StaticResource CommonRightText}"/>
+                                    <tlrInput:RadEntry
+                                        Text="{Binding PriceBindProp, Converter={StaticResource DoubleToCurrencyConverter}, Mode=TwoWay}"
+                                        Keyboard="Numeric"
+                                        Style="{StaticResource CommonRightEntry}"/>
                                     </StackLayout>
                                 </tlrPrimitives:RadBorder>
                             <StackLayout Spacing="0">

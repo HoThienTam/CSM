@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "Data Source=E:\BigProjects\CSM\CSM.Xam\CSM.Xam\Files\data.db;" Microsoft.EntityFrameworkCore.Sqlite -force

@@ -12,7 +12,7 @@ namespace CSM.EFCore
         public string FkStore { get; set; }
         public string ItemName { get; set; }
         public string ItemImage { get; set; }
-        public long FkCategory { get; set; }
+        public string FkCategory { get; set; }
         public string FkWeightUnit { get; set; }
         public long ManagementMethod { get; set; }
         public long IsChargedByWeight { get; set; }

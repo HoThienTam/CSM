@@ -338,7 +338,7 @@ namespace CSM.Xam.ViewModels
                         {
                             //truyen ten category ve trang tao item
                             var param = new NavigationParameters();
-                            param.Add(Keys.CATEGORY, SelectedCategoryBindProp.CategoryName);
+                            param.Add(Keys.CATEGORY, SelectedCategoryBindProp);
 
                             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                             await NavigationService.GoBackAsync(param);
@@ -363,7 +363,7 @@ namespace CSM.Xam.ViewModels
 
                         //truyen ten category ve trang tao item
                         var param = new NavigationParameters();
-                        param.Add(Keys.CATEGORY, newCate.CategoryName);
+                        param.Add(Keys.CATEGORY, newCate);
 
                         await NavigationService.GoBackAsync(param);
                     }

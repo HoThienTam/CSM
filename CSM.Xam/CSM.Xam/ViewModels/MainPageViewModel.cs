@@ -8,6 +8,7 @@ using CSM.EFCore;
 using CSM.Logic;
 using System.Linq;
 using CSM.Xam.Views;
+using Telerik.XamarinForms.DataControls.ListView.Commands;
 
 namespace CSM.Xam.ViewModels
 {
@@ -76,6 +77,24 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsVisibleListCategoryBindProp
+        private bool _IsVisibleListCategoryBindProp = true;
+        public bool IsVisibleListCategoryBindProp
+        {
+            get { return _IsVisibleListCategoryBindProp; }
+            set { SetProperty(ref _IsVisibleListCategoryBindProp, value); }
+        }
+        #endregion
+
+        #region IsVisibleListItemBindProp
+        private bool _IsVisibleListItemBindProp = false;
+        public bool IsVisibleListItemBindProp
+        {
+            get { return _IsVisibleListItemBindProp; }
+            set { SetProperty(ref _IsVisibleListItemBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         #region ListMenuBindProp
@@ -86,6 +105,8 @@ namespace CSM.Xam.ViewModels
             set { SetProperty(ref _ListMenuBindProp, value); }
         }
         #endregion
+
+        //Frame hoa don
 
         #region ListSectionBindProp
         private ObservableCollection<string> _ListSectionBindProp = null;
@@ -105,6 +126,8 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        // Frame thu vien
+
         #region ListCategoryBindProp
         private ObservableCollection<Category> _ListCategoryBindProp = null;
         public ObservableCollection<Category> ListCategoryBindProp
@@ -114,20 +137,31 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region ListAllItemBindProp
+        private List<Item> _ListAllItemBindProp = null;
+        public List<Item> ListAllItemBindProp
+        {
+            get { return _ListAllItemBindProp; }
+            set { SetProperty(ref _ListAllItemBindProp, value); }
+        }
+        #endregion
+
         #region ListItemBindProp
-        private ObservableCollection<ItemExtended> _ListItemBindProp = null;
-        public ObservableCollection<ItemExtended> ListItemBindProp
+        private ObservableCollection<Item> _ListItemBindProp = null;
+        public ObservableCollection<Item> ListItemBindProp
         {
             get { return _ListItemBindProp; }
             set { SetProperty(ref _ListItemBindProp, value); }
         }
         #endregion
 
+        //Frame bill
+
         #region Bill Property
 
         #region ListItemInBillBindProp
-        private ObservableCollection<ItemExtended> _ListItemInBillBindProp = null;
-        public ObservableCollection<ItemExtended> ListItemInBillBindProp
+        private ObservableCollection<Item> _ListItemInBillBindProp = null;
+        public ObservableCollection<Item> ListItemInBillBindProp
         {
             get { return _ListItemInBillBindProp; }
             set { SetProperty(ref _ListItemInBillBindProp, value); }
@@ -158,6 +192,8 @@ namespace CSM.Xam.ViewModels
 
         #region Command
 
+        // Frame Thu vien
+
         #region SelectItemCommand
 
         public DelegateCommand<object> SelectItemCommand { get; private set; }
@@ -174,10 +210,10 @@ namespace CSM.Xam.ViewModels
             {
                 if (ListItemInBillBindProp == null)
                 {
-                    ListItemInBillBindProp = new ObservableCollection<ItemExtended>();
+                    ListItemInBillBindProp = new ObservableCollection<Item>();
                 }
                 // Thuc hien cong viec tai day
-                if (obj is ItemExtended item)
+                if (obj is Item item)
                 {
                     ListItemInBillBindProp.Add(item);
                     ItemCountBindProp++;
@@ -202,6 +238,85 @@ namespace CSM.Xam.ViewModels
         }
 
         #endregion
+
+        #region TapCategoryCommand
+
+        public DelegateCommand<object> TapCategoryCommand { get; private set; }
+        private async void OnTapCategory(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var selectedCategory = (obj as ItemTapCommandContext).Item as Category;
+
+                var listItem = ListAllItemBindProp.Where(h => h.FkCategory == selectedCategory.Id).ToList();
+                ListItemBindProp = new ObservableCollection<Item>(listItem);
+                IsVisibleListItemBindProp = true;
+                IsVisibleListCategoryBindProp = false;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitTapCategoryCommand()
+        {
+            TapCategoryCommand = new DelegateCommand<object>(OnTapCategory);
+            TapCategoryCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region GoBackCategoryCommand
+
+        public DelegateCommand<object> GoBackCategoryCommand { get; private set; }
+        private async void OnGoBackCategory(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                IsVisibleListCategoryBindProp = true;
+                IsVisibleListItemBindProp = false;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitGoBackCategoryCommand()
+        {
+            GoBackCategoryCommand = new DelegateCommand<object>(OnGoBackCategory);
+            GoBackCategoryCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
 
         #region SelectViewCommand
 
@@ -316,6 +431,8 @@ namespace CSM.Xam.ViewModels
         }
 
         #endregion
+
+        //Frame bill
 
         #region LuuHoaDonCommand
 
@@ -455,14 +572,10 @@ namespace CSM.Xam.ViewModels
             switch (parameters.GetNavigationMode())
             {
                 case NavigationMode.Back:
-                    break;
-                case NavigationMode.New:
-                    var itemLogic = new ItemLogic(Helper.GetDataContext());
-
-                    var listItem = await itemLogic.GetAllAsync();
-                    ListItemBindProp = new ObservableCollection<ItemExtended>();
-                    foreach (var item in listItem)
+                    if (parameters.ContainsKey(Keys.ITEM))
                     {
+                        var item = parameters[Keys.ITEM] as Item;
+
                         ListItemBindProp.Add(new ItemExtended
                         {
                             Id = item.Id,
@@ -470,6 +583,18 @@ namespace CSM.Xam.ViewModels
                             Price = item.Price,
                         });
                     }
+                    break;
+                case NavigationMode.New:
+                    var itemLogic = new ItemLogic(Helper.GetDataContext());
+                    var categorylogic = new CategoryLogic(Helper.GetDataContext());
+
+                    var listItem = await itemLogic.GetAllAsync();
+                    var listCategory = await categorylogic.GetAllAsync();
+
+                    ListItemBindProp = new ObservableCollection<Item>(listItem);
+                    ListAllItemBindProp = new List<Item>(listItem);
+
+                    ListCategoryBindProp = new ObservableCollection<Category>(listCategory);
                     break;
                 case NavigationMode.Forward:
                     break;

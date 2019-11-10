@@ -22,8 +22,13 @@ namespace CSM.Xam.Models
         public const string IS_EDITING = "IS_EDITING";
 
         /// <summary>
-        /// Truyen category name
+        /// Truyen category duoc chon
         /// </summary>
         public const string CATEGORY = "CATEGORY";
+
+        /// <summary>
+        /// Truyen item moi tao
+        /// </summary>
+        public const string ITEM = "ITEM";
     }
 }
