@@ -7,62 +7,71 @@
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              x:Class="CSM.Xam.Views.CSM_08_01Page"
-             NavigationPage.HasNavigationBar="False">
-    <Grid Style="{StaticResource CommonWrapper}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid Style="{StaticResource CommonWrapper}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <!--Title-->
-            <Label Style="{StaticResource CommonHeaderText}" Text="Sửa khu vực"/>
-
-            <!--Back icon-->
-            <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
-
-            <!--Right text-->
-            <Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}"/>
-        </Grid>
-
-        <!--Seperate line-->
-        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
-
-        <Grid Style="{StaticResource CommonWrapper}" Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" Margin="{StaticResource LargeRightThickness}">
-                <Grid Margin="{StaticResource LargeThickness}">
+             NavigationPage.HasNavigationBar="False"
+             Padding="{StaticResource LargeThickness}">
+    <Grid Style="{StaticResource CommonWrapper}"
+                Margin="{StaticResource CommonThickness}">
+        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Text="Tên khu vực" VerticalOptions="Center" FontSize="Large"/>
-                    <tlrInput:RadEntry Grid.Column="1" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" WatermarkText="Tên khu vực"/>
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="Sửa khu vực"/>
+
+                    <!--Back icon-->
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" TappedCommand="{Binding GoBackCommand}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+
+                    <!--Right text-->
+                    <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
                 </Grid>
-            </tlrPrimitives:RadBorder>
 
-            <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonBorder}">
-                <Label Padding="{StaticResource LargeThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.UsdCircle}" />
-            </tlrPrimitives:RadBorder>
+                <!--Seperate line-->
+                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
-            <tlrPrimitives:RadBorder Margin="{StaticResource LargeTopThickness}" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CommonBorder}">
+                <Grid Style="{StaticResource CommonWrapper}" Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-            </tlrPrimitives:RadBorder>
-        </Grid>
+                    <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" Margin="{StaticResource LargeRightThickness}">
+                        <Grid Margin="{StaticResource LargeThickness}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="Tên khu vực" VerticalOptions="Center" FontSize="Large"/>
+                            <tlrInput:RadEntry Grid.Column="1" Style="{StaticResource CommonRightEntry}" Text="{Binding ZoneNameBindProp, Mode=TwoWay}" WatermarkText="Tên khu vực"/>
+                        </Grid>
+                    </tlrPrimitives:RadBorder>
 
+                    <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonBorder}">
+                        <Label Padding="{StaticResource LargeThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.PlusCircle}" />
+                    </tlrPrimitives:RadBorder>
+
+                    <tlrPrimitives:RadBorder Margin="{StaticResource LargeTopThickness}" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CommonBorder}">
+
+                    </tlrPrimitives:RadBorder>
+                </Grid>
+
+            </Grid>
+        </tlrPrimitives:RadBorder>
+        <tlrPrimitives:RadBusyIndicator
+                    Style="{StaticResource LoadingIndicator}" />
     </Grid>
 </ContentPage>

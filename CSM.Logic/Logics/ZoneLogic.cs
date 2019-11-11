@@ -9,16 +9,21 @@ using System.Threading.Tasks;
 
 namespace CSM.Logic
 {
-    public class InvoiceLogic : BaseLogic
+    public class ZoneLogic : BaseLogic
     {
-        public InvoiceLogic(dataContext dbContext) : base(dbContext)
+        public IReadOnlyList<string> ListAccessRoleCode = new List<string>
+        {
+
+        };
+
+        public ZoneLogic(dataContext dbContext) : base(dbContext)
         {
 
         }
 
-        public Task<List<Invoice>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<Zone>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<Zone> query = _DbContext.Zone;
             if (tracking)
             {
 
@@ -32,10 +37,9 @@ namespace CSM.Logic
 
             return query.ToListAsync();
         }
-
-        public Task<Invoice> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<Zone> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<Zone> query = _DbContext.Zone;
             if (tracking)
             {
 
@@ -51,26 +55,18 @@ namespace CSM.Logic
 
             return item;
         }
-
-        public async Task<Invoice> CreateAsync(Invoice obj, bool saveChange = true)
+        public async Task<Zone> CreateAsync(Zone obj, bool saveChange = true)
         {
-            var item = new Invoice
+            var item = new Zone
             {
                 Id = obj.Id,
-                CreationDate = DateTime.Now.ToString(),
-                TotalPrice = obj.TotalPrice,
                 Creator = "Tam",
-                Status = obj.Status,
-                FkStore = "fg",
-                CloseDate = DateTime.Now.ToString(),
-                CustomerCount = 0,
-                FkTable = "1",
-                PaidAmount = obj.PaidAmount,
-                RefundedAmount = 0,
-                Tip = obj.Tip,
+                ZoneName = obj.ZoneName,
+                CreationDate = DateTime.Now.ToString(),
+                IsDeleted = (int)IsDelete.Normal               
             };
 
-            _DbContext.Invoice.Add(item);
+            _DbContext.Zone.Add(item);
 
             try
             {
@@ -86,10 +82,9 @@ namespace CSM.Logic
 
             return item;
         }
-
-        public async Task<Invoice> UpdateAsync(Invoice obj, bool saveChange = true)
+        public async Task<Zone> UpdateAsync(Zone obj, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.Zone.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {
@@ -108,7 +103,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.Zone.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;
@@ -117,6 +112,7 @@ namespace CSM.Logic
             // Remove cac bang lien quan
 
             // Remove bang chinh
+            item.IsDeleted = (int)IsDelete.Deleted;
 
             try
             {

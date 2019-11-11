@@ -112,7 +112,7 @@
             <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontSize" Value="Medium" />
         </Style>
-        
+
         <Style TargetType="tlrInput:RadEntry">
             <Setter Property="BorderStyle" Value="{StaticResource EntryBorderStyle}" />
         </Style>

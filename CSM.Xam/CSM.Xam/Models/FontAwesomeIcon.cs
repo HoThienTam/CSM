@@ -85,8 +85,38 @@ namespace CSM.Xam.Models
         public const string Plus = "\uf067";
 
         /// <summary>
-        /// Icon Plus
+        /// Icon Plus Circle
         /// </summary>
         public const string PlusCircle = "\uf055";
+
+        /// <summary>
+        /// Icon Ballot Check
+        /// </summary>
+        public const string BallotCheck = "\uf733";
+
+        /// <summary>
+        /// Icon Cash Register
+        /// </summary>
+        public const string CashRegister = "\uf788";
+
+        /// <summary>
+        /// Icon Chart Bar
+        /// </summary>
+        public const string ChartBar = "\uf788";
+
+        /// <summary>
+        /// Icon Cogs
+        /// </summary>
+        public const string Cogs = "\uf013";
+
+        /// <summary>
+        /// Icon Users
+        /// </summary>
+        public const string Users = "\uf0c0";
+
+        /// <summary>
+        /// Icon Boxex
+        /// </summary>
+        public const string Boxes = "\uf468";
     }
 }

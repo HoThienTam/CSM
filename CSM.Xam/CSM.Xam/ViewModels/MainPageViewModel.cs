@@ -9,18 +9,21 @@ using CSM.Logic;
 using System.Linq;
 using CSM.Xam.Views;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
+using CSM.Logic.Enums;
+using Xamarin.Forms;
 
 namespace CSM.Xam.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+        private dataContext _dbContext = Helper.GetDataContext();
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-
+            MessagingCenter.Subscribe<MainPageViewModel, Invoice>(this, Messages.SEND_INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
         }
 
         #region Bind Property
-        
+
         #region Visible Property
 
         #region IsVisibleFrameHoaDonBindProp
@@ -95,7 +98,18 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsVisiblePopupBindProp
+        private bool _IsVisiblePopupBindProp = false;
+        public bool IsVisiblePopupBindProp
+        {
+            get { return _IsVisiblePopupBindProp; }
+            set { SetProperty(ref _IsVisiblePopupBindProp, value); }
+        }
         #endregion
+
+        #endregion
+
+        //Menu duoi
 
         #region ListMenuBindProp
         private ObservableCollection<string> _ListMenuBindProp = null;
@@ -157,8 +171,6 @@ namespace CSM.Xam.ViewModels
 
         //Frame bill
 
-        #region Bill Property
-
         #region ListItemInBillBindProp
         private ObservableCollection<Item> _ListItemInBillBindProp = null;
         public ObservableCollection<Item> ListItemInBillBindProp
@@ -184,8 +196,6 @@ namespace CSM.Xam.ViewModels
             get { return _TotalPriceBindProp; }
             set { SetProperty(ref _TotalPriceBindProp, value); }
         }
-        #endregion
-
         #endregion
 
         #endregion
@@ -317,7 +327,6 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-
         #region SelectViewCommand
 
         public DelegateCommand<object> SelectViewCommand { get; private set; }
@@ -337,6 +346,9 @@ namespace CSM.Xam.ViewModels
                 {
                     switch (menu)
                     {
+                        case "hamburger":
+                            IsVisiblePopupBindProp = true;
+                            break;
                         case "hoadon":
                             SetFramesInvisible();
                             IsVisibleFrameHoaDonBindProp = true;
@@ -410,6 +422,20 @@ namespace CSM.Xam.ViewModels
                             IsVisibleFrameMenuBindProp = false;
                             IsVisibleFrameBillBindProp = true;
                             break;
+                        case "hoatdong":
+                            break;
+                        case "thongke":
+                            break;
+                        case "hanghoa":
+                            break;
+                        case "nhanvien":
+                            break;
+                        case "caidat":
+                            IsVisiblePopupBindProp = false;
+                            await NavigationService.NavigateAsync(nameof(CSM_08Page));
+                            break;
+                        case "phienlamviec":
+                            break;
                     }
                 }
             }
@@ -458,15 +484,39 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
-                await invoiceLogic.CreateAsync(new Invoice
+                var invoiceLogic = new InvoiceLogic(_dbContext);
+                var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+
+                var invoice = new Invoice
                 {
+                    Id = Guid.NewGuid().ToString(),
                     TotalPrice = TotalPriceBindProp,
-                });
+                    Status = (int)InvoiceStatus.Normal,
+                    CreationDate = DateTime.Now.ToString("HH:mm:ss"),
+                    PaidAmount = 0,
+                    Tip = 0
+                };
+
+                await invoiceLogic.CreateAsync(invoice, false);
+                foreach (var item in ListItemInBillBindProp)
+                {
+                    await invoiceItemLogic.CreateAsync(new InvoiceItem
+                    {
+                        FkInvoice = invoice.Id,
+                        FkItem = item.Id,
+                        Id = Guid.NewGuid().ToString(),
+                        Quantity = 1
+                    }, false);
+                }
+                await _dbContext.SaveChangesAsync();
+
                 SetFramesInvisible();
                 IsVisibleFrameHoaDonBindProp = true;
                 ListItemInBillBindProp = null;
-                GetAllInvoice();
+                TotalPriceBindProp = 0;
+                ItemCountBindProp = 0;
+
+                MessagingCenter.Send<MainPageViewModel, Invoice>(this, Messages.SEND_INVOICE_MESSAGE, invoice);
             }
             catch (Exception e)
             {
@@ -538,6 +588,8 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        // Menu duoi
+
         #endregion
 
         #region Method
@@ -564,6 +616,14 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region MessageHandler
+        private void ReceiveInvoiceMessageHandler(MainPageViewModel a, Invoice invoice)
+        {
+            ListInvoiceBindProp.Add(invoice);
+        }
+
+        #endregion
+
         #region Navigate
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -576,7 +636,7 @@ namespace CSM.Xam.ViewModels
                     {
                         var item = parameters[Keys.ITEM] as Item;
 
-                        ListItemBindProp.Add(new ItemExtended
+                        ListItemBindProp.Add(new Item
                         {
                             Id = item.Id,
                             ItemName = item.ItemName,
@@ -585,11 +645,13 @@ namespace CSM.Xam.ViewModels
                     }
                     break;
                 case NavigationMode.New:
-                    var itemLogic = new ItemLogic(Helper.GetDataContext());
-                    var categorylogic = new CategoryLogic(Helper.GetDataContext());
+                    var itemLogic = new ItemLogic(_dbContext);
+                    var categorylogic = new CategoryLogic(_dbContext);
 
                     var listItem = await itemLogic.GetAllAsync();
                     var listCategory = await categorylogic.GetAllAsync();
+
+                    GetAllInvoice();
 
                     ListItemBindProp = new ObservableCollection<Item>(listItem);
                     ListAllItemBindProp = new List<Item>(listItem);

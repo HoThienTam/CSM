@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
-        xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
-        xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
-        xmlns:lcModels="clr-namespace:CSM.Xam.Models" mc:Ignorable="d"
-        x:Class="CSM.Xam.Views.CSM_02Page"
-        NavigationPage.HasNavigationBar="False"
-        Padding="{StaticResource LargeThickness}">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models" mc:Ignorable="d"
+             x:Class="CSM.Xam.Views.CSM_02Page"
+             NavigationPage.HasNavigationBar="False"
+             Padding="{StaticResource LargeThickness}">
     <ContentPage.Content>
         <Grid Style="{StaticResource CommonWrapper}"
                 Margin="{StaticResource CommonThickness}">

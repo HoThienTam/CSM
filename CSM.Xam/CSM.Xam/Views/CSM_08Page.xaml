@@ -7,10 +7,11 @@
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:datacontrols="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:tlrListView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
              mc:Ignorable="d"
-             x:Name="csm_08Page"
-             x:Class="CSM.Xam.Views.CSM_08Page"
-             NavigationPage.HasNavigationBar="False">
+             x:Name="csm_08Page" NavigationPage.HasNavigationBar="False"
+             x:Class="CSM.Xam.Views.CSM_08Page">
     <Grid>
         <Grid Style="{StaticResource CommonWrapper}">
             <Grid.ColumnDefinitions>
@@ -59,7 +60,9 @@
                 </ScrollView>
 
                 <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
-                    <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất"/>
+                    <tlrPrimitives:RadBorder Style="{StaticResource CommonButtonBorder}">
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất"/>
+                    </tlrPrimitives:RadBorder>
                 </Grid>
             </Grid>
 
@@ -82,7 +85,7 @@
                         <Label Style="{StaticResource CommonHeaderText}" Text="Quản lý khu vực"/>
 
                         <!--Back icon-->
-                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="" />
 
                         <!--Right text-->
                         <Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}"/>
@@ -92,27 +95,34 @@
                     <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
                     <StackLayout Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
                         <ScrollView>
-                            <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp}" Spacing="{StaticResource SmallThickness}">
-                                <BindableLayout.ItemTemplate>
+                            <datacontrols:RadListView SelectionMode="None" ItemsSource="{Binding ListSectionBindProp}">
+                                <datacontrols:RadListView.FooterTemplate>
                                     <DataTemplate>
                                         <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
                                             <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
-                                            <Label Text="Tên khu vực" FontSize="Large"/>
-                                            <Label Text="{Binding ZoneName}" HorizontalOptions="EndAndExpand" FontSize="Large"/>
-                                            <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
-                                        </mr:StackLayout>
+                                                <Label Text="Tạo khu vực mới " FontSize="Large"/>
+                                                <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="EndAndExpand" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                                            </mr:StackLayout>
                                         </tlrPrimitives:RadBorder>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </StackLayout>
+                                </datacontrols:RadListView.FooterTemplate>
+                                <datacontrols:RadListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <tlrListView:ListViewTemplateCell>
+                                            <tlrListView:ListViewTemplateCell.View>
+                                                <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                                                    <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
+                                                        <Label Text="Tên khu vực" FontSize="Large"/>
+                                                        <Label Text="{Binding ZoneName}" HorizontalOptions="EndAndExpand" FontSize="Large"/>
+                                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                                                    </mr:StackLayout>
+                                                </tlrPrimitives:RadBorder>
+                                            </tlrListView:ListViewTemplateCell.View>
+                                        </tlrListView:ListViewTemplateCell>
+                                    </DataTemplate>
+                                </datacontrols:RadListView.ItemTemplate>
+                            </datacontrols:RadListView>
                         </ScrollView>
-
-                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
-                            <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
-                                <Label Text="Tạo khu vực mới " FontSize="Large"/>
-                                <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="EndAndExpand" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
-                            </mr:StackLayout>
-                        </tlrPrimitives:RadBorder>
                     </StackLayout>
                 </Grid>
             </Grid>

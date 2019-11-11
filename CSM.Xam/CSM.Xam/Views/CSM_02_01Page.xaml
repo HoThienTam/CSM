@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
-        xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
-        xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
-        xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
-        xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
-        xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
-        mc:Ignorable="d" x:Class="CSM.Xam.Views.CSM_02_01Page"
-        xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
-        xmlns:lcModels="clr-namespace:CSM.Xam.Models" x:Name="csm_02_01Page"
-        NavigationPage.HasNavigationBar="False"
-        Padding="{StaticResource LargeThickness}">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
+             mc:Ignorable="d" x:Class="CSM.Xam.Views.CSM_02_01Page"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models" x:Name="csm_02_01Page"
+             NavigationPage.HasNavigationBar="False"
+             Padding="{StaticResource LargeThickness}">
     <ContentPage.Content>
         <Grid Style="{StaticResource CommonWrapper}"
                 Margin="{StaticResource CommonThickness}">

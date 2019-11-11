@@ -12,10 +12,10 @@ namespace CSM.Xam.ViewModels
 {
     public class CSM_10PageViewModel : ViewModelBase
     {
-        private dataContext _dbContext;
+        private dataContext _dbContext = Helper.GetDataContext();
         public CSM_10PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-            _dbContext = Helper.GetDataContext();
+
         }
         #region Property
 
@@ -46,6 +46,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region TipBindProp
+        private double _TipBindProp = 0;
+        public double TipBindProp
+        {
+            get { return _TipBindProp; }
+            set { SetProperty(ref _TipBindProp, value); }
+        }
+        #endregion
+
         #region IsCompletedBindProp
         private bool _IsCompletedBindProp = false;
         public bool IsCompletedBindProp
@@ -56,8 +65,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListItemInBillBindProp
-        private ObservableCollection<ItemExtended> _ListItemInBillBindProp = null;
-        public ObservableCollection<ItemExtended> ListItemInBillBindProp
+        private ObservableCollection<Item> _ListItemInBillBindProp = null;
+        public ObservableCollection<Item> ListItemInBillBindProp
         {
             get { return _ListItemInBillBindProp; }
             set { SetProperty(ref _ListItemInBillBindProp, value); }
@@ -170,7 +179,10 @@ namespace CSM.Xam.ViewModels
                     var invoice = new Invoice
                     {
                         Id = Guid.NewGuid().ToString(),
-                        TotalPrice = TotalMoneyBindProp
+                        TotalPrice = TotalMoneyBindProp,
+                        Status = (int)InvoiceStatus.Paid,  
+                        PaidAmount = ReceivedMoneyBindProp,
+                        Tip = TipBindProp
                     };
 
                     await invoiceLogic.CreateAsync(invoice, false);
@@ -221,7 +233,7 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     TotalMoneyBindProp = (double) (parameters[Keys.TOTAL_PRICE] as double?);
-                    ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<ItemExtended>;
+                    ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<Item>;
                     break;
                 case NavigationMode.Forward:
                     break;

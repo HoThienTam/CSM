@@ -10,8 +10,8 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
              x:Class="CSM.Xam.Views.MainPage"
-             x:Name="mainPage"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             x:Name="mainPage">
     <Grid>
         <Grid RowSpacing="0" ColumnSpacing="{StaticResource CommonThickness}">
             <Grid.RowDefinitions>
@@ -470,13 +470,48 @@
                 <!--Hamburger-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
                     IsEnabled="True"
-                    TappedCommand="{Binding}"
-                    TappedCommandParameter="Hamburger">
+                    TappedCommand="{Binding SelectViewCommand}"
+                    TappedCommandParameter="hamburger">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Label Style="{StaticResource BottomMenu_Icon}" Text="{x:Static lcModels:FontAwesomeIcon.Ellipsis}" />
+                    <tlrPrimitives:RadPopup.Popup>
+                        <tlrPrimitives:RadPopup
+                            IsOpen="{Binding IsVisiblePopupBindProp, Mode=TwoWay}"
+                                    IsModal="False">
+                            <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" 
+                                                     Margin="{StaticResource CommonThickness}">
+                                <StackLayout Padding="{StaticResource CommonThickness}">
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hoatdong">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.BallotCheck}" />
+                                        <Label Text="Hoạt động" />
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="thongke">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ChartBar}" />
+                                        <Label Text="Thống kê" />
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hanghoa">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Boxes}" />
+                                        <Label Text="Hàng hóa" />
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="nhanvien">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Users}" />
+                                        <Label Text="Nhân viên" />
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="caidat">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Cogs}" />
+                                        <Label Text="Cài đặt" />
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="phienlamviec">
+                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CashRegister}" />
+                                        <Label Text="Phiên làm việc" />
+                                    </mr:StackLayout>
+                                </StackLayout>
+                            </tlrPrimitives:RadBorder>
+                        </tlrPrimitives:RadPopup>
+                    </tlrPrimitives:RadPopup.Popup>
                 </mr:Grid>
                 <!--Hoa don-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"

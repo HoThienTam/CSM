@@ -6,6 +6,8 @@ using Prism.Ioc;
 using Android.Views;
 using System.IO;
 using System;
+using Xamarin.Essentials;
+using Android.Runtime;
 
 namespace CSM.Xam.Droid
 {
@@ -18,10 +20,18 @@ namespace CSM.Xam.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+            Platform.Init(this, bundle);
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App(new AndroidInitializer()));
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
