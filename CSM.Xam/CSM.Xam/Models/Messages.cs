@@ -9,6 +9,11 @@ namespace CSM.Xam.Models
         /// <summary>
         /// Gui doi tuong invocie cho cac subcriber
         /// </summary>
-        public const string SEND_INVOICE_MESSAGE = "SEND_INVOICE_MESSAGE";
+        public const string INVOICE_MESSAGE = "INVOICE_MESSAGE";
+
+        /// <summary>
+        /// Gui doi tuong zone cho cac subcriber
+        /// </summary>
+        public const string ZONE_MESSAGE = "ZONE_MESSAGE";
     }
 }

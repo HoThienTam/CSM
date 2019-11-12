@@ -102,7 +102,6 @@ namespace CSM.Xam.ViewModels
                     {
                         ReceivedMoneyBindProp = ReceivedMoneyBindProp * 10 + (double)d;
                     }
-                    return;
                 }
                 if (obj is string s)
                 {

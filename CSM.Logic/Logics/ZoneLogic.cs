@@ -86,6 +86,7 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Zone.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            item.ZoneName = obj.ZoneName;
             try
             {
                 if (saveChange)

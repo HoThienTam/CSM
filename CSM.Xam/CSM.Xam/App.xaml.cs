@@ -42,7 +42,7 @@ namespace CSM.Xam
                 var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
                 Stream stream = assembly.GetManifestResourceStream("CSM.Xam.Files.data.db");
 
-                using (var reader = new System.IO.MemoryStream())
+                using (var reader = new MemoryStream())
                 {
                     await stream.CopyToAsync(reader);
                     File.WriteAllBytes(dbPath, reader.GetBuffer());

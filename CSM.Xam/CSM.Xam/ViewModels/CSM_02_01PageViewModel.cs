@@ -61,52 +61,6 @@ namespace CSM.Xam.ViewModels
 
         #region Command
 
-        #region SelectCategoryCommand
-
-        public DelegateCommand<object> SelectCategoryCommand { get; private set; }
-        private async void OnSelectCategory(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                var selectedCategory = (obj as ItemTapCommandContext).Item as CategoryExtended;
-
-                if (SelectedCategoryBindProp == selectedCategory)
-                {
-                    SelectedCategoryBindProp = null;
-                }
-                else
-                {
-                    SelectedCategoryBindProp = selectedCategory;
-                }
-
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitSelectCategoryCommand()
-        {
-            SelectCategoryCommand = new DelegateCommand<object>(OnSelectCategory);
-            SelectCategoryCommand.ObservesCanExecute(() => IsNotBusy);
-        }
-
-        #endregion
-
         #region AddNewCategoryCommand
 
         public DelegateCommand<object> AddNewCategoryCommand { get; private set; }

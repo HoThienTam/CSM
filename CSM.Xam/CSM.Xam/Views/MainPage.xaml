@@ -60,7 +60,7 @@
                                 <DataTemplate>
                                       <!--Khu vuc-->  
                                     <mr:Grid Padding="{StaticResource CommonHorizontalThickness}">
-                                        <Label VerticalOptions="Center" FontSize="Large" Text="Khu vực"/>
+                                        <Label VerticalOptions="Center" FontSize="Large" Text="{Binding ZoneName}"/>
                                     </mr:Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>

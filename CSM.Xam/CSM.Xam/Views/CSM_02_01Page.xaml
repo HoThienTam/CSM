@@ -11,7 +11,8 @@
              xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
              mc:Ignorable="d" x:Class="CSM.Xam.Views.CSM_02_01Page"
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
-             xmlns:lcModels="clr-namespace:CSM.Xam.Models" x:Name="csm_02_01Page"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models" 
+             x:Name="csm_02_01Page"
              NavigationPage.HasNavigationBar="False"
              Padding="{StaticResource LargeThickness}">
     <ContentPage.Content>
@@ -60,7 +61,7 @@
                         <tlrPrimitives:RadBorder
                                 Style="{StaticResource CommonBorder}">
 
-                            <dataControls:RadListView SelectionMode="Single"                                               
+                            <dataControls:RadListView SelectionMode="Single" SelectedItem="{Binding SelectedCategoryBindProp, Mode=OneWayToSource}"                                              
                                     ItemsSource="{Binding ListCategoryBindProp, Mode=OneWay}">
                                 <dataControls:RadListView.LayoutDefinition>
                                     <listView:ListViewLinearLayout
@@ -69,11 +70,6 @@
                                 <dataControls:RadListView.SelectedItemStyle>
                                     <listView:ListViewItemStyle BackgroundColor="{StaticResource SelectedColor}"/>
                                 </dataControls:RadListView.SelectedItemStyle>
-                                <dataControls:RadListView.Commands>
-                                    <commands:ListViewUserCommand
-                                            Command="{Binding SelectCategoryCommand, Mode=OneWay}"
-                                            Id="ItemTap" />
-                                </dataControls:RadListView.Commands>
                                 <dataControls:RadListView.ItemTemplate>
                                     <DataTemplate>
                                         <listView:ListViewTemplateCell>

@@ -63,7 +63,11 @@ namespace CSM.Logic
                 Creator = "Tam",
                 CreationDate = DateTime.Now.ToString(),
                 FkStore = "1",
-                IsDeleted = (int)IsDelete.Normal
+                IsDeleted = (int)IsDelete.Normal,
+                TableName = obj.TableName,
+                TableSize = obj.TableSize,
+                FkZone = "fg",
+                TableType = obj.TableType
             };
 
             _DbContext.Table.Add(item);
@@ -86,6 +90,9 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Table.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            item.TableName = obj.TableName;
+            item.TableSize = obj.TableSize;
+            item.TableType = obj.TableType;
             try
             {
                 if (saveChange)

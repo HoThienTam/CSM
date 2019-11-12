@@ -11,17 +11,14 @@ namespace CSM.Xam.Models
     {
         public InitParamVm(
             INavigationService navigationService,
-            IPageDialogService pageDialogService,
-            IEventAggregator eventAggregator)
+            IPageDialogService pageDialogService)
         {
             NavigationService = navigationService;
             PageDialogService = pageDialogService;
-            EventAggregator = eventAggregator;
         }
 
         public INavigationService NavigationService { get; private set; }
         public IPageDialogService PageDialogService { get; private set; }
-        public IEventAggregator EventAggregator { get; private set; }
 
     }
 }

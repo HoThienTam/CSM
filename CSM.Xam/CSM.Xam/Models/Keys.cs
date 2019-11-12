@@ -30,5 +30,10 @@ namespace CSM.Xam.Models
         /// Truyen item moi tao
         /// </summary>
         public const string ITEM = "ITEM";
+
+        /// <summary>
+        /// Truyen zone moi tao
+        /// </summary>
+        public const string ZONE = "ZONE";
     }
 }

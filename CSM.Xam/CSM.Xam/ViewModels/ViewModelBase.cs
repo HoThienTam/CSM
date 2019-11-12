@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 
 namespace CSM.Xam.ViewModels
 {
-    public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible
+    public class ViewModelBase : BindableBase, INavigationAware
     {
         protected INavigationService NavigationService { get; private set; }
         protected IPageDialogService PageDialogService { get; private set; }
-        protected IEventAggregator EventAggregator { get; private set; }
 
         private string _title;
         public string Title
@@ -66,7 +65,6 @@ namespace CSM.Xam.ViewModels
         {
             NavigationService = initParamVm.NavigationService;
             PageDialogService = initParamVm.PageDialogService;
-            EventAggregator = initParamVm.EventAggregator;
         }
 
         #region GoBackCommand
@@ -103,22 +101,12 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        public virtual void Initialize(INavigationParameters parameters)
-        {
-
-        }
-
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
 
         }
 
         public virtual void OnNavigatedTo(INavigationParameters parameters)
-        {
-
-        }
-
-        public virtual void Destroy()
         {
 
         }

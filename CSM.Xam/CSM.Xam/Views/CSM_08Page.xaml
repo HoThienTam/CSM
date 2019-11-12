@@ -38,7 +38,7 @@
                     <Label Style="{StaticResource CommonHeaderText}" Text="Cài đặt"/>
 
                     <!--Back icon-->
-                    <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" TappedCommand="{Binding GoBackCommand}" />
 
                     <!--Right text-->
                     <Label Style="{StaticResource CommonHeaderRightText}"/>
@@ -47,16 +47,31 @@
                 <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                 <ScrollView Grid.Row="2">
-                    <StackLayout>
-                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
-                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
-                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
-                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin"/>
-                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
-                    </StackLayout>
+                    <datacontrols:RadListView x:Name="listView" SelectionMode="Single">
+                        <datacontrols:RadListView.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Quản lý khu vực</x:String>
+                                <x:String>Thông tin cửa hàng</x:String>
+                                <x:String>Ngôn ngữ</x:String>
+                                <x:String>Thông tin</x:String>
+                            </x:Array>
+                        </datacontrols:RadListView.ItemsSource>
+                        <datacontrols:RadListView.SelectedItemStyle>
+                            <tlrListView:ListViewItemStyle x:Name="abc" BackgroundColor="{StaticResource SelectedColor}"/>
+                        </datacontrols:RadListView.SelectedItemStyle>
+                        <datacontrols:RadListView.ItemTemplate>
+                            <DataTemplate>
+                                <tlrListView:ListViewTemplateCell>
+                                    <tlrListView:ListViewTemplateCell.View>
+                                        <StackLayout>
+                                            <Label Style="{StaticResource Sidebar_ItemText}" Text="{Binding}"/>
+                                            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                                        </StackLayout>
+                                    </tlrListView:ListViewTemplateCell.View>
+                                </tlrListView:ListViewTemplateCell>
+                            </DataTemplate>
+                        </datacontrols:RadListView.ItemTemplate>
+                    </datacontrols:RadListView>
                 </ScrollView>
 
                 <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
@@ -93,37 +108,38 @@
 
                     <!--Seperate line-->
                     <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
-                    <StackLayout Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
-                        <ScrollView>
-                            <datacontrols:RadListView SelectionMode="None" ItemsSource="{Binding ListSectionBindProp}">
-                                <datacontrols:RadListView.FooterTemplate>
-                                    <DataTemplate>
-                                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
-                                            <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
-                                                <Label Text="Tạo khu vực mới " FontSize="Large"/>
-                                                <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="EndAndExpand" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
-                                            </mr:StackLayout>
-                                        </tlrPrimitives:RadBorder>
-                                    </DataTemplate>
-                                </datacontrols:RadListView.FooterTemplate>
-                                <datacontrols:RadListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <tlrListView:ListViewTemplateCell>
-                                            <tlrListView:ListViewTemplateCell.View>
-                                                <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
-                                                    <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
-                                                        <Label Text="Tên khu vực" FontSize="Large"/>
-                                                        <Label Text="{Binding ZoneName}" HorizontalOptions="EndAndExpand" FontSize="Large"/>
-                                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
-                                                    </mr:StackLayout>
-                                                </tlrPrimitives:RadBorder>
-                                            </tlrListView:ListViewTemplateCell.View>
-                                        </tlrListView:ListViewTemplateCell>
-                                    </DataTemplate>
-                                </datacontrols:RadListView.ItemTemplate>
-                            </datacontrols:RadListView>
-                        </ScrollView>
-                    </StackLayout>
+                    <ScrollView Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
+                        <datacontrols:RadListView SelectionMode="Single" ItemsSource="{Binding ListSectionBindProp}">
+                            <datacontrols:RadListView.FooterTemplate>
+                                <DataTemplate>
+                                    <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                                        <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}">
+                                            <Label Text="Tạo khu vực mới " FontSize="Large"/>
+                                            <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="EndAndExpand" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                                        </mr:StackLayout>
+                                    </tlrPrimitives:RadBorder>
+                                </DataTemplate>
+                            </datacontrols:RadListView.FooterTemplate>
+                            <datacontrols:RadListView.LayoutDefinition>
+                                <tlrListView:ListViewLinearLayout VerticalItemSpacing="1" />
+                            </datacontrols:RadListView.LayoutDefinition>
+                            <datacontrols:RadListView.ItemTemplate>
+                                <DataTemplate>
+                                    <tlrListView:ListViewTemplateCell>
+                                        <tlrListView:ListViewTemplateCell.View>
+                                            <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                                                <mr:StackLayout Orientation="Horizontal" Margin="{StaticResource LargeThickness}" TappedCommand="{Binding BindingContext.TapSectionCommand, Source={x:Reference csm_08Page}}" TappedCommandParameter="{Binding}">
+                                                    <Label Text="Tên khu vực" FontSize="Large"/>
+                                                    <Label Text="{Binding ZoneName}" HorizontalOptions="EndAndExpand" FontSize="Large"/>
+                                                    <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"/>
+                                                </mr:StackLayout>
+                                            </tlrPrimitives:RadBorder>
+                                        </tlrListView:ListViewTemplateCell.View>
+                                    </tlrListView:ListViewTemplateCell>
+                                </DataTemplate>
+                            </datacontrols:RadListView.ItemTemplate>
+                        </datacontrols:RadListView>
+                    </ScrollView>
                 </Grid>
             </Grid>
         </Grid>

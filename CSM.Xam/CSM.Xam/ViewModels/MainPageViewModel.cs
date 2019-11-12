@@ -19,7 +19,8 @@ namespace CSM.Xam.ViewModels
         private dataContext _dbContext = Helper.GetDataContext();
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-            MessagingCenter.Subscribe<MainPageViewModel, Invoice>(this, Messages.SEND_INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
+            MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
+            MessagingCenter.Subscribe<Zone>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
         }
 
         #region Bind Property
@@ -123,8 +124,8 @@ namespace CSM.Xam.ViewModels
         //Frame hoa don
 
         #region ListSectionBindProp
-        private ObservableCollection<string> _ListSectionBindProp = null;
-        public ObservableCollection<string> ListSectionBindProp
+        private ObservableCollection<Zone> _ListSectionBindProp = null;
+        public ObservableCollection<Zone> ListSectionBindProp
         {
             get { return _ListSectionBindProp; }
             set { SetProperty(ref _ListSectionBindProp, value); }
@@ -516,7 +517,7 @@ namespace CSM.Xam.ViewModels
                 TotalPriceBindProp = 0;
                 ItemCountBindProp = 0;
 
-                MessagingCenter.Send<MainPageViewModel, Invoice>(this, Messages.SEND_INVOICE_MESSAGE, invoice);
+                MessagingCenter.Send(invoice, Messages.INVOICE_MESSAGE);
             }
             catch (Exception e)
             {
@@ -605,23 +606,30 @@ namespace CSM.Xam.ViewModels
 
         private async void GetAllInvoice()
         {
-            var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
+            var invoiceLogic = new InvoiceLogic(_dbContext);
             var listInvoice = await invoiceLogic.GetAllAsync();
 
-            ListInvoiceBindProp = new ObservableCollection<Invoice>();
-            foreach (var invoice in listInvoice)
-            {
-                ListInvoiceBindProp.Add(invoice);
-            }
+            ListInvoiceBindProp = new ObservableCollection<Invoice>(listInvoice);
+        }
+
+        private async void GetAllZone()
+        {
+            var zoneLogic = new ZoneLogic(_dbContext);
+            var listZone = await zoneLogic.GetAllAsync();
+
+            ListSectionBindProp = new ObservableCollection<Zone>(listZone);
         }
         #endregion
 
         #region MessageHandler
-        private void ReceiveInvoiceMessageHandler(MainPageViewModel a, Invoice invoice)
+        private void ReceiveInvoiceMessageHandler(Invoice invoice)
         {
             ListInvoiceBindProp.Add(invoice);
         }
-
+        private void ReceiveZoneMessageHandler(Zone zone)
+        {
+            ListSectionBindProp.Add(zone);
+        }
         #endregion
 
         #region Navigate
@@ -652,6 +660,7 @@ namespace CSM.Xam.ViewModels
                     var listCategory = await categorylogic.GetAllAsync();
 
                     GetAllInvoice();
+                    GetAllZone();
 
                     ListItemBindProp = new ObservableCollection<Item>(listItem);
                     ListAllItemBindProp = new List<Item>(listItem);
