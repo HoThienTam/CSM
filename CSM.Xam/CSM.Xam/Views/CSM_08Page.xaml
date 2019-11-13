@@ -47,31 +47,16 @@
                 <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                 <ScrollView Grid.Row="2">
-                    <datacontrols:RadListView x:Name="listView" SelectionMode="Single">
-                        <datacontrols:RadListView.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Quản lý khu vực</x:String>
-                                <x:String>Thông tin cửa hàng</x:String>
-                                <x:String>Ngôn ngữ</x:String>
-                                <x:String>Thông tin</x:String>
-                            </x:Array>
-                        </datacontrols:RadListView.ItemsSource>
-                        <datacontrols:RadListView.SelectedItemStyle>
-                            <tlrListView:ListViewItemStyle x:Name="abc" BackgroundColor="{StaticResource SelectedColor}"/>
-                        </datacontrols:RadListView.SelectedItemStyle>
-                        <datacontrols:RadListView.ItemTemplate>
-                            <DataTemplate>
-                                <tlrListView:ListViewTemplateCell>
-                                    <tlrListView:ListViewTemplateCell.View>
-                                        <StackLayout>
-                                            <Label Style="{StaticResource Sidebar_ItemText}" Text="{Binding}"/>
-                                            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
-                                        </StackLayout>
-                                    </tlrListView:ListViewTemplateCell.View>
-                                </tlrListView:ListViewTemplateCell>
-                            </DataTemplate>
-                        </datacontrols:RadListView.ItemTemplate>
-                    </datacontrols:RadListView>
+                    <StackLayout>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                        <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin"/>
+                        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                    </StackLayout>
                 </ScrollView>
 
                 <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">

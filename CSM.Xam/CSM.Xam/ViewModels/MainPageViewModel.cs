@@ -11,6 +11,7 @@ using CSM.Xam.Views;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
 using CSM.Logic.Enums;
 using Xamarin.Forms;
+using Menu = CSM.EFCore.Menu;
 
 namespace CSM.Xam.ViewModels
 {
@@ -113,8 +114,8 @@ namespace CSM.Xam.ViewModels
         //Menu duoi
 
         #region ListMenuBindProp
-        private ObservableCollection<string> _ListMenuBindProp = null;
-        public ObservableCollection<string> ListMenuBindProp
+        private ObservableCollection<Menu> _ListMenuBindProp = null;
+        public ObservableCollection<Menu> ListMenuBindProp
         {
             get { return _ListMenuBindProp; }
             set { SetProperty(ref _ListMenuBindProp, value); }
@@ -418,6 +419,17 @@ namespace CSM.Xam.ViewModels
                             await NavigationService.NavigateAsync(nameof(CSM_02_01Page), param);
                             break;
                         case "thucdon":
+                            if (ListMenuBindProp == null)
+                            {
+                                ListMenuBindProp = new ObservableCollection<Menu>();
+                            }
+                            var menuLogic = new MenuLogic(_dbContext);
+                            var menu = await menuLogic.CreateAsync(new Menu
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                MenuName = "Menu01"
+                            });
+                            ListMenuBindProp.Add(menu);
                             break;
                         case "hoantat":
                             IsVisibleFrameMenuBindProp = false;
@@ -590,6 +602,7 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         // Menu duoi
+
 
         #endregion
 
