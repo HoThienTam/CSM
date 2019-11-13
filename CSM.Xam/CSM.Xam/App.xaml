@@ -348,5 +348,14 @@
             <Setter Property="Padding" Value="{StaticResource LargeThickness}" />
         </Style>
 
+        <!--  Ban  -->
+        <Style x:Key="BanIcon" BasedOn="{StaticResource CommonLabelIcon}" TargetType="Label">
+            <Setter Property="FontSize" Value="Header" />
+        </Style>
+        <Style x:Key="BanText" BasedOn="{StaticResource CommonLabelIcon}" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
     </Application.Resources>
 </prism:PrismApplication>

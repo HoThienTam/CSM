@@ -37,6 +37,26 @@ namespace CSM.Logic
 
             return query.ToListAsync();
         }
+
+        public Task<List<Table>> GetTableByZoneAsync(string zoneId, IsDelete status = IsDelete.Normal, bool tracking = false)
+        {
+            IQueryable<Table> query = _DbContext.Table;
+            if (tracking)
+            {
+
+            }
+            else
+            {
+                query = query.AsNoTracking();
+            }
+
+            query = query.Where(h => h.IsDeleted == (int)status);
+
+            query = query.Where(h => h.FkZone == zoneId);
+
+            return query.ToListAsync();
+        }
+
         public Task<Table> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
             IQueryable<Table> query = _DbContext.Table;
@@ -65,9 +85,9 @@ namespace CSM.Logic
                 FkStore = "1",
                 IsDeleted = (int)IsDelete.Normal,
                 TableName = obj.TableName,
-                TableSize = obj.TableSize,
-                FkZone = "fg",
-                TableType = obj.TableType
+                TableSize = 1,
+                FkZone = obj.FkZone,
+                TableType = 1
             };
 
             _DbContext.Table.Add(item);

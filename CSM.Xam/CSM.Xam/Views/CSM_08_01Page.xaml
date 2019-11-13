@@ -8,6 +8,8 @@
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
              x:Class="CSM.Xam.Views.CSM_08_01Page"
              NavigationPage.HasNavigationBar="False"
              Padding="{StaticResource LargeThickness}">
@@ -27,7 +29,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <!--Title-->
-                    <Label Style="{StaticResource CommonHeaderText}" Text="Sửa khu vực"/>
+                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
 
                     <!--Back icon-->
                     <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" TappedCommand="{Binding GoBackCommand}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
@@ -50,7 +52,7 @@
                     </Grid.ColumnDefinitions>
 
                     <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" Margin="{StaticResource LargeRightThickness}">
-                        <Grid Margin="{StaticResource LargeThickness}">
+                        <Grid Margin="{StaticResource CommonThickness}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -61,11 +63,30 @@
                     </tlrPrimitives:RadBorder>
 
                     <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonBorder}">
-                        <Label Padding="{StaticResource LargeThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.PlusCircle}" />
+                        <mr:Label Padding="{StaticResource CommonThickness}" 
+                                  Style="{StaticResource CommonLabelIcon}" 
+                                  Text="{x:Static lcModels:FontAwesomeIcon.PlusCircle}"
+                                  TappedCommand="{Binding AddTableCommand}"/>
                     </tlrPrimitives:RadBorder>
 
                     <tlrPrimitives:RadBorder Margin="{StaticResource LargeTopThickness}" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CommonBorder}">
-
+                        <dataControls:RadListView ItemsSource="{Binding ListTableBindProp, Mode=OneWay}">
+                            <dataControls:RadListView.LayoutDefinition>
+                                <listView:ListViewGridLayout HorizontalItemSpacing="{StaticResource SmallThickness}" SpanCount="6" VerticalItemSpacing="{StaticResource SmallThickness}" />
+                            </dataControls:RadListView.LayoutDefinition>
+                            <dataControls:RadListView.ItemTemplate>
+                                <DataTemplate>
+                                    <listView:ListViewTemplateCell>
+                                        <listView:ListViewTemplateCell.View>
+                                            <Grid>
+                                                <Label Style="{StaticResource BanIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
+                                                <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
+                                            </Grid>
+                                        </listView:ListViewTemplateCell.View>
+                                    </listView:ListViewTemplateCell>
+                                </DataTemplate>
+                            </dataControls:RadListView.ItemTemplate>
+                        </dataControls:RadListView>
                     </tlrPrimitives:RadBorder>
                 </Grid>
 

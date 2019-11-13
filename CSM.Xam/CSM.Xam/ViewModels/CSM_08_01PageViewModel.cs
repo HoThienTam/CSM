@@ -1,9 +1,11 @@
 ﻿using CSM.EFCore;
 using CSM.Logic;
 using CSM.Xam.Models;
+using CSM.Xam.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using System;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace CSM.Xam.ViewModels
@@ -16,6 +18,8 @@ namespace CSM.Xam.ViewModels
         {
 
         }
+
+        #region Bind Prop
 
         #region ZoneNameBindProp
         private string _ZoneNameBindProp = string.Empty;
@@ -34,6 +38,19 @@ namespace CSM.Xam.ViewModels
             set { SetProperty(ref _ZoneIdBindProp, value); }
         }
         #endregion
+
+        #region ListTableBindProp
+        private ObservableCollection<Table> _ListTableBindProp = null;
+        public ObservableCollection<Table> ListTableBindProp
+        {
+            get { return _ListTableBindProp; }
+            set { SetProperty(ref _ListTableBindProp, value); }
+        }
+        #endregion
+
+        #endregion
+
+        #region Command
 
         #region SaveCommand
 
@@ -71,7 +88,7 @@ namespace CSM.Xam.ViewModels
                 {
                     zone = await zoneLogic.CreateAsync(new Zone
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = string.IsNullOrWhiteSpace(ZoneIdBindProp)? Guid.NewGuid().ToString() : ZoneIdBindProp,
                         ZoneName = ZoneNameBindProp,
                     });
                     MessagingCenter.Send(zone, Messages.ZONE_MESSAGE);
@@ -103,6 +120,69 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region AddTableCommand
+
+        public DelegateCommand<object> AddTableCommand { get; private set; }
+        private async void OnAddTable(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (ListTableBindProp == null)
+                {
+                    ListTableBindProp = new ObservableCollection<Table>();
+                }
+                if (string.IsNullOrWhiteSpace(ZoneIdBindProp))
+                {
+                    ZoneIdBindProp = Guid.NewGuid().ToString();
+                }
+                var tableLogic = new TableLogic(_dbContext);
+                var table = await tableLogic.CreateAsync(new Table
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    FkZone = ZoneIdBindProp
+                });
+                ListTableBindProp.Add(table);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitAddTableCommand()
+        {
+            AddTableCommand = new DelegateCommand<object>(OnAddTable);
+            AddTableCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Method
+
+        private async void GetTable()
+        {
+            var tableLogic = new TableLogic(_dbContext);
+            var listTable = await tableLogic.GetAllAsync();
+            ListTableBindProp = new ObservableCollection<Table>(listTable);
+        }
+
+        #endregion
+
         #region Navigate
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -120,6 +200,7 @@ namespace CSM.Xam.ViewModels
                         ZoneIdBindProp = zone.Id;
                         _isEditing = true;
                     }
+                    GetTable();
                     break;
                 case NavigationMode.Forward:
                     break;

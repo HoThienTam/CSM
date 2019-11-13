@@ -18,6 +18,7 @@ namespace CSM.Xam.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private dataContext _dbContext = Helper.GetDataContext();
+        private Dictionary<string, List<Table>> _tableInZone;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
@@ -27,6 +28,15 @@ namespace CSM.Xam.ViewModels
         #region Bind Property
 
         #region Visible Property
+
+        #region IsVisibleFrameHoaDonKhuVucBindProp
+        private bool _IsVisibleFrameHoaDonKhuVucBindProp = true;
+        public bool IsVisibleFrameHoaDonKhuVucBindProp
+        {
+            get { return _IsVisibleFrameHoaDonKhuVucBindProp; }
+            set { SetProperty(ref _IsVisibleFrameHoaDonKhuVucBindProp, value); }
+        }
+        #endregion
 
         #region IsVisibleFrameHoaDonBindProp
         private bool _IsVisibleFrameHoaDonBindProp = true;
@@ -122,7 +132,7 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        //Frame hoa don
+        //Frame hoa don - Khu vuc
 
         #region ListSectionBindProp
         private ObservableCollection<Zone> _ListSectionBindProp = null;
@@ -139,6 +149,15 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ListInvoiceBindProp; }
             set { SetProperty(ref _ListInvoiceBindProp, value); }
+        }
+        #endregion
+
+        #region ListTableBindProp
+        private ObservableCollection<Table> _ListTableBindProp = null;
+        public ObservableCollection<Table> ListTableBindProp
+        {
+            get { return _ListTableBindProp; }
+            set { SetProperty(ref _ListTableBindProp, value); }
         }
         #endregion
 
@@ -197,6 +216,15 @@ namespace CSM.Xam.ViewModels
         {
             get { return _TotalPriceBindProp; }
             set { SetProperty(ref _TotalPriceBindProp, value); }
+        }
+        #endregion
+
+        #region ZoneBindProp
+        private string _ZoneBindProp = "Chọn bàn";
+        public string ZoneBindProp
+        {
+            get { return _ZoneBindProp; }
+            set { SetProperty(ref _ZoneBindProp, value); }
         }
         #endregion
 
@@ -353,6 +381,7 @@ namespace CSM.Xam.ViewModels
                             break;
                         case "hoadon":
                             SetFramesInvisible();
+                            IsVisibleFrameHoaDonKhuVucBindProp = true;
                             IsVisibleFrameHoaDonBindProp = true;
                             break;
                         case "thuvien":
@@ -603,18 +632,112 @@ namespace CSM.Xam.ViewModels
 
         // Menu duoi
 
+        // Frame Hoa don - Khu vuc
+
+        #region SelectZoneCommand
+
+        public DelegateCommand<object> SelectZoneCommand { get; private set; }
+        private async void OnSelectZone(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (obj is Zone zone)
+                {
+                    IsVisbleFrameKhuVucBindProp = true;
+                    IsVisibleFrameHoaDonBindProp = false;
+                    var listTable = new List<Table>();
+                    _tableInZone.TryGetValue(zone.Id, out listTable);
+                    ListTableBindProp = new ObservableCollection<Table>(listTable);
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectZoneCommand()
+        {
+            SelectZoneCommand = new DelegateCommand<object>(OnSelectZone);
+            SelectZoneCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region SelectTableCommand
+
+        public DelegateCommand<object> SelectTableCommand { get; private set; }
+        private async void OnSelectTable(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (obj is Table table)
+                {
+                    var zone = ListSectionBindProp.FirstOrDefault(h => h.Id == table.FkZone);
+                    ZoneBindProp = $"{zone.ZoneName} - {table.TableName}";
+                    SetFramesInvisible();
+                    IsVisibleFrameThucDonBindProp = true;
+                    IsVisibleFrameBillBindProp = true;
+                }
+                else
+                {
+                    SetFramesInvisible();
+                    IsVisibleFrameHoaDonKhuVucBindProp = true;
+                    IsVisbleFrameKhuVucBindProp = true;
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectTableCommand()
+        {
+            SelectTableCommand = new DelegateCommand<object>(OnSelectTable);
+            SelectTableCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
 
         #endregion
 
         #region Method
         private void SetFramesInvisible()
         {
-            IsVisibleFrameBillBindProp = false;
+            IsVisibleFrameHoaDonKhuVucBindProp = false;
             IsVisbleFrameKhuVucBindProp = false;
-            IsVisibleFrameHoaDonBindProp = false;
+            IsVisibleFrameBillBindProp = false;
             IsVisibleFrameMenuBindProp = false;
             IsVisibleFrameThucDonBindProp = false;
             IsVisibleFrameThuVienBindProp = false;
+            IsVisibleListCategoryBindProp = false;
         }
 
         private async void GetAllInvoice()
@@ -627,11 +750,22 @@ namespace CSM.Xam.ViewModels
 
         private async void GetAllZone()
         {
+            _tableInZone = new Dictionary<string, List<Table>>();
             var zoneLogic = new ZoneLogic(_dbContext);
+            var tableLogic = new TableLogic(_dbContext);
+
             var listZone = await zoneLogic.GetAllAsync();
+
+            foreach (var zone in listZone)
+            {
+                var listTable = await tableLogic.GetTableByZoneAsync(zone.Id);
+
+                _tableInZone.Add(zone.Id, listTable);
+            }
 
             ListSectionBindProp = new ObservableCollection<Zone>(listZone);
         }
+
         #endregion
 
         #region MessageHandler

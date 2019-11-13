@@ -25,7 +25,7 @@
 
               <!--Frame hoa don - khu vuc-->  
             <Grid BackgroundColor="{StaticResource BackgroundColor}"
-                IsVisible="{Binding IsVisibleFrameHoaDonBindProp, Mode=OneWay}"
+                IsVisible="{Binding IsVisibleFrameHoaDonKhuVucBindProp, Mode=OneWay}"
                 Grid.ColumnSpan="2"
                 Style="{StaticResource CommonWrapper}">
                 <Grid.RowDefinitions>
@@ -58,8 +58,10 @@
                         <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}" Orientation="Horizontal">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
-                                      <!--Khu vuc-->  
-                                    <mr:Grid Padding="{StaticResource CommonHorizontalThickness}">
+                                      <!--Khu vuc-->
+                                    <mr:Grid Padding="{StaticResource CommonHorizontalThickness}" 
+                                             TappedCommand="{Binding BindingContext.SelectZoneCommand, Source={x:Reference mainPage}}" 
+                                             TappedCommandParameter="{Binding}">
                                         <Label VerticalOptions="Center" FontSize="Large" Text="{Binding ZoneName}"/>
                                     </mr:Grid>
                                 </DataTemplate>
@@ -85,7 +87,7 @@
                   <!--Danh sach hoa don-->  
                 <dataControls:RadListView
                     Grid.Row="1"
-                    IsVisible="True"
+                    IsVisible="{Binding IsVisibleFrameHoaDonBindProp}"
                     Margin="{StaticResource SmallThickness}"
                     ItemsSource="{Binding ListInvoiceBindProp, Mode=OneWay}">
                     <dataControls:RadListView.LayoutDefinition>
@@ -149,47 +151,28 @@
                 </dataControls:RadListView>
 
                   <!--Danh sach khu vuc ban-->  
-                <!--<dataControls:RadListView
+                <dataControls:RadListView
                     Grid.Row="1"
                     Margin="{StaticResource CommonThickness}"
-                    IsVisible="True"
-                    ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}">
+                    IsVisible="{Binding IsVisbleFrameKhuVucBindProp}"
+                    ItemsSource="{Binding ListTableBindProp, Mode=OneWay}">
                     <dataControls:RadListView.LayoutDefinition>
                         <listView:ListViewGridLayout HorizontalItemSpacing="{StaticResource SmallThickness}" SpanCount="6" VerticalItemSpacing="{StaticResource SmallThickness}" />
                     </dataControls:RadListView.LayoutDefinition>
-                    <dataControls:RadListView.Commands>
-                        <commands:ListViewUserCommand Command="{Binding TapSelectTableRoomCommand, Mode=OneWay}" Id="ItemTap" />
-                    </dataControls:RadListView.Commands>
                     <dataControls:RadListView.ItemTemplate>
                         <DataTemplate>
                             <listView:ListViewTemplateCell>
                                 <listView:ListViewTemplateCell.View>
-                                    <tlrPrimitives:RadBorder Style="{StaticResource KhuVucBanBorder}">
-                                        <Grid Style="{StaticResource KhuVucBanWrapper}">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <Label FontSize="{Binding SizeBan, Mode=OneWay}" Style="{StaticResource KhuVucBan_LoaiBan}" Text="{Binding FontAwsomeLoaiBan, Mode=OneWay}" />
-                                            <Label Style="{StaticResource KhuVucBan_TenBan}" Text="{Binding TableName, Mode=OneWay}" />
-
-                                            <Label Style="{StaticResource KhuVucBan_SoLuongNguoi}" Text="{Binding SoLuongNguoi, Mode=OneWay}" />
-                                            <Label Style="{StaticResource KhuVucBan_Splash}" Text="/" />
-                                            <Label Style="{StaticResource KhuVucBan_ChairNumber}" Text="{Binding ChairNumber, Mode=OneWay}" />
-                                        </Grid>
-                                    </tlrPrimitives:RadBorder>
+                                    <mr:Grid TappedCommand="{Binding BindingContext.SelectTableCommand, Source={x:Reference mainPage}}"
+                                             TappedCommandParameter="{Binding}">
+                                        <Label Style="{StaticResource BanIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
+                                        <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
+                                    </mr:Grid>
                                 </listView:ListViewTemplateCell.View>
                             </listView:ListViewTemplateCell>
                         </DataTemplate>
                     </dataControls:RadListView.ItemTemplate>
-                </dataControls:RadListView>-->
+                </dataControls:RadListView>
             </Grid>
 
               <!--Frame thuc don trai-->
@@ -247,8 +230,9 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                          <!--Title-->  
-                        <Label Style="{StaticResource Bill_Table}" Text="Chọn bàn" />
+                          <!--Title-->
+                        <mr:Label Style="{StaticResource Bill_Table}" Text="{Binding ZoneBindProp}" 
+                                  TappedCommand="{Binding SelectTableCommand}"/>
 
                           <!--Seperate line-->  
                         <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>

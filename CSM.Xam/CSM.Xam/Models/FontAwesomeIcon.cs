@@ -118,5 +118,10 @@ namespace CSM.Xam.Models
         /// Icon Boxex
         /// </summary>
         public const string Boxes = "\uf468";
+
+        /// <summary>
+        /// Icon Square
+        /// </summary>
+        public const string Square = "\uf0c8";
     }
 }
