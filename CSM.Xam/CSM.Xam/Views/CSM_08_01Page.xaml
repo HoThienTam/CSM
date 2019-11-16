@@ -79,7 +79,7 @@
                                     <listView:ListViewTemplateCell>
                                         <listView:ListViewTemplateCell.View>
                                             <Grid>
-                                                <Label Style="{StaticResource BanIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
+                                                <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
                                                 <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
                                             </Grid>
                                         </listView:ListViewTemplateCell.View>

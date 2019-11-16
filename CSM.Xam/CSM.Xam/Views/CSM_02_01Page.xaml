@@ -86,7 +86,7 @@
 
                                                     <tlrInput:RadEntry
                                                         Grid.Column="1"
-                                                        IsEnabled="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                        IsEnabled="{Binding BindingContext.IsEditing, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                         Style="{StaticResource CommonLeftEntry}"
                                                         WatermarkText="Tên danh mục"
                                                         Text="{Binding CategoryName, Mode=TwoWay}">
@@ -96,7 +96,7 @@
                                                     </tlrInput:RadEntry>
 
                                                     <mr:Label Grid.Column="2"
-                                                           IsVisible="{Binding BindingContext.IsEditingBindProp, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                           IsVisible="{Binding BindingContext.IsEditing, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                            Margin="{StaticResource CommonRightThickness}"
                                                            TappedCommand="{Binding BindingContext.DeleteCategoryCommand, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                            TappedCommandParameter="{Binding}"

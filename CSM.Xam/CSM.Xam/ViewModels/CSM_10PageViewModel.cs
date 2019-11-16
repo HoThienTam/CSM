@@ -191,7 +191,6 @@ namespace CSM.Xam.ViewModels
                         {
                             FkInvoice = invoice.Id,
                             FkItem = item.Id,
-                            Id = Guid.NewGuid().ToString(),
                             Quantity = 1
                         }, false);
                     }

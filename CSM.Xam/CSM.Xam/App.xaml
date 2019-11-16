@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
-        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
-        xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
-        xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
-        xmlns:cvt="clr-namespace:CSM.Xam.Converters"
-        x:Class="CSM.Xam.App">
+                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                        xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
+                        xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+                        xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+                        xmlns:cvt="clr-namespace:CSM.Xam.Converters"
+                        xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+                        x:Class="CSM.Xam.App">
     <Application.Resources>
         <!-- Application resource dictionary -->
         <cvt:DoubleToCurrencyConverter x:Key="DoubleToCurrencyConverter"/>
@@ -316,6 +317,8 @@
         <!-- Bill -->
         <Style x:Key="Bill_Table" TargetType="Label">
             <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="Large" />
+            <Setter Property="TextColor" Value="Black" />
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="HorizontalOptions" Value="StartAndExpand" />
             <Setter Property="LineBreakMode" Value="TailTruncation" />
@@ -349,9 +352,6 @@
         </Style>
 
         <!--  Ban  -->
-        <Style x:Key="BanIcon" BasedOn="{StaticResource CommonLabelIcon}" TargetType="Label">
-            <Setter Property="FontSize" Value="Header" />
-        </Style>
         <Style x:Key="BanText" BasedOn="{StaticResource CommonLabelIcon}" TargetType="Label">
             <Setter Property="TextColor" Value="{StaticResource BackgroundColor}" />
             <Setter Property="VerticalOptions" Value="Center" />

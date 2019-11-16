@@ -33,7 +33,7 @@ namespace CSM.Logic
             return query.ToListAsync();
         }
 
-        public Task<InvoiceItem> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<List<InvoiceItem>> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
             IQueryable<InvoiceItem> query = _DbContext.InvoiceItem;
             if (tracking)
@@ -47,16 +47,15 @@ namespace CSM.Logic
 
             query = query.Where(h => h.IsDeleted == (int)status);
 
-            var item = query.FirstOrDefaultAsync(h => h.Id == id);
+            var item = query.Where(h => h.FkInvoice == id);
 
-            return item;
+            return item.ToListAsync();
         }
 
         public async Task<InvoiceItem> CreateAsync(InvoiceItem obj, bool saveChange = true)
         {
             var item = new InvoiceItem
             {
-              Id = obj.Id,
               CreationDate = DateTime.Now.ToString("HH:mm:ss"),
               Creator = "Tam",
               FkInvoice = obj.FkInvoice,
@@ -84,7 +83,7 @@ namespace CSM.Logic
 
         public async Task<InvoiceItem> UpdateAsync(InvoiceItem obj, bool saveChange = true)
         {
-            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.FkInvoice == obj.FkInvoice);
 
             try
             {
@@ -103,7 +102,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.InvoiceItem.FirstOrDefaultAsync(h => h.FkInvoice == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;

@@ -17,7 +17,7 @@ namespace CSM.Xam.ViewModels
         private dataContext _dbContext = Helper.GetDataContext();
         public CSM_08PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-
+            Title = "Quản lý khu vực";
         }
 
         #region ListSectionBindProp

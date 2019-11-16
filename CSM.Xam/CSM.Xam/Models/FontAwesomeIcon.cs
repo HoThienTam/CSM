@@ -123,5 +123,10 @@ namespace CSM.Xam.Models
         /// Icon Square
         /// </summary>
         public const string Square = "\uf0c8";
+
+        /// <summary>
+        /// Icon Rectangle
+        /// </summary>
+        public const string Rectangle = "\uf2fa";
     }
 }

@@ -43,7 +43,15 @@ namespace CSM.Xam.ViewModels
         public bool IsVisibleFrameHoaDonBindProp
         {
             get { return _IsVisibleFrameHoaDonBindProp; }
-            set { SetProperty(ref _IsVisibleFrameHoaDonBindProp, value); }
+            set 
+            { 
+                SetProperty(ref _IsVisibleFrameHoaDonBindProp, value);
+                RaisePropertyChanged(nameof(IsVisbleFrameKhuVucBindProp));
+            }
+        }
+        public bool IsVisbleFrameKhuVucBindProp
+        {
+            get { return !_IsVisibleFrameHoaDonBindProp; }
         }
         #endregion
 
@@ -53,15 +61,6 @@ namespace CSM.Xam.ViewModels
         {
             get { return _IsVisibleFrameThuVienBindProp; }
             set { SetProperty(ref _IsVisibleFrameThuVienBindProp, value); }
-        }
-        #endregion
-
-        #region IsVisibleFrameMenuBindProp
-        private bool _IsVisibleFrameMenuBindProp = false;
-        public bool IsVisibleFrameMenuBindProp
-        {
-            get { return _IsVisibleFrameMenuBindProp; }
-            set { SetProperty(ref _IsVisibleFrameMenuBindProp, value); }
         }
         #endregion
 
@@ -83,30 +82,21 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region IsVisbleFrameKhuVucBindProp
-        private bool _IsVisbleFrameKhuVucBindProp = false;
-        public bool IsVisbleFrameKhuVucBindProp
-        {
-            get { return _IsVisbleFrameKhuVucBindProp; }
-            set { SetProperty(ref _IsVisbleFrameKhuVucBindProp, value); }
-        }
-        #endregion
-
         #region IsVisibleListCategoryBindProp
         private bool _IsVisibleListCategoryBindProp = true;
         public bool IsVisibleListCategoryBindProp
         {
             get { return _IsVisibleListCategoryBindProp; }
-            set { SetProperty(ref _IsVisibleListCategoryBindProp, value); }
+            set 
+            { 
+                SetProperty(ref _IsVisibleListCategoryBindProp, value);
+                RaisePropertyChanged(nameof(IsVisibleListItemBindProp));
+            }
         }
-        #endregion
 
-        #region IsVisibleListItemBindProp
-        private bool _IsVisibleListItemBindProp = false;
         public bool IsVisibleListItemBindProp
         {
-            get { return _IsVisibleListItemBindProp; }
-            set { SetProperty(ref _IsVisibleListItemBindProp, value); }
+            get { return !_IsVisibleListCategoryBindProp; }
         }
         #endregion
 
@@ -130,6 +120,20 @@ namespace CSM.Xam.ViewModels
             get { return _ListMenuBindProp; }
             set { SetProperty(ref _ListMenuBindProp, value); }
         }
+        #endregion
+
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
+        {
+            get { return _IsEditing; }
+            set { 
+                SetProperty(ref _IsEditing, value);
+                RaisePropertyChanged(nameof(IsNotEditting));
+            }
+        }
+
+        public bool IsNotEditting { get { return !_IsEditing; } }
         #endregion
 
         //Frame hoa don - Khu vuc
@@ -228,6 +232,17 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        // Frame menu
+
+        #region ListItemInMenuBindProp
+        private ObservableCollection<Item> _ListItemInMenuBindProp;
+        public ObservableCollection<Item> ListItemInMenuBindProp
+        {
+            get { return _ListItemInMenuBindProp; }
+            set { SetProperty(ref _ListItemInMenuBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Command
@@ -298,7 +313,6 @@ namespace CSM.Xam.ViewModels
 
                 var listItem = ListAllItemBindProp.Where(h => h.FkCategory == selectedCategory.Id).ToList();
                 ListItemBindProp = new ObservableCollection<Item>(listItem);
-                IsVisibleListItemBindProp = true;
                 IsVisibleListCategoryBindProp = false;
             }
             catch (Exception e)
@@ -336,7 +350,6 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 IsVisibleListCategoryBindProp = true;
-                IsVisibleListItemBindProp = false;
             }
             catch (Exception e)
             {
@@ -353,65 +366,6 @@ namespace CSM.Xam.ViewModels
         {
             GoBackCategoryCommand = new DelegateCommand<object>(OnGoBackCategory);
             GoBackCategoryCommand.ObservesCanExecute(() => IsNotBusy);
-        }
-
-        #endregion
-
-        #region SelectViewCommand
-
-        public DelegateCommand<object> SelectViewCommand { get; private set; }
-        private async void OnSelectView(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                if (obj is string menu)
-                {
-                    switch (menu)
-                    {
-                        case "hamburger":
-                            IsVisiblePopupBindProp = true;
-                            break;
-                        case "hoadon":
-                            SetFramesInvisible();
-                            IsVisibleFrameHoaDonKhuVucBindProp = true;
-                            IsVisibleFrameHoaDonBindProp = true;
-                            break;
-                        case "thuvien":
-                            SetFramesInvisible();
-                            IsVisibleFrameThuVienBindProp = true;
-                            IsVisibleFrameBillBindProp = true;
-                            break;
-                        case "chinhsua":
-                            SetFramesInvisible();
-                            IsVisibleFrameThuVienBindProp = true;
-                            IsVisibleFrameMenuBindProp = true;
-                            break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitSelectViewCommand()
-        {
-            SelectViewCommand = new DelegateCommand<object>(OnSelectView);
-            SelectViewCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
@@ -461,7 +415,7 @@ namespace CSM.Xam.ViewModels
                             ListMenuBindProp.Add(menu);
                             break;
                         case "hoantat":
-                            IsVisibleFrameMenuBindProp = false;
+                            IsEditing = false;
                             IsVisibleFrameBillBindProp = true;
                             break;
                         case "hoatdong":
@@ -546,14 +500,17 @@ namespace CSM.Xam.ViewModels
                     {
                         FkInvoice = invoice.Id,
                         FkItem = item.Id,
-                        Id = Guid.NewGuid().ToString(),
                         Quantity = 1
                     }, false);
                 }
                 await _dbContext.SaveChangesAsync();
 
-                SetFramesInvisible();
-                IsVisibleFrameHoaDonBindProp = true;
+                IsVisibleFrameHoaDonKhuVucBindProp = true;
+
+                IsVisibleFrameThuVienBindProp = false;
+                IsVisibleFrameThucDonBindProp = false;
+                IsVisibleFrameBillBindProp = false;
+
                 ListItemInBillBindProp = null;
                 TotalPriceBindProp = 0;
                 ItemCountBindProp = 0;
@@ -632,6 +589,131 @@ namespace CSM.Xam.ViewModels
 
         // Menu duoi
 
+        #region SelectMenuCommand
+
+        public DelegateCommand<object> SelectMenuCommand { get; private set; }
+        private async void OnSelectMenu(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day    
+                if (IsEditing)
+                {
+                    IsVisibleFrameThuVienBindProp = false;
+
+                    IsVisibleFrameThucDonBindProp = true;
+                }
+                else
+                {
+                    IsVisibleFrameHoaDonKhuVucBindProp = false;
+                    IsVisibleFrameThuVienBindProp = false;
+
+                    IsVisibleFrameThucDonBindProp = true;
+                    IsVisibleFrameBillBindProp = true;
+                }            
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectMenuCommand()
+        {
+            SelectMenuCommand = new DelegateCommand<object>(OnSelectMenu);
+            SelectMenuCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region SelectViewCommand
+
+        public DelegateCommand<object> SelectViewCommand { get; private set; }
+        private async void OnSelectView(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (obj is string menu)
+                {
+                    switch (menu)
+                    {
+                        case "hamburger":
+                            IsVisiblePopupBindProp = true;
+                            break;
+                        case "hoadon":
+                            IsVisibleFrameBillBindProp = false;
+                            IsVisibleFrameThuVienBindProp = false;
+                            IsVisibleFrameThucDonBindProp = false;
+
+                            IsVisibleFrameHoaDonKhuVucBindProp = true;
+                            IsVisibleFrameHoaDonBindProp = true;
+                            break;
+                        case "thuvien":
+                            if (IsNotEditting)
+                            {
+                                IsVisibleFrameHoaDonKhuVucBindProp = false;
+                                IsVisibleFrameThucDonBindProp = false;
+
+                                IsVisibleFrameThuVienBindProp = true;
+                                IsVisibleFrameBillBindProp = true;
+                                IsVisibleListCategoryBindProp = true;
+                            }
+                            else
+                            {
+                                IsVisibleFrameHoaDonKhuVucBindProp = false;
+                                IsVisibleFrameThucDonBindProp = false;
+                                IsVisibleFrameBillBindProp = false;
+
+                                IsVisibleFrameThuVienBindProp = true;
+                                IsVisibleListCategoryBindProp = true;
+                            }
+                            break;
+                        case "chinhsua":
+                            IsEditing = true;
+                            IsVisibleFrameBillBindProp = false;
+                            break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectViewCommand()
+        {
+            SelectViewCommand = new DelegateCommand<object>(OnSelectView);
+            SelectViewCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         // Frame Hoa don - Khu vuc
 
         #region SelectZoneCommand
@@ -651,7 +733,6 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 if (obj is Zone zone)
                 {
-                    IsVisbleFrameKhuVucBindProp = true;
                     IsVisibleFrameHoaDonBindProp = false;
                     var listTable = new List<Table>();
                     _tableInZone.TryGetValue(zone.Id, out listTable);
@@ -696,15 +777,16 @@ namespace CSM.Xam.ViewModels
                 {
                     var zone = ListSectionBindProp.FirstOrDefault(h => h.Id == table.FkZone);
                     ZoneBindProp = $"{zone.ZoneName} - {table.TableName}";
-                    SetFramesInvisible();
                     IsVisibleFrameThucDonBindProp = true;
                     IsVisibleFrameBillBindProp = true;
                 }
                 else
                 {
-                    SetFramesInvisible();
-                    IsVisibleFrameHoaDonKhuVucBindProp = true;
-                    IsVisbleFrameKhuVucBindProp = true;
+                    var zone = ListSectionBindProp.FirstOrDefault();
+
+                    IsBusy = false;
+                    OnSelectZone(zone);
+                    IsBusy = true;
                 }
             }
             catch (Exception e)
@@ -726,20 +808,53 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        // Frame menu
+
+        #region AddItemToMenuCommand
+
+        public DelegateCommand<object> AddItemToMenuCommand { get; private set; }
+        private async void OnAddItemToMenu(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                //string[] listItem = { "Banh my", "Com", "Ca phe", "Pepsi", "Coca", "Sting" };
+                // Thuc hien cong viec tai day
+                //var rd = new Random();
+                //ListItemInMenuBindProp.Add(listItem[rd.Next(0,5)]);
+                var param = new NavigationParameters();
+                param.Add(Keys.LIST_CATEGORY, ListCategoryBindProp);
+                param.Add(Keys.LIST_ITEM, ListAllItemBindProp);
+                await NavigationService.NavigateAsync(nameof(CSM_11Page), param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitAddItemToMenuCommand()
+        {
+            AddItemToMenuCommand = new DelegateCommand<object>(OnAddItemToMenu);
+            AddItemToMenuCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         #endregion
 
         #region Method
-        private void SetFramesInvisible()
-        {
-            IsVisibleFrameHoaDonKhuVucBindProp = false;
-            IsVisbleFrameKhuVucBindProp = false;
-            IsVisibleFrameBillBindProp = false;
-            IsVisibleFrameMenuBindProp = false;
-            IsVisibleFrameThucDonBindProp = false;
-            IsVisibleFrameThuVienBindProp = false;
-            IsVisibleListCategoryBindProp = false;
-        }
-
         private async void GetAllInvoice()
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
@@ -766,6 +881,13 @@ namespace CSM.Xam.ViewModels
             ListSectionBindProp = new ObservableCollection<Zone>(listZone);
         }
 
+        private async void GetAllMenu()
+        {
+            var menuLogic = new MenuLogic(_dbContext);
+
+            var listMenu = await menuLogic.GetAllAsync();
+            ListMenuBindProp = new ObservableCollection<Menu>(listMenu);
+        }
         #endregion
 
         #region MessageHandler
@@ -798,6 +920,12 @@ namespace CSM.Xam.ViewModels
                             Price = item.Price,
                         });
                     }
+                    if (parameters.ContainsKey(Keys.LIST_ITEM))
+                    {
+                        var listItems = parameters[Keys.LIST_ITEM] as ObservableCollection<Item>;
+
+                        ListItemInMenuBindProp = new ObservableCollection<Item>(listItems);
+                    }
                     break;
                 case NavigationMode.New:
                     var itemLogic = new ItemLogic(_dbContext);
@@ -808,6 +936,7 @@ namespace CSM.Xam.ViewModels
 
                     GetAllInvoice();
                     GetAllZone();
+                    GetAllMenu();
 
                     ListItemBindProp = new ObservableCollection<Item>(listItem);
                     ListAllItemBindProp = new List<Item>(listItem);

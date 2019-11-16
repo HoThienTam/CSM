@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
 
-              <!--Frame hoa don - khu vuc-->  
+              <!--Frame hoa don - khu vuc-->
             <Grid BackgroundColor="{StaticResource BackgroundColor}"
                 IsVisible="{Binding IsVisibleFrameHoaDonKhuVucBindProp, Mode=OneWay}"
                 Grid.ColumnSpan="2"
@@ -33,7 +33,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                  <!--Menu tren hoa don - khu vuc-->  
+                <!--Menu tren hoa don - khu vuc-->
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -42,8 +42,10 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                      <!--Hoa don-->  
-                    <mr:Grid Padding="{StaticResource CommonHorizontalThickness}">
+                    <!--Hoa don-->
+                    <mr:Grid Padding="{StaticResource CommonHorizontalThickness}" 
+                             TappedCommand="{Binding SelectViewCommand}"
+                             TappedCommandParameter="hoadon">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -53,12 +55,12 @@
 
                     <BoxView BackgroundColor="{StaticResource SubColor}" WidthRequest="1" Grid.Column="1"/>
 
-                      <!--Danh sach menu khu vuc-->  
+                    <!--Danh sach menu khu vuc-->
                     <ScrollView Grid.Column="2" Orientation="Horizontal" HorizontalOptions="Start">
                         <StackLayout BindableLayout.ItemsSource="{Binding ListSectionBindProp, Mode=OneWay}" Orientation="Horizontal">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
-                                      <!--Khu vuc-->
+                                    <!--Khu vuc-->
                                     <mr:Grid Padding="{StaticResource CommonHorizontalThickness}" 
                                              TappedCommand="{Binding BindingContext.SelectZoneCommand, Source={x:Reference mainPage}}" 
                                              TappedCommandParameter="{Binding}">
@@ -69,7 +71,7 @@
                         </StackLayout>
                     </ScrollView>
 
-                      <!--DELETE BILL-->  
+                    <!--DELETE BILL-->
                     <mr:Grid
                             Grid.Column="3"
                             Padding="{StaticResource CommonThickness}">
@@ -84,9 +86,9 @@
                     </mr:Grid>
                 </Grid>
                 <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" VerticalOptions="End"/>
-                  <!--Danh sach hoa don-->  
+                <!--Danh sach hoa don-->
                 <dataControls:RadListView
-                    Grid.Row="1"
+                    Grid.Row="1"         
                     IsVisible="{Binding IsVisibleFrameHoaDonBindProp}"
                     Margin="{StaticResource SmallThickness}"
                     ItemsSource="{Binding ListInvoiceBindProp, Mode=OneWay}">
@@ -150,7 +152,7 @@
                     </dataControls:RadListView.ItemTemplate>
                 </dataControls:RadListView>
 
-                  <!--Danh sach khu vuc ban-->  
+                <!--Danh sach khu vuc ban-->
                 <dataControls:RadListView
                     Grid.Row="1"
                     Margin="{StaticResource CommonThickness}"
@@ -165,7 +167,7 @@
                                 <listView:ListViewTemplateCell.View>
                                     <mr:Grid TappedCommand="{Binding BindingContext.SelectTableCommand, Source={x:Reference mainPage}}"
                                              TappedCommandParameter="{Binding}">
-                                        <Label Style="{StaticResource BanIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
+                                        <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" Text="{x:Static lcModels:FontAwesomeIcon.Square}" />
                                         <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
                                     </mr:Grid>
                                 </listView:ListViewTemplateCell.View>
@@ -174,14 +176,27 @@
                     </dataControls:RadListView.ItemTemplate>
                 </dataControls:RadListView>
             </Grid>
-
-              <!--Frame thuc don trai-->
+            
+            <!--Frame thuc don trai-->
             <Grid IsVisible="{Binding IsVisibleFrameThucDonBindProp, Mode=OneWay}">
-                  <!--List item-->  
-                <dataControls:RadListView
+                <Grid.Resources>
+                    <x:Double x:Key="MenuItemSize">120</x:Double>
+                </Grid.Resources>
+                  <!--List item-->
+                <dataControls:RadListView                 
                     Margin="{StaticResource CommonThickness}"
-                    ItemsSource="{Binding ListMenuBindProp, Mode=OneWay}">
-
+                    ItemsSource="{Binding ListItemInMenuBindProp, Mode=OneWay}"
+                    LoadOnDemandMode="Manual"
+                    IsLoadOnDemandEnabled="{Binding IsEditing}">
+                    <dataControls:RadListView.LoadOnDemandItemTemplate>
+                        <DataTemplate>
+                            <mr:Grid Padding="{StaticResource SmallThickness}" TappedCommand="{Binding AddItemToMenuCommand}">
+                                <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}"  Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}"/>
+                                <Label Style="{StaticResource CommonLabelIcon}" TextColor="{StaticResource BackgroundColor}" FontSize="Large" Text="{x:Static lcModels:FontAwesomeIcon.Plus}"/>
+                            </mr:Grid>
+                        </DataTemplate>
+                    </dataControls:RadListView.LoadOnDemandItemTemplate>
+                   
                     <dataControls:RadListView.LayoutDefinition>
                         <listView:ListViewGridLayout HorizontalItemSpacing="{StaticResource SmallThickness}" SpanCount="5" VerticalItemSpacing="{StaticResource SmallThickness}" />
                     </dataControls:RadListView.LayoutDefinition>
@@ -190,16 +205,10 @@
                         <DataTemplate>
                             <listView:ListViewTemplateCell>
                                 <listView:ListViewTemplateCell.View>
-                                    <tlrPrimitives:RadBorder HeightRequest="120">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Image BackgroundColor="{StaticResource MainColor}" Aspect="AspectFill"/>
-                                            <Label Grid.Row="1" Text="Bánh mỳ" />
-                                        </Grid>
-                                    </tlrPrimitives:RadBorder>
+                                    <Grid>
+                                        <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}" Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}" />
+                                        <Label Text="{Binding}" HorizontalOptions="Center" VerticalOptions="End" />
+                                    </Grid>
                                 </listView:ListViewTemplateCell.View>
                             </listView:ListViewTemplateCell>
                         </DataTemplate>
@@ -231,7 +240,8 @@
                         </Grid.ColumnDefinitions>
 
                           <!--Title-->
-                        <mr:Label Style="{StaticResource Bill_Table}" Text="{Binding ZoneBindProp}" 
+                        <mr:Label Style="{StaticResource Bill_Table}" 
+                                  Text="{Binding ZoneBindProp}" 
                                   TappedCommand="{Binding SelectTableCommand}"/>
 
                           <!--Seperate line-->  
@@ -318,7 +328,16 @@
                         </mr:Label>
 
                         <!--Right text-->
-                        <mr:Label Text="Chỉnh sửa" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="chinhsua"/>
+                        <mr:Label Text="Chỉnh sửa" 
+                                  Style="{StaticResource CommonHeaderRightText}" 
+                                  TappedCommand="{Binding SelectViewCommand}" 
+                                  TappedCommandParameter="chinhsua">
+                            <mr:Label.Triggers>
+                                <DataTrigger TargetType="mr:Label" Binding="{Binding IsEditing}" Value="True">
+                                    <Setter Property="Text" Value=""/>
+                                </DataTrigger>
+                            </mr:Label.Triggers>
+                        </mr:Label>
                     </Grid>
 
                       <!--Seperate line-->  
@@ -390,7 +409,7 @@
             <!-- Frame thu vien phai -->
             <StackLayout Spacing="{StaticResource LargeThickness}" 
                          VerticalOptions="Center" Grid.Column="1" 
-                         IsVisible="{Binding IsVisibleFrameMenuBindProp}"
+                         IsVisible="{Binding IsEditing}"
                          Margin="{StaticResource CommonRightThickness}">
                 
                 <tlrPrimitives:RadBorder 
@@ -453,7 +472,7 @@
 
                 <!--Hamburger-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
-                    IsEnabled="True"
+                    IsEnabled="{Binding IsNotEditting}"
                     TappedCommand="{Binding SelectViewCommand}"
                     TappedCommandParameter="hamburger">
                     <Grid.RowDefinitions>
@@ -499,9 +518,10 @@
                 </mr:Grid>
                 <!--Hoa don-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
-                    Grid.Column="1" 
-                    TappedCommand="{Binding SelectViewCommand, Mode=OneWay}"
-                    TappedCommandParameter="hoadon">
+                         Grid.Column="1" 
+                         IsEnabled="{Binding IsNotEditting}"
+                         TappedCommand="{Binding SelectViewCommand, Mode=OneWay}"
+                         TappedCommandParameter="hoadon">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -517,7 +537,9 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <!--Thuc don-->
-                                <mr:Grid Style="{StaticResource BottomMenu_Item}">
+                                <mr:Grid Style="{StaticResource BottomMenu_Item}" 
+                                         TappedCommand="{Binding BindingContext.SelectMenuCommand,Source={x:Reference mainPage}}"
+                                         TappedCommandParameter="{Binding}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />

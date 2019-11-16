@@ -30,12 +30,12 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region IsEditingBindProp
-        private bool _IsEditingBindProp = false;
-        public bool IsEditingBindProp
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
         {
-            get { return _IsEditingBindProp; }
-            set { SetProperty(ref _IsEditingBindProp, value); }
+            get { return _IsEditing; }
+            set { SetProperty(ref _IsEditing, value); }
         }
         #endregion
 
@@ -210,7 +210,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                if (IsEditingBindProp) //neu dang o che do chinh sua
+                if (IsEditing) //neu dang o che do chinh sua
                 {
                     var categoryLogic = new CategoryLogic(_dbContext);
                     // Kiem tra them xoa sua
@@ -371,7 +371,7 @@ namespace CSM.Xam.ViewModels
 
                     if (parameters.ContainsKey(Keys.IS_EDITING))
                     {
-                        IsEditingBindProp = true;
+                        IsEditing = true;
                     }
                     break;
                 case NavigationMode.Forward:

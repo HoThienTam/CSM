@@ -27,9 +27,19 @@ namespace CSM.Xam.Models
         public const string CATEGORY = "CATEGORY";
 
         /// <summary>
+        /// Truyen list toan bo category
+        /// </summary>
+        public const string LIST_CATEGORY = "LIST_CATEGORY";
+
+        /// <summary>
         /// Truyen item moi tao
         /// </summary>
         public const string ITEM = "ITEM";
+
+        /// <summary>
+        /// Truyen list toan bo item
+        /// </summary>
+        public const string LIST_ITEM = "LIST_ITEM";
 
         /// <summary>
         /// Truyen zone moi tao

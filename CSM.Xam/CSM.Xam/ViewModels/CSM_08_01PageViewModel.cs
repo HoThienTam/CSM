@@ -147,6 +147,7 @@ namespace CSM.Xam.ViewModels
                 var table = await tableLogic.CreateAsync(new Table
                 {
                     Id = Guid.NewGuid().ToString(),
+                    TableName = "001",
                     FkZone = ZoneIdBindProp
                 });
                 ListTableBindProp.Add(table);

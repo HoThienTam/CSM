@@ -20,6 +20,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <!-- Sidebar -->
             <Grid Style="{StaticResource CommonWrapper}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -68,6 +69,7 @@
 
             <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>
 
+            <!-- Tao khu vuc -->
             <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
                 <Grid Style="{StaticResource CommonWrapper}">
                     <Grid.RowDefinitions>
@@ -82,13 +84,13 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <!--Title-->
-                        <Label Style="{StaticResource CommonHeaderText}" Text="Quản lý khu vực"/>
+                        <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
 
                         <!--Back icon-->
                         <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="" />
 
                         <!--Right text-->
-                        <Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}"/>
+                        <Label Text="" Style="{StaticResource CommonHeaderRightText}"/>
                     </Grid>
 
                     <!--Seperate line-->
