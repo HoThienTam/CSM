@@ -19,6 +19,9 @@ namespace CSM.Xam.ViewModels
     {
         private dataContext _dbContext = Helper.GetDataContext();
         private Dictionary<string, List<Table>> _tableInZone;
+        private Dictionary<string, List<Item>> _itemInMenu;
+        private string _menuId;
+        private List<Item> _listAllItem;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
@@ -176,15 +179,6 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ListAllItemBindProp
-        private List<Item> _ListAllItemBindProp = null;
-        public List<Item> ListAllItemBindProp
-        {
-            get { return _ListAllItemBindProp; }
-            set { SetProperty(ref _ListAllItemBindProp, value); }
-        }
-        #endregion
-
         #region ListItemBindProp
         private ObservableCollection<Item> _ListItemBindProp = null;
         public ObservableCollection<Item> ListItemBindProp
@@ -311,7 +305,7 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var selectedCategory = (obj as ItemTapCommandContext).Item as Category;
 
-                var listItem = ListAllItemBindProp.Where(h => h.FkCategory == selectedCategory.Id).ToList();
+                var listItem = _listAllItem.Where(h => h.FkCategory == selectedCategory.Id).ToList();
                 ListItemBindProp = new ObservableCollection<Item>(listItem);
                 IsVisibleListCategoryBindProp = false;
             }
@@ -617,7 +611,14 @@ namespace CSM.Xam.ViewModels
 
                     IsVisibleFrameThucDonBindProp = true;
                     IsVisibleFrameBillBindProp = true;
-                }            
+                }
+                var menu = obj as Menu;
+
+                _menuId = menu.Id;
+
+                var listItem = new List<Item>();
+                _itemInMenu.TryGetValue(menu.Id, out listItem);
+                ListItemInMenuBindProp = new ObservableCollection<Item>(listItem);
             }
             catch (Exception e)
             {
@@ -734,6 +735,7 @@ namespace CSM.Xam.ViewModels
                 if (obj is Zone zone)
                 {
                     IsVisibleFrameHoaDonBindProp = false;
+
                     var listTable = new List<Table>();
                     _tableInZone.TryGetValue(zone.Id, out listTable);
                     ListTableBindProp = new ObservableCollection<Table>(listTable);
@@ -779,9 +781,17 @@ namespace CSM.Xam.ViewModels
                     ZoneBindProp = $"{zone.ZoneName} - {table.TableName}";
                     IsVisibleFrameThucDonBindProp = true;
                     IsVisibleFrameBillBindProp = true;
+
+                    IsVisibleFrameHoaDonKhuVucBindProp = false;
                 }
                 else
                 {
+                    IsVisibleFrameThucDonBindProp = false;
+                    IsVisibleFrameBillBindProp = false;
+                    IsVisibleFrameThuVienBindProp = false;
+
+                    IsVisibleFrameHoaDonKhuVucBindProp = true;
+
                     var zone = ListSectionBindProp.FirstOrDefault();
 
                     IsBusy = false;
@@ -824,13 +834,10 @@ namespace CSM.Xam.ViewModels
 
             try
             {
-                //string[] listItem = { "Banh my", "Com", "Ca phe", "Pepsi", "Coca", "Sting" };
-                // Thuc hien cong viec tai day
-                //var rd = new Random();
-                //ListItemInMenuBindProp.Add(listItem[rd.Next(0,5)]);
                 var param = new NavigationParameters();
                 param.Add(Keys.LIST_CATEGORY, ListCategoryBindProp);
-                param.Add(Keys.LIST_ITEM, ListAllItemBindProp);
+                param.Add(Keys.LIST_ITEM, _listAllItem);
+                param.Add(Keys.ZONE, _menuId);
                 await NavigationService.NavigateAsync(nameof(CSM_11Page), param);
             }
             catch (Exception e)
@@ -870,7 +877,7 @@ namespace CSM.Xam.ViewModels
             var tableLogic = new TableLogic(_dbContext);
 
             var listZone = await zoneLogic.GetAllAsync();
-
+            // lay danh sach ban trong tung khu vuc
             foreach (var zone in listZone)
             {
                 var listTable = await tableLogic.GetTableByZoneAsync(zone.Id);
@@ -883,9 +890,37 @@ namespace CSM.Xam.ViewModels
 
         private async void GetAllMenu()
         {
+            //lay danh sach category va item
+            var itemLogic = new ItemLogic(_dbContext);
+            var categorylogic = new CategoryLogic(_dbContext);
+
+            var listItem = await itemLogic.GetAllAsync();
+            var listCategory = await categorylogic.GetAllAsync();
+
+            ListItemBindProp = new ObservableCollection<Item>(listItem);
+            _listAllItem = new List<Item>(listItem);
+
+            ListCategoryBindProp = new ObservableCollection<Category>(listCategory);
+
+            // lay danh sach menu va item trong menu
             var menuLogic = new MenuLogic(_dbContext);
+            var menuItemLogic = new MenuItemLogic(_dbContext);
 
             var listMenu = await menuLogic.GetAllAsync();
+            _itemInMenu = new Dictionary<string, List<Item>>();
+            //Lay danh sach item trong tung menu
+            foreach (var menu in listMenu)
+            {
+                var listItemIdInMenu = await menuItemLogic.GetAsync(menu.Id);
+                List<Item> listItemInMenu = new List<Item>();
+                //lay thong tin tung item
+                foreach (var item in listItemIdInMenu)
+                {
+                    listItemInMenu.Add(listItem.FirstOrDefault(h => h.Id == item.FkItem));
+                }
+                _itemInMenu.Add(menu.Id, listItemInMenu);
+            }
+
             ListMenuBindProp = new ObservableCollection<Menu>(listMenu);
         }
         #endregion
@@ -922,26 +957,26 @@ namespace CSM.Xam.ViewModels
                     }
                     if (parameters.ContainsKey(Keys.LIST_ITEM))
                     {
-                        var listItems = parameters[Keys.LIST_ITEM] as ObservableCollection<Item>;
+                        var listItems = parameters[Keys.LIST_ITEM] as List<Item>;
 
-                        ListItemInMenuBindProp = new ObservableCollection<Item>(listItems);
+                        foreach (var item in listItems)
+                        {
+                            if (!ListItemInMenuBindProp.Any(h => h.Id == item.Id))
+                            {
+                                ListItemInMenuBindProp.Add(item);
+                                _itemInMenu[_menuId].Add(item);
+                            }
+                        }
+
+
                     }
                     break;
                 case NavigationMode.New:
-                    var itemLogic = new ItemLogic(_dbContext);
-                    var categorylogic = new CategoryLogic(_dbContext);
-
-                    var listItem = await itemLogic.GetAllAsync();
-                    var listCategory = await categorylogic.GetAllAsync();
 
                     GetAllInvoice();
                     GetAllZone();
                     GetAllMenu();
 
-                    ListItemBindProp = new ObservableCollection<Item>(listItem);
-                    ListAllItemBindProp = new List<Item>(listItem);
-
-                    ListCategoryBindProp = new ObservableCollection<Category>(listCategory);
                     break;
                 case NavigationMode.Forward:
                     break;

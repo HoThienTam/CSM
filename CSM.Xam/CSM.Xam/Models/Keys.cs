@@ -45,5 +45,10 @@ namespace CSM.Xam.Models
         /// Truyen zone moi tao
         /// </summary>
         public const string ZONE = "ZONE";
+
+        /// <summary>
+        /// Truyen menu de add item
+        /// </summary>
+        public const string MENU = "MENU";
     }
 }

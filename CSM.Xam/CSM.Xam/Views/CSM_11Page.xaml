@@ -54,11 +54,19 @@
                     IsVisible="{Binding IsVisibleListItemBindProp}"
                     Margin="{StaticResource CommonThickness}"
                     Grid.Row="2"
-                    SelectionMode="None"
+                    SelectionMode="Multiple"
                     ItemsSource="{Binding ListItemBindProp, Mode=OneWay}">
-                    <dataControls:RadListView.Behaviors>
-                        <b:EventToCommandBehavior EventName="ItemTapped" Command="{Binding TapItemCommand}" CommandParameter="{Binding}"/>
-                    </dataControls:RadListView.Behaviors>
+                    <dataControls:RadListView.LayoutDefinition>
+                        <listView:ListViewLinearLayout VerticalItemSpacing="1" />
+                    </dataControls:RadListView.LayoutDefinition>
+                    <dataControls:RadListView.SelectedItemStyle>
+                        <listView:ListViewItemStyle BackgroundColor="{StaticResource SelectedColor}"/>
+                    </dataControls:RadListView.SelectedItemStyle>
+                    <dataControls:RadListView.Commands>
+                        <commands:ListViewUserCommand
+                                            Command="{Binding TapItemCommand, Mode=OneWay}"
+                                            Id="ItemTap" />
+                    </dataControls:RadListView.Commands>
                     <dataControls:RadListView.ItemTemplate>
                         <DataTemplate>
                             <listView:ListViewTemplateCell>

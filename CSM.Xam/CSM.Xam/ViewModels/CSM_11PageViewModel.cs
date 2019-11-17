@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using CSM.EFCore;
+using CSM.Logic;
 using CSM.Xam.Models;
 using Prism.Commands;
 using Prism.Navigation;
@@ -13,6 +14,9 @@ namespace CSM.Xam.ViewModels
 {
     public class CSM_11PageViewModel : ViewModelBase
     {
+        private dataContext _dbContext = Helper.GetDataContext();
+        private string _menuId;
+        private List<Item> _listAllItem;
         public CSM_11PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             Title = "Thêm vào thực đơn";
@@ -26,15 +30,6 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ListCategoryBindProp; }
             set { SetProperty(ref _ListCategoryBindProp, value); }
-        }
-        #endregion
-
-        #region ListAllItemBindProp
-        private List<Item> _ListAllItemBindProp = null;
-        public List<Item> ListAllItemBindProp
-        {
-            get { return _ListAllItemBindProp; }
-            set { SetProperty(ref _ListAllItemBindProp, value); }
         }
         #endregion
 
@@ -95,7 +90,7 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var selectedCategory = (obj as ItemTapCommandContext).Item as Category;
 
-                var listItem = ListAllItemBindProp.Where(h => h.FkCategory == selectedCategory.Id).ToList();
+                var listItem = _listAllItem.Where(h => h.FkCategory == selectedCategory.Id).ToList();
                 // Chuyen item thanh item extended
                 ListItemBindProp = new ObservableCollection<ItemExtended>();
                 foreach (var item in listItem)
@@ -153,6 +148,12 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var param = new NavigationParameters();
                 param.Add(Keys.LIST_ITEM, SelectedItems);
+
+                var menuItemLogic = new MenuItemLogic(_dbContext);
+
+                //luu vao database
+                await menuItemLogic.CreateAsync(_menuId, SelectedItems);
+
                 await NavigationService.GoBackAsync(param);
             }
             catch (Exception e)
@@ -190,7 +191,22 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
+                if (SelectedItems == null)
+                {
+                    SelectedItems = new List<Item>();
+                }
 
+                var selectedItem = (obj as ItemTapCommandContext).Item as ItemExtended;
+                if (selectedItem.IsSelected)
+                {
+                    selectedItem.IsSelected = false;
+                    SelectedItems.Remove(selectedItem);
+                }
+                else
+                {
+                    selectedItem.IsSelected = true;
+                    SelectedItems.Add(selectedItem);
+                }
             }
             catch (Exception e)
             {
@@ -211,6 +227,49 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region GoBackCommand
+
+        public new DelegateCommand<object> GoBackCommand { get; private set; }
+        private async void OnGoBack(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (IsVisibleListItemBindProp)
+                {
+                    IsVisibleListCategoryBindProp = true;
+                }
+                else
+                {
+                    await NavigationService.GoBackAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitGoBackCommand()
+        {
+            GoBackCommand = new DelegateCommand<object>(OnGoBack);
+            GoBackCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         #endregion
 
         #region Navigate
@@ -224,7 +283,8 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     ListCategoryBindProp = parameters[Keys.LIST_CATEGORY] as ObservableCollection<Category>;
-                    ListAllItemBindProp = parameters[Keys.LIST_ITEM] as List<Item>;
+                    _listAllItem = parameters[Keys.LIST_ITEM] as List<Item>;
+                    _menuId = parameters[Keys.ZONE] as string;
                     break;
                 case NavigationMode.Forward:
                     break;
