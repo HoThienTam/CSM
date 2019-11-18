@@ -639,6 +639,54 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region ModifyMenuCommand
+
+        public DelegateCommand<object> ModifyMenuCommand { get; private set; }
+        private bool CanExecuteModifyMenu(object obj)
+        {
+            if (IsBusy)
+            {
+                return false;
+            }
+            if (IsNotEditting)
+            {
+                return false;
+            }
+            return true;
+        }
+        private async void OnModifyMenu(object obj)
+        {
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var menu = obj as Menu;
+
+                var param = new NavigationParameters();
+                param.Add(Keys.MENU, menu);
+                await NavigationService.NavigateAsync(nameof(CSM_01Page), param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitModifyMenuCommand()
+        {
+            ModifyMenuCommand = new DelegateCommand<object>(OnModifyMenu, CanExecuteModifyMenu);
+            ModifyMenuCommand.ObservesProperty(() => IsNotBusy);
+            ModifyMenuCommand.ObservesProperty(() => IsNotEditting);
+        }
+
+        #endregion
+
         #region SelectViewCommand
 
         public DelegateCommand<object> SelectViewCommand { get; private set; }
@@ -969,6 +1017,14 @@ namespace CSM.Xam.ViewModels
                         }
 
 
+                    }
+                    if (parameters.ContainsKey(Keys.MENU))
+                    {
+                        var menu = parameters[Keys.MENU] as Menu;
+
+                        var index = ListMenuBindProp.IndexOf(ListMenuBindProp.FirstOrDefault(h => h.Id == menu.Id));
+                        ListMenuBindProp.RemoveAt(index);
+                        ListMenuBindProp.Insert(index, menu);
                     }
                     break;
                 case NavigationMode.New:

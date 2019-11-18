@@ -128,5 +128,86 @@ namespace CSM.Xam.Models
         /// Icon Rectangle
         /// </summary>
         public const string Rectangle = "\uf2fa";
+
+        /// <summary>
+        /// Icon Soup
+        /// </summary>
+        public const string Soup = "\uf823";
+
+        /// <summary>
+        /// Icon French-Fries
+        /// </summary>
+        public const string FrenchFries = "\uf803";
+
+        /// <summary>
+        /// Icon Bread-Slice
+        /// </summary>
+        public const string BreadSlice = "\uf7ec";
+
+        /// <summary>
+        /// Icon Beer
+        /// </summary>
+        public const string Beer = "\uf0fc";
+
+        /// <summary>
+        /// Icon Salad
+        /// </summary>
+        public const string Salad = "\uf81e";
+
+        /// <summary>
+        /// Icon Coffee
+        /// </summary>
+        public const string Coffee = "\uf0f4";
+
+        /// <summary>
+        /// Icon Mug-Tea
+        /// </summary>
+        public const string MugTea = "\uf875";
+
+        /// <summary>
+        /// Icon Wine-Glass
+        /// </summary>
+        public const string WineGlass = "\uf4e3";
+
+        /// <summary>
+        /// Icon Cocktail
+        /// </summary>
+        public const string Cocktail = "\uf561";
+
+        /// <summary>
+        /// Icon Coffee-Togo
+        /// </summary>
+        public const string CoffeeTogo = "\uf6c5";
+
+        /// <summary>
+        /// Icon Pie
+        /// </summary>
+        public const string Pie = "\uf705";
+
+        /// <summary>
+        /// Icon Burger-Soda
+        /// </summary>
+        public const string BurgerSoda = "\uf858";
+
+        /// <summary>
+        /// Icon Ice-Cream
+        /// </summary>
+        public const string IceCream = "\uf810";
+
+        /// <summary>
+        /// Icon Pizza
+        /// </summary>
+        public const string Pizza = "\uf817";
+
+        /// <summary>
+        /// Icon Burrito
+        /// </summary>
+        public const string Burrito = "\uf7ed";
+
+        /// <summary>
+        /// Icon Sandwich
+        /// </summary>
+        public const string Sandwich = "\uf81f";
+
     }
 }

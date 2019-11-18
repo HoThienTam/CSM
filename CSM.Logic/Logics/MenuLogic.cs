@@ -78,9 +78,12 @@ namespace CSM.Logic
 
             return item;
         }
-        public async Task<Menu> UpdateAsync(Category obj, bool saveChange = true)
+        public async Task<Menu> UpdateAsync(Menu obj, bool saveChange = true)
         {
             var item = await _DbContext.Menu.FirstOrDefaultAsync(h => h.Id == obj.Id);
+
+            item.MenuName = obj.MenuName;
+            item.ImageIcon = obj.ImageIcon;
 
             try
             {

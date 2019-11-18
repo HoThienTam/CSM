@@ -79,6 +79,16 @@
             <Thickness.Bottom>5</Thickness.Bottom>
         </Thickness>
 
+        <Thickness x:Key="LargeHorizontalThickness">
+            <Thickness.Left>15</Thickness.Left>
+            <Thickness.Right>15</Thickness.Right>
+        </Thickness>
+
+        <Thickness x:Key="LargeVerticalThickness">
+            <Thickness.Top>15</Thickness.Top>
+            <Thickness.Bottom>15</Thickness.Bottom>
+        </Thickness>
+
         <Thickness x:Key="LargeFrameThickness">
             <Thickness.Left>100</Thickness.Left>
             <Thickness.Top>30</Thickness.Top>
@@ -244,6 +254,19 @@
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="Margin"
                     Value="{StaticResource CommonHorizontalThickness}" />
+        </Style>
+
+        <Style x:Key="CommonTitle" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="Padding" Value="{StaticResource CommonHorizontalThickness}" />
+        </Style>
+
+        <Style x:Key="CommonTitleRule" TargetType="BoxView">
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="BackgroundColor" Value="{StaticResource MainColor}" />
         </Style>
         <!-- Invoice -->
 

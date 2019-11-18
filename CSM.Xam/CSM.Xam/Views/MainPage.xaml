@@ -517,6 +517,7 @@
                         </tlrPrimitives:RadPopup>
                     </tlrPrimitives:RadPopup.Popup>
                 </mr:Grid>
+                
                 <!--Hoa don-->
                 <mr:Grid Style="{StaticResource BottomMenu_Item}"
                          Grid.Column="1" 
@@ -539,14 +540,16 @@
                             <DataTemplate>
                                 <!--Thuc don-->
                                 <mr:Grid Style="{StaticResource BottomMenu_Item}" 
+                                         LongPressedCommand="{Binding BindingContext.ModifyMenuCommand,Source={x:Reference mainPage}}"
+                                         LongPressedCommandParameter="{Binding}"
                                          TappedCommand="{Binding BindingContext.SelectMenuCommand,Source={x:Reference mainPage}}"
                                          TappedCommandParameter="{Binding}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <Label Style="{StaticResource BottomMenu_Icon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
-                                    <Label Style="{StaticResource BottomMenu_ItemText}" Grid.Row="1" Text="Hóa đơn" />
+                                    <Label Style="{StaticResource BottomMenu_Icon}" Text="{Binding ImageIcon}" />
+                                    <Label Style="{StaticResource BottomMenu_ItemText}" Grid.Row="1" Text="{Binding MenuName}" />
                                 </mr:Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
