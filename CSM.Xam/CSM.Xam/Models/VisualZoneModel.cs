@@ -24,5 +24,15 @@ namespace CSM.Xam.Models
             set { SetProperty(ref _ZoneName, value); }
         }
         #endregion
+
+        #region IsDeleted
+        private bool _IsDeleted;
+        public bool IsDeleted
+        {
+            get { return _IsDeleted; }
+            set { SetProperty(ref _IsDeleted, value); }
+        }
+        #endregion
+
     }
 }

@@ -61,8 +61,8 @@
                 </ScrollView>
 
                 <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
-                    <tlrPrimitives:RadBorder Style="{StaticResource CommonButtonBorder}">
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Đăng xuất"/>
+                    <tlrPrimitives:RadBorder HorizontalOptions="FillAndExpand" Style="{StaticResource CommonButtonBorder}">
+                        <tlrInput:RadButton Text="Đăng xuất"/>
                     </tlrPrimitives:RadBorder>
                 </Grid>
             </Grid>

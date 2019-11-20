@@ -13,10 +13,9 @@ namespace CSM.Xam.ViewModels
     class CSM_08_01PageViewModel : ViewModelBase
     {
         private dataContext _dbContext = Helper.GetDataContext();
-        private bool _isEditing = false;
         public CSM_08_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-
+            Title = "Tạo khu vực";
         }
 
         #region Bind Prop
@@ -36,6 +35,15 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ListTableBindProp; }
             set { SetProperty(ref _ListTableBindProp, value); }
+        }
+        #endregion
+
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
+        {
+            get { return _IsEditing; }
+            set { SetProperty(ref _IsEditing, value); }
         }
         #endregion
 
@@ -65,15 +73,21 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
+                var tableLogic = new TableLogic(_dbContext);
                 var zoneLogic = new ZoneLogic(_dbContext);
                 var zone = new Zone();
                 //Neu chinh sua
-                if (_isEditing)
+                if (IsEditing)
                 {
                     zone.Id = ZoneBindProp.Id;
                     zone.ZoneName = ZoneBindProp.ZoneName;
 
                     await zoneLogic.UpdateAsync(zone);
+
+                    //gui thong tin den trang chu
+                    MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+
+                    await NavigationService.GoBackAsync();
                 }
                 else // tao moi
                 {
@@ -85,15 +99,26 @@ namespace CSM.Xam.ViewModels
                     {
                         Id = ZoneBindProp.Id,
                         ZoneName = ZoneBindProp.ZoneName,
-                    });
-                    MessagingCenter.Send(zone, Messages.ZONE_MESSAGE);
+                    }, false);
+                    //gui ban da tao den trang chu
+                    if (ListTableBindProp != null)
+                    {
+                        foreach (var table in ListTableBindProp)
+                        {
+                            await tableLogic.CreateAsync(table, false);
+                        }
+                        MessagingCenter.Send(ListTableBindProp, Messages.TABLE_MESSAGE);
+                    }
+
+                    //gui thong tin den trang chu
+                    MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+
+                    var param = new NavigationParameters();
+                    param.Add(Keys.ZONE, ZoneBindProp);
+
+                    await NavigationService.GoBackAsync(param);
                 }
-
-
-                var param = new NavigationParameters();
-                param.Add(Keys.ZONE, ZoneBindProp);
                     
-                await NavigationService.GoBackAsync(param);
             }
             catch (Exception e)
             {
@@ -138,13 +163,12 @@ namespace CSM.Xam.ViewModels
                 {
                     ZoneBindProp.Id = Guid.NewGuid().ToString();
                 }
-                var tableLogic = new TableLogic(_dbContext);
-                var table = await tableLogic.CreateAsync(new Table
+                var table = new Table
                 {
                     Id = Guid.NewGuid().ToString(),
                     TableName = "001",
                     FkZone = ZoneBindProp.Id
-                });
+                };
                 ListTableBindProp.Add(table);
             }
             catch (Exception e)
@@ -166,6 +190,59 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region DeleteCommand
+
+        public DelegateCommand<object> DeleteCommand { get; private set; }
+        private bool CanExecuteDelete(object obj)
+        {
+            if (IsBusy)
+            {
+                return false;
+            }
+            if (!IsEditing)
+            {
+                return false;
+            }
+            return true;
+        }
+        private async void OnDelete(object obj)
+        {
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var zoneLogic = new ZoneLogic(_dbContext);
+                await zoneLogic.DeleteAsync(ZoneBindProp.Id);
+
+                ZoneBindProp.IsDeleted = true;
+                //gui thong tin den trang chu
+                MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+
+                var param = new NavigationParameters();
+                param.Add(Keys.ZONE, ZoneBindProp);
+
+                await NavigationService.GoBackAsync(param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitDeleteCommand()
+        {
+            DeleteCommand = new DelegateCommand<object>(OnDelete, CanExecuteDelete);
+            DeleteCommand.ObservesProperty(() => IsNotBusy);
+        }
+
+        #endregion
+
         #endregion
 
         #region Method
@@ -173,8 +250,11 @@ namespace CSM.Xam.ViewModels
         private async void GetTable()
         {
             var tableLogic = new TableLogic(_dbContext);
-            var listTable = await tableLogic.GetAllAsync();
-            ListTableBindProp = new ObservableCollection<Table>(listTable);
+            if (IsEditing)
+            {
+                var listTable = await tableLogic.GetTableByZoneAsync(ZoneBindProp.Id);
+                ListTableBindProp = new ObservableCollection<Table>(listTable);
+            }
         }
 
         #endregion
@@ -193,7 +273,8 @@ namespace CSM.Xam.ViewModels
                     {
                         var zone = parameters[Keys.ZONE] as VisualZoneModel;
                         ZoneBindProp = zone;
-                        _isEditing = true;
+                        IsEditing = true;
+                        Title = "Sửa khu vực";
                     }
                     GetTable();
                     break;

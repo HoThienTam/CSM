@@ -56,11 +56,11 @@
                             <BoxView Style="{StaticResource CommonTitleRule}"/>
                             <Label Text="TÊN THỰC ĐƠN" Style="{StaticResource CommonTitle}"/>
                         </Grid>
-                        
+
                         <tlrPrimitives:RadBorder Margin="{StaticResource LargeThickness}" Style="{StaticResource CommonBorder}">
                             <tlrInput:RadEntry WatermarkText="Tên thực đơn" Text="{Binding Menu.MenuName, Mode=TwoWay}" Style="{StaticResource CommonLeftEntry}"/>
                         </tlrPrimitives:RadBorder>
-                        
+
                         <!--  Bieu tuong thuc don  -->
                         <Grid>
                             <BoxView Style="{StaticResource CommonTitleRule}"/>
@@ -82,6 +82,15 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </FlexLayout>
+
+                        <tlrPrimitives:RadBorder 
+                           BorderColor="Red"
+                            Style="{StaticResource CommonButtonBorder}">
+                            <tlrInput:RadButton 
+                                Text="Xóa"
+                                TextColor="Red"
+                                Command="{Binding DeleteCommand}"/>
+                        </tlrPrimitives:RadBorder>
 
                     </StackLayout>
                 </ScrollView>

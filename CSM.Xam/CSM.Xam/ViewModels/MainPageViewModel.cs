@@ -25,7 +25,8 @@ namespace CSM.Xam.ViewModels
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
-            MessagingCenter.Subscribe<Zone>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
+            MessagingCenter.Subscribe<Table>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
+            MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
         }
 
         #region Bind Property
@@ -143,8 +144,8 @@ namespace CSM.Xam.ViewModels
         //Frame hoa don - Khu vuc
 
         #region ListSectionBindProp
-        private ObservableCollection<Zone> _ListSectionBindProp = null;
-        public ObservableCollection<Zone> ListSectionBindProp
+        private ObservableCollection<VisualZoneModel> _ListSectionBindProp = null;
+        public ObservableCollection<VisualZoneModel> ListSectionBindProp
         {
             get { return _ListSectionBindProp; }
             set { SetProperty(ref _ListSectionBindProp, value); }
@@ -783,7 +784,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                if (obj is Zone zone)
+                if (obj is VisualZoneModel zone)
                 {
                     IsVisibleFrameHoaDonBindProp = false;
 
@@ -928,6 +929,7 @@ namespace CSM.Xam.ViewModels
             var tableLogic = new TableLogic(_dbContext);
 
             var listZone = await zoneLogic.GetAllAsync();
+            var listVisualZone = Mapper.Map<List<VisualZoneModel>>(listZone);
             // lay danh sach ban trong tung khu vuc
             foreach (var zone in listZone)
             {
@@ -936,7 +938,7 @@ namespace CSM.Xam.ViewModels
                 _tableInZone.Add(zone.Id, listTable);
             }
 
-            ListSectionBindProp = new ObservableCollection<Zone>(listZone);
+            ListSectionBindProp = new ObservableCollection<VisualZoneModel>(listVisualZone);
         }
 
         private async void GetAllMenu()
@@ -983,9 +985,30 @@ namespace CSM.Xam.ViewModels
         {
             ListInvoiceBindProp.Add(invoice);
         }
-        private void ReceiveZoneMessageHandler(Zone zone)
+        private void ReceiveTableMessageHandler(Table table)
         {
-            ListSectionBindProp.Add(zone);
+
+        }
+        private void ReceiveZoneMessageHandler(VisualZoneModel zone)
+        {
+            var zoneDb = ListSectionBindProp.FirstOrDefault(h => h.Id == zone.Id);
+            if (zoneDb != null)
+            {
+                if (zone.IsDeleted)
+                {
+                    ListSectionBindProp.Remove(zoneDb);
+                    _tableInZone.Remove(zoneDb.Id);
+                }
+                else
+                {
+                    zoneDb.ZoneName = zone.ZoneName;
+                }
+            }
+            else
+            {
+                ListSectionBindProp.Add(zone);
+                _tableInZone.Add(zone.Id, new List<Table>());
+            }
         }
         #endregion
 
@@ -1023,7 +1046,8 @@ namespace CSM.Xam.ViewModels
                     }
                     if (parameters.ContainsKey(Keys.MENU))
                     {
-                        var menu = parameters[Keys.MENU] as Menu;
+                        var menu = parameters[Keys.MENU] as VisualMenuModel;
+                        ListMenuBindProp.Remove(menu);
                     }
                     break;
                 case NavigationMode.New:

@@ -148,6 +148,48 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region DeleteCommand
+
+        public DelegateCommand<object> DeleteCommand { get; private set; }
+        private async void OnDelete(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var menuLogic = new MenuLogic(_dbContext);
+                await menuLogic.DeleteAsync(Menu.Id);
+
+                var param = new NavigationParameters();
+                param.Add(Keys.MENU, Menu);
+
+                await NavigationService.GoBackAsync(param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitDeleteCommand()
+        {
+            DeleteCommand = new DelegateCommand<object>(OnDelete);
+            DeleteCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);

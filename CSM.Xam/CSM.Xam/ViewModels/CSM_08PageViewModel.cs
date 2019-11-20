@@ -100,6 +100,10 @@ namespace CSM.Xam.ViewModels
                         {
                             ListSectionBindProp.Add(zone);
                         }
+                        else
+                        {
+                            ListSectionBindProp.Remove(zone);
+                        }
                     }
                     break;
                 case NavigationMode.New:
