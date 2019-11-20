@@ -408,7 +408,7 @@ namespace CSM.Xam.ViewModels
                                 MenuName = "Menu01",
                                 ImageIcon = "\uf0f4",
                             });
-                            var visualMenu =  Mapper.Map<VisualMenuModel>(menu);
+                            var visualMenu = Mapper.Map<VisualMenuModel>(menu);
                             ListMenuBindProp.Add(visualMenu);
                             break;
                         case "hoantat":

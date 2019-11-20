@@ -21,8 +21,8 @@ namespace CSM.Xam.ViewModels
         }
 
         #region ListSectionBindProp
-        private ObservableCollection<Zone> _ListSectionBindProp = null;
-        public ObservableCollection<Zone> ListSectionBindProp
+        private ObservableCollection<VisualZoneModel> _ListSectionBindProp = null;
+        public ObservableCollection<VisualZoneModel> ListSectionBindProp
         {
             get { return _ListSectionBindProp; }
             set { SetProperty(ref _ListSectionBindProp, value); }
@@ -44,7 +44,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Neu tap vao khu vuc thi chinh sua
-                if (obj is Zone zone)
+                if (obj is VisualZoneModel zone)
                 {
                     var param = new NavigationParameters();
                     param.Add(Keys.ZONE, zone);
@@ -76,6 +76,14 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        private async void GetAllZone()
+        {
+            var zoneLogic = new ZoneLogic(_dbContext);
+            var listZone = await zoneLogic.GetAllAsync();
+
+            var listVisualZone = Mapper.Map<List<VisualZoneModel>>(listZone);
+            ListSectionBindProp = new ObservableCollection<VisualZoneModel>(listVisualZone);
+        }
         #region Navigate
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -86,25 +94,16 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     if (parameters.ContainsKey(Keys.ZONE))
                     {
-                        var zone = parameters[Keys.ZONE] as Zone;
+                        var zone = parameters[Keys.ZONE] as VisualZoneModel;
                         //Neu chua co thi add
                         if (!ListSectionBindProp.Any(i => i.Id == zone.Id))
                         {
                             ListSectionBindProp.Add(zone);
                         }
-                        else // neu co roi thi update
-                        {
-                           ListSectionBindProp
-                                .FirstOrDefault(i => i.Id == zone.Id)
-                                .ZoneName = zone.ZoneName;
-                        }
                     }
                     break;
                 case NavigationMode.New:
-                    var zoneLogic = new ZoneLogic(_dbContext);
-                    var listZone = await zoneLogic.GetAllAsync();
-
-                    ListSectionBindProp = new ObservableCollection<Zone>(listZone);
+                    GetAllZone();
                     break;
                 case NavigationMode.Forward:
                     break;

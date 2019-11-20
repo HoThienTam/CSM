@@ -17,6 +17,7 @@ namespace CSM.Xam.Models
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Menu, VisualMenuModel>();
+                cfg.CreateMap<Zone, VisualZoneModel>();
             });
             Mapper = config.CreateMapper();
         }

@@ -72,7 +72,13 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 var menuLogic = new MenuLogic(_dbContext);
-                //var menu = await menuLogic.UpdateAsync(Menu);
+
+                await menuLogic.UpdateAsync(new Menu
+                {
+                    Id = Menu.Id,
+                    ImageIcon = Menu.ImageIcon,
+                    MenuName = Menu.MenuName
+                });
 
                 var param = new NavigationParameters();
                 param.Add(Keys.MENU, Menu);

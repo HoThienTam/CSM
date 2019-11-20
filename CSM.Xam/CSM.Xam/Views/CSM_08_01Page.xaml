@@ -58,7 +58,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Label Text="Tên khu vực" VerticalOptions="Center" FontSize="Large"/>
-                            <tlrInput:RadEntry Grid.Column="1" Style="{StaticResource CommonRightEntry}" Text="{Binding ZoneNameBindProp, Mode=TwoWay}" WatermarkText="Tên khu vực"/>
+                            <tlrInput:RadEntry Grid.Column="1" Style="{StaticResource CommonRightEntry}" Text="{Binding ZoneBindProp.ZoneName, Mode=TwoWay}" WatermarkText="Tên khu vực"/>
                         </Grid>
                     </tlrPrimitives:RadBorder>
 

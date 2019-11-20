@@ -21,21 +21,12 @@ namespace CSM.Xam.ViewModels
 
         #region Bind Prop
 
-        #region ZoneNameBindProp
-        private string _ZoneNameBindProp = string.Empty;
-        public string ZoneNameBindProp
+        #region ZoneBindProp
+        private VisualZoneModel _ZoneBindProp = new VisualZoneModel();
+        public VisualZoneModel ZoneBindProp
         {
-            get { return _ZoneNameBindProp; }
-            set { SetProperty(ref _ZoneNameBindProp, value); }
-        }
-        #endregion
-
-        #region ZoneIdBindProp
-        private string _ZoneIdBindProp = string.Empty;
-        public string ZoneIdBindProp
-        {
-            get { return _ZoneIdBindProp; }
-            set { SetProperty(ref _ZoneIdBindProp, value); }
+            get { return _ZoneBindProp; }
+            set { SetProperty(ref _ZoneBindProp, value); }
         }
         #endregion
 
@@ -61,7 +52,7 @@ namespace CSM.Xam.ViewModels
             {
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(ZoneNameBindProp))
+            if (string.IsNullOrWhiteSpace(ZoneBindProp.ZoneName))
             {
                 return false;
             }
@@ -79,24 +70,28 @@ namespace CSM.Xam.ViewModels
                 //Neu chinh sua
                 if (_isEditing)
                 {
-                    zone.Id = ZoneIdBindProp;
-                    zone.ZoneName = ZoneNameBindProp;
+                    zone.Id = ZoneBindProp.Id;
+                    zone.ZoneName = ZoneBindProp.ZoneName;
 
                     await zoneLogic.UpdateAsync(zone);
                 }
                 else // tao moi
                 {
+                    if (ZoneBindProp.Id == null)
+                    {
+                        ZoneBindProp.Id = Guid.NewGuid().ToString();
+                    }
                     zone = await zoneLogic.CreateAsync(new Zone
                     {
-                        Id = string.IsNullOrWhiteSpace(ZoneIdBindProp)? Guid.NewGuid().ToString() : ZoneIdBindProp,
-                        ZoneName = ZoneNameBindProp,
+                        Id = ZoneBindProp.Id,
+                        ZoneName = ZoneBindProp.ZoneName,
                     });
                     MessagingCenter.Send(zone, Messages.ZONE_MESSAGE);
                 }
 
 
                 var param = new NavigationParameters();
-                param.Add(Keys.ZONE, zone);
+                param.Add(Keys.ZONE, ZoneBindProp);
                     
                 await NavigationService.GoBackAsync(param);
             }
@@ -115,7 +110,7 @@ namespace CSM.Xam.ViewModels
         {
             SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
             SaveCommand.ObservesProperty(() => IsNotBusy);
-            SaveCommand.ObservesProperty(() => ZoneNameBindProp);
+            SaveCommand.ObservesProperty(() => ZoneBindProp);
         }
 
         #endregion
@@ -139,16 +134,16 @@ namespace CSM.Xam.ViewModels
                 {
                     ListTableBindProp = new ObservableCollection<Table>();
                 }
-                if (string.IsNullOrWhiteSpace(ZoneIdBindProp))
+                if (ZoneBindProp.Id == null)
                 {
-                    ZoneIdBindProp = Guid.NewGuid().ToString();
+                    ZoneBindProp.Id = Guid.NewGuid().ToString();
                 }
                 var tableLogic = new TableLogic(_dbContext);
                 var table = await tableLogic.CreateAsync(new Table
                 {
                     Id = Guid.NewGuid().ToString(),
                     TableName = "001",
-                    FkZone = ZoneIdBindProp
+                    FkZone = ZoneBindProp.Id
                 });
                 ListTableBindProp.Add(table);
             }
@@ -196,9 +191,8 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.New:
                     if (parameters.ContainsKey(Keys.ZONE))
                     {
-                        var zone = parameters[Keys.ZONE] as Zone;
-                        ZoneNameBindProp = zone.ZoneName;
-                        ZoneIdBindProp = zone.Id;
+                        var zone = parameters[Keys.ZONE] as VisualZoneModel;
+                        ZoneBindProp = zone;
                         _isEditing = true;
                     }
                     GetTable();
