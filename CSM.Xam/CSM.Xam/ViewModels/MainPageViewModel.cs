@@ -46,8 +46,8 @@ namespace CSM.Xam.ViewModels
         public bool IsVisibleFrameHoaDonBindProp
         {
             get { return _IsVisibleFrameHoaDonBindProp; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _IsVisibleFrameHoaDonBindProp, value);
                 RaisePropertyChanged(nameof(IsVisbleFrameKhuVucBindProp));
             }
@@ -90,8 +90,8 @@ namespace CSM.Xam.ViewModels
         public bool IsVisibleListCategoryBindProp
         {
             get { return _IsVisibleListCategoryBindProp; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _IsVisibleListCategoryBindProp, value);
                 RaisePropertyChanged(nameof(IsVisibleListItemBindProp));
             }
@@ -117,8 +117,8 @@ namespace CSM.Xam.ViewModels
         //Menu duoi
 
         #region ListMenuBindProp
-        private ObservableCollection<Menu> _ListMenuBindProp = null;
-        public ObservableCollection<Menu> ListMenuBindProp
+        private ObservableCollection<VisualMenuModel> _ListMenuBindProp = null;
+        public ObservableCollection<VisualMenuModel> ListMenuBindProp
         {
             get { return _ListMenuBindProp; }
             set { SetProperty(ref _ListMenuBindProp, value); }
@@ -130,7 +130,8 @@ namespace CSM.Xam.ViewModels
         public bool IsEditing
         {
             get { return _IsEditing; }
-            set { 
+            set
+            {
                 SetProperty(ref _IsEditing, value);
                 RaisePropertyChanged(nameof(IsNotEditting));
             }
@@ -398,15 +399,17 @@ namespace CSM.Xam.ViewModels
                         case "thucdon":
                             if (ListMenuBindProp == null)
                             {
-                                ListMenuBindProp = new ObservableCollection<Menu>();
+                                ListMenuBindProp = new ObservableCollection<VisualMenuModel>();
                             }
                             var menuLogic = new MenuLogic(_dbContext);
                             var menu = await menuLogic.CreateAsync(new Menu
                             {
                                 Id = Guid.NewGuid().ToString(),
-                                MenuName = "Menu01"
+                                MenuName = "Menu01",
+                                ImageIcon = "\uf0f4",
                             });
-                            ListMenuBindProp.Add(menu);
+                            var visualMenu =  Mapper.Map<VisualMenuModel>(menu);
+                            ListMenuBindProp.Add(visualMenu);
                             break;
                         case "hoantat":
                             IsEditing = false;
@@ -467,7 +470,7 @@ namespace CSM.Xam.ViewModels
         }
         private async void OnLuuHoaDon(object obj)
         {
-           
+
 
             IsBusy = true;
 
@@ -612,7 +615,7 @@ namespace CSM.Xam.ViewModels
                     IsVisibleFrameThucDonBindProp = true;
                     IsVisibleFrameBillBindProp = true;
                 }
-                var menu = obj as Menu;
+                var menu = obj as VisualMenuModel;
 
                 _menuId = menu.Id;
 
@@ -661,7 +664,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var menu = obj as Menu;
+                var menu = obj as VisualMenuModel;
 
                 var param = new NavigationParameters();
                 param.Add(Keys.MENU, menu);
@@ -955,6 +958,8 @@ namespace CSM.Xam.ViewModels
             var menuItemLogic = new MenuItemLogic(_dbContext);
 
             var listMenu = await menuLogic.GetAllAsync();
+            var listVisualMenu = Mapper.Map<List<VisualMenuModel>>(listMenu);
+
             _itemInMenu = new Dictionary<string, List<Item>>();
             //Lay danh sach item trong tung menu
             foreach (var menu in listMenu)
@@ -969,7 +974,7 @@ namespace CSM.Xam.ViewModels
                 _itemInMenu.Add(menu.Id, listItemInMenu);
             }
 
-            ListMenuBindProp = new ObservableCollection<Menu>(listMenu);
+            ListMenuBindProp = new ObservableCollection<VisualMenuModel>(listVisualMenu);
         }
         #endregion
 
@@ -1015,16 +1020,10 @@ namespace CSM.Xam.ViewModels
                                 _itemInMenu[_menuId].Add(item);
                             }
                         }
-
-
                     }
                     if (parameters.ContainsKey(Keys.MENU))
                     {
                         var menu = parameters[Keys.MENU] as Menu;
-
-                        var index = ListMenuBindProp.IndexOf(ListMenuBindProp.FirstOrDefault(h => h.Id == menu.Id));
-                        ListMenuBindProp.RemoveAt(index);
-                        ListMenuBindProp.Insert(index, menu);
                     }
                     break;
                 case NavigationMode.New:

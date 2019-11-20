@@ -41,8 +41,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region Menu
-        private Menu _Menu = null;
-        public Menu Menu
+        private VisualMenuModel _Menu = null;
+        public VisualMenuModel Menu
         {
             get { return _Menu; }
             set { SetProperty(ref _Menu, value); }
@@ -72,10 +72,10 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 var menuLogic = new MenuLogic(_dbContext);
-                var menu = await menuLogic.UpdateAsync(Menu);
+                //var menu = await menuLogic.UpdateAsync(Menu);
 
                 var param = new NavigationParameters();
-                param.Add(Keys.MENU, menu);
+                param.Add(Keys.MENU, Menu);
                 await NavigationService.GoBackAsync(param);
             }
             catch (Exception e)
@@ -151,8 +151,7 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    var menu = parameters[Keys.MENU] as Menu;
-                    Menu = menu;
+                    Menu = parameters[Keys.MENU] as VisualMenuModel;
                     break;
                 case NavigationMode.Forward:
                     break;

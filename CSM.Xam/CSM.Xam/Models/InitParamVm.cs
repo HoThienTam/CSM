@@ -1,9 +1,8 @@
 ﻿using Prism.Events;
 using Prism.Navigation;
 using Prism.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using AutoMapper;
+using CSM.EFCore;
 
 namespace CSM.Xam.Models
 {
@@ -15,10 +14,16 @@ namespace CSM.Xam.Models
         {
             NavigationService = navigationService;
             PageDialogService = pageDialogService;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Menu, VisualMenuModel>();
+            });
+            Mapper = config.CreateMapper();
         }
 
         public INavigationService NavigationService { get; private set; }
         public IPageDialogService PageDialogService { get; private set; }
+        public IMapper Mapper { get; private set; }
 
     }
 }

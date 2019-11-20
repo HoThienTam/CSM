@@ -1,6 +1,6 @@
-﻿using CSM.Xam.Models;
+﻿using AutoMapper;
+using CSM.Xam.Models;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services;
@@ -15,6 +15,7 @@ namespace CSM.Xam.ViewModels
     {
         protected INavigationService NavigationService { get; private set; }
         protected IPageDialogService PageDialogService { get; private set; }
+        protected IMapper Mapper { get; private set; }
 
         private string _title;
         public string Title
@@ -65,6 +66,7 @@ namespace CSM.Xam.ViewModels
         {
             NavigationService = initParamVm.NavigationService;
             PageDialogService = initParamVm.PageDialogService;
+            Mapper = initParamVm.Mapper;
         }
 
         #region GoBackCommand

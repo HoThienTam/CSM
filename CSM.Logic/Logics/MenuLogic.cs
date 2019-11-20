@@ -56,7 +56,7 @@ namespace CSM.Logic
                 Id = obj.Id,
                 Creator = "Tam",
                 MenuName = obj.MenuName,
-                ImageIcon = "\uf2e8",
+                ImageIcon = obj.ImageIcon,
                 CreationDate = DateTime.Now.ToString(),
                 FkStore = "1",
                 IsDeleted = (int)IsDelete.Normal
