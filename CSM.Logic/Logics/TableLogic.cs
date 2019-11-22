@@ -85,9 +85,9 @@ namespace CSM.Logic
                 FkStore = "1",
                 IsDeleted = (int)IsDelete.Normal,
                 TableName = obj.TableName,
-                TableSize = 1,
+                TableSize = obj.TableSize,
                 FkZone = obj.FkZone,
-                TableType = 1
+                TableType = obj.TableType
             };
 
             _DbContext.Table.Add(item);

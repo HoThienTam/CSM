@@ -42,6 +42,11 @@ namespace CSM.Xam.Models
         public const string LIST_ITEM = "LIST_ITEM";
 
         /// <summary>
+        /// Truyen table
+        /// </summary>
+        public const string TABLE = "TABLE";
+
+        /// <summary>
         /// Truyen zone moi tao
         /// </summary>
         public const string ZONE = "ZONE";

@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"             
+             mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="CSM.Xam.Views.CSM_08_02Page"
+             Visual="Material"
+             Padding="{StaticResource LargeThickness}">
+    <Grid Style="{StaticResource CommonWrapper}"
+                Margin="{StaticResource CommonThickness}">
+
+        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
+
+                    <!--Back icon-->
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" TappedCommand="{Binding GoBackCommand}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+
+                    <!--Right text-->
+                    <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+
+                </Grid>
+                <!--  Seperate line  -->
+                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+
+                <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
+                    <Grid  Padding="{StaticResource SmallThickness}" Margin="{StaticResource CommonThickness}" RowSpacing="{StaticResource LargeThickness}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Label Style="{StaticResource CommonLabelIcon}" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableSize}" Value="0" >
+                                    <Setter Property="FontSize" Value="80"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableSize}" Value="1" >
+                                    <Setter Property="FontSize" Value="100"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableSize}" Value="2" >
+                                    <Setter Property="FontSize" Value="120"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="0" >
+                                    <Setter Property="Text" Value="{x:Static lcModels:FontAwesomeIcon.Rectangle}"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="1" >
+                                    <Setter Property="Text" Value="{x:Static lcModels:FontAwesomeIcon.Square}"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="2" >
+                                    <Setter Property="Text" Value="{x:Static lcModels:FontAwesomeIcon.Circle}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        
+                        <!--  Tên bàn  -->
+                        <tlrPrimitives:RadBorder
+                            Grid.Row="1"
+                            Style="{StaticResource CommonBorder}">
+                            <StackLayout Orientation="Horizontal" Spacing="0">
+                                <Label Style="{StaticResource CommonLeftText}" Text="Tên bàn"/>
+                                <tlrInput:RadEntry
+                                    Style="{StaticResource CommonRightEntry}"
+                                    Text="{Binding TableBindProp.TableName, Mode=TwoWay}"
+                                    WatermarkText="Tên bàn"/>
+                            </StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <tlrPrimitives:RadBorder HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}">
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableSize}" Value="0">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <tlrInput:RadButton
+                                    Command="{Binding SelectSizeCommand}"
+                                    CommandParameter="Small"
+                                    Text="Nhỏ">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="tlrInput:RadButton" Binding="{Binding TableBindProp.TableSize}" Value="0">
+                                            <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </tlrInput:RadButton>
+                            </tlrPrimitives:RadBorder>
+
+                            <tlrPrimitives:RadBorder Grid.Column="1" HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}">
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableSize}" Value="1">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <tlrInput:RadButton
+                                    Command="{Binding SelectSizeCommand}"
+                                    CommandParameter="Medium"
+                                    Text="Trung bình">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="tlrInput:RadButton" Binding="{Binding TableBindProp.TableSize}" Value="1">
+                                            <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </tlrInput:RadButton>
+                            </tlrPrimitives:RadBorder>
+
+                            <tlrPrimitives:RadBorder Grid.Column="2" HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}">
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableSize}" Value="2">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <tlrInput:RadButton
+                                    Command="{Binding SelectSizeCommand}"
+                                    CommandParameter="Large"
+                                    Text="Lớn">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="tlrInput:RadButton" Binding="{Binding TableBindProp.TableSize}" Value="2">
+                                            <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </tlrInput:RadButton>
+                            </tlrPrimitives:RadBorder>
+
+                        </Grid>
+
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <tlrPrimitives:RadBorder HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}">
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableType}" Value="0">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <mr:Grid TappedCommand="{Binding SelectTypeCommand}"
+                                   TappedCommandParameter="Rect">
+                                    <mr:Label Style="{StaticResource CommonLabelIcon}" 
+                                      FontSize="45" 
+                                      Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="0" >
+                                                <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </mr:Label>
+                                </mr:Grid>
+                            </tlrPrimitives:RadBorder>
+
+                            <tlrPrimitives:RadBorder Grid.Column="1" HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}">
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableType}" Value="1">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <mr:Grid TappedCommand="{Binding SelectTypeCommand}"
+                                   TappedCommandParameter="Square">
+                                    <mr:Label 
+                                   Style="{StaticResource CommonLabelIcon}" 
+                                   FontSize="45" 
+                                   Text="{x:Static lcModels:FontAwesomeIcon.Square}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="1" >
+                                                <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </mr:Label>
+                                </mr:Grid>
+                            </tlrPrimitives:RadBorder>
+
+                            <tlrPrimitives:RadBorder Grid.Column="2" HorizontalOptions="Fill" Style="{StaticResource CommonButtonBorder}"> 
+                                <tlrPrimitives:RadBorder.Triggers>
+                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding TableBindProp.TableType}" Value="2">
+                                        <Setter Property="BorderColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </tlrPrimitives:RadBorder.Triggers>
+                                <mr:Grid TappedCommand="{Binding SelectTypeCommand}"
+                                   TappedCommandParameter="Circle">
+                                <Label 
+                                   Style="{StaticResource CommonLabelIcon}"                                   
+                                   FontSize="45" 
+                                   Text="{x:Static lcModels:FontAwesomeIcon.Circle}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding TableBindProp.TableType}" Value="2" >
+                                            <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                </mr:Grid>
+                            </tlrPrimitives:RadBorder>
+                        </Grid>
+                    </Grid>
+                </ScrollView>
+            </Grid>
+
+        </tlrPrimitives:RadBorder>
+
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+    </Grid>
+</ContentPage>

@@ -5,6 +5,7 @@ using CSM.Xam.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
@@ -15,7 +16,7 @@ namespace CSM.Xam.ViewModels
         private dataContext _dbContext = Helper.GetDataContext();
         public CSM_08_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-            Title = "Tạo khu vực";
+
         }
 
         #region Bind Prop
@@ -30,8 +31,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListTableBindProp
-        private ObservableCollection<Table> _ListTableBindProp = null;
-        public ObservableCollection<Table> ListTableBindProp
+        private ObservableCollection<VisualTableModel> _ListTableBindProp = new ObservableCollection<VisualTableModel>();
+        public ObservableCollection<VisualTableModel> ListTableBindProp
         {
             get { return _ListTableBindProp; }
             set { SetProperty(ref _ListTableBindProp, value); }
@@ -91,10 +92,6 @@ namespace CSM.Xam.ViewModels
                 }
                 else // tao moi
                 {
-                    if (ZoneBindProp.Id == null)
-                    {
-                        ZoneBindProp.Id = Guid.NewGuid().ToString();
-                    }
                     zone = await zoneLogic.CreateAsync(new Zone
                     {
                         Id = ZoneBindProp.Id,
@@ -105,7 +102,7 @@ namespace CSM.Xam.ViewModels
                     {
                         foreach (var table in ListTableBindProp)
                         {
-                            await tableLogic.CreateAsync(table, false);
+                            //await tableLogic.CreateAsync(table, false);
                         }
                         MessagingCenter.Send(ListTableBindProp, Messages.TABLE_MESSAGE);
                     }
@@ -113,6 +110,7 @@ namespace CSM.Xam.ViewModels
                     //gui thong tin den trang chu
                     MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
 
+                    await _dbContext.SaveChangesAsync();
                     var param = new NavigationParameters();
                     param.Add(Keys.ZONE, ZoneBindProp);
 
@@ -154,22 +152,10 @@ namespace CSM.Xam.ViewModels
 
             try
             {
-                // Thuc hien cong viec tai day
-                if (ListTableBindProp == null)
-                {
-                    ListTableBindProp = new ObservableCollection<Table>();
-                }
-                if (ZoneBindProp.Id == null)
-                {
-                    ZoneBindProp.Id = Guid.NewGuid().ToString();
-                }
-                var table = new Table
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    TableName = "001",
-                    FkZone = ZoneBindProp.Id
-                };
-                ListTableBindProp.Add(table);
+                // Thuc hien cong viec tai day          
+                var param = new NavigationParameters();
+                param.Add(Keys.ZONE, ZoneBindProp.Id);
+                await NavigationService.NavigateAsync(nameof(CSM_08_02Page), param);
             }
             catch (Exception e)
             {
@@ -253,7 +239,8 @@ namespace CSM.Xam.ViewModels
             if (IsEditing)
             {
                 var listTable = await tableLogic.GetTableByZoneAsync(ZoneBindProp.Id);
-                ListTableBindProp = new ObservableCollection<Table>(listTable);
+                var listVisualTable = Mapper.Map<List<VisualTableModel>>(listTable);
+                ListTableBindProp = new ObservableCollection<VisualTableModel>(listVisualTable);
             }
         }
 
@@ -267,6 +254,11 @@ namespace CSM.Xam.ViewModels
             switch (parameters.GetNavigationMode())
             {
                 case NavigationMode.Back:
+                    if (parameters.ContainsKey(Keys.TABLE))
+                    {
+                        var table = parameters[Keys.TABLE] as VisualTableModel;
+                        ListTableBindProp.Add(table);
+                    }
                     break;
                 case NavigationMode.New:
                     if (parameters.ContainsKey(Keys.ZONE))
@@ -275,6 +267,12 @@ namespace CSM.Xam.ViewModels
                         ZoneBindProp = zone;
                         IsEditing = true;
                         Title = "Sửa khu vực";
+                    }
+                    else
+                    {
+                        IsEditing = false;
+                        Title = "Tạo khu vực";
+                        ZoneBindProp.Id = Guid.NewGuid().ToString();
                     }
                     GetTable();
                     break;

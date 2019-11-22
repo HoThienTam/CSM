@@ -209,5 +209,14 @@ namespace CSM.Xam.Models
         /// </summary>
         public const string Sandwich = "\uf81f";
 
+        /// <summary>
+        /// Icon Circle
+        /// </summary>
+        public const string Circle = "\uf111";
+
+        /// <summary>
+        /// Icon Hexagon
+        /// </summary>
+        public const string Hexagon = "\uf312";
     }
 }
