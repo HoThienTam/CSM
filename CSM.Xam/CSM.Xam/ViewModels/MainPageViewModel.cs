@@ -18,14 +18,14 @@ namespace CSM.Xam.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private dataContext _dbContext = Helper.GetDataContext();
-        private Dictionary<string, List<Table>> _tableInZone;
+        private Dictionary<string, List<VisualTableModel>> _tableInZone;
         private Dictionary<string, List<Item>> _itemInMenu;
         private string _menuId;
         private List<Item> _listAllItem;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
-            MessagingCenter.Subscribe<Table>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
+            MessagingCenter.Subscribe<ObservableCollection<VisualTableModel>>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
             MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
         }
 
@@ -162,8 +162,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListTableBindProp
-        private ObservableCollection<Table> _ListTableBindProp = null;
-        public ObservableCollection<Table> ListTableBindProp
+        private ObservableCollection<VisualTableModel> _ListTableBindProp = null;
+        public ObservableCollection<VisualTableModel> ListTableBindProp
         {
             get { return _ListTableBindProp; }
             set { SetProperty(ref _ListTableBindProp, value); }
@@ -398,10 +398,6 @@ namespace CSM.Xam.ViewModels
                             await NavigationService.NavigateAsync(nameof(CSM_02_01Page), param);
                             break;
                         case "thucdon":
-                            if (ListMenuBindProp == null)
-                            {
-                                ListMenuBindProp = new ObservableCollection<VisualMenuModel>();
-                            }
                             var menuLogic = new MenuLogic(_dbContext);
                             var menu = await menuLogic.CreateAsync(new Menu
                             {
@@ -788,9 +784,9 @@ namespace CSM.Xam.ViewModels
                 {
                     IsVisibleFrameHoaDonBindProp = false;
 
-                    var listTable = new List<Table>();
+                    var listTable = new List<VisualTableModel>();
                     _tableInZone.TryGetValue(zone.Id, out listTable);
-                    ListTableBindProp = new ObservableCollection<Table>(listTable);
+                    ListTableBindProp = new ObservableCollection<VisualTableModel>(listTable);
                 }
             }
             catch (Exception e)
@@ -827,7 +823,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                if (obj is Table table)
+                if (obj is VisualTableModel table)
                 {
                     var zone = ListSectionBindProp.FirstOrDefault(h => h.Id == table.FkZone);
                     ZoneBindProp = $"{zone.ZoneName} - {table.TableName}";
@@ -924,7 +920,7 @@ namespace CSM.Xam.ViewModels
 
         private async void GetAllZone()
         {
-            _tableInZone = new Dictionary<string, List<Table>>();
+            _tableInZone = new Dictionary<string, List<VisualTableModel>>();
             var zoneLogic = new ZoneLogic(_dbContext);
             var tableLogic = new TableLogic(_dbContext);
 
@@ -934,8 +930,8 @@ namespace CSM.Xam.ViewModels
             foreach (var zone in listZone)
             {
                 var listTable = await tableLogic.GetTableByZoneAsync(zone.Id);
-
-                _tableInZone.Add(zone.Id, listTable);
+                var listVisualTable = Mapper.Map<List<VisualTableModel>>(listTable);
+                _tableInZone.Add(zone.Id, listVisualTable);
             }
 
             ListSectionBindProp = new ObservableCollection<VisualZoneModel>(listVisualZone);
@@ -976,7 +972,19 @@ namespace CSM.Xam.ViewModels
                 _itemInMenu.Add(menu.Id, listItemInMenu);
             }
 
+            if (listVisualMenu.Count == 0)
+            {
+                var menu = await menuLogic.CreateAsync(new Menu
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    MenuName = "Menu01",
+                    ImageIcon = "\uf0f4",
+                });
+                var visualMenu = Mapper.Map<VisualMenuModel>(menu);
+                listVisualMenu.Add(visualMenu);
+            }
             ListMenuBindProp = new ObservableCollection<VisualMenuModel>(listVisualMenu);
+
         }
         #endregion
 
@@ -985,9 +993,10 @@ namespace CSM.Xam.ViewModels
         {
             ListInvoiceBindProp.Add(invoice);
         }
-        private void ReceiveTableMessageHandler(Table table)
+        private void ReceiveTableMessageHandler(ObservableCollection<VisualTableModel> tableCollection)
         {
-
+            var zoneDb = ListSectionBindProp.FirstOrDefault(h => h.Id == tableCollection[0].FkZone);
+            _tableInZone[zoneDb.Id] = new List<VisualTableModel>(tableCollection);
         }
         private void ReceiveZoneMessageHandler(VisualZoneModel zone)
         {
@@ -1007,7 +1016,7 @@ namespace CSM.Xam.ViewModels
             else
             {
                 ListSectionBindProp.Add(zone);
-                _tableInZone.Add(zone.Id, new List<Table>());
+                _tableInZone.Add(zone.Id, new List<VisualTableModel>());
             }
         }
         #endregion

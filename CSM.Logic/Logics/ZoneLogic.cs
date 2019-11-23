@@ -111,7 +111,12 @@ namespace CSM.Logic
             }
 
             // Remove cac bang lien quan
+            var relatedItems = await _DbContext.Table.Where(h => h.FkZone == item.Id).ToListAsync();
 
+            foreach (var relatedItem in relatedItems)
+            {
+                relatedItem.IsDeleted = (int)IsDelete.Deleted;
+            }
             // Remove bang chinh
             item.IsDeleted = (int)IsDelete.Deleted;
 

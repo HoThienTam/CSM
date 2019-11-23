@@ -10,7 +10,7 @@
     <Application.Resources>
         <!-- Application resource dictionary -->
         <cvt:DoubleToCurrencyConverter x:Key="DoubleToCurrencyConverter"/>
-        <cvt:LongToTableTypeConveter x:Key="LongToTableTypeConveter"/>
+        <cvt:LongToTableTypeConverter x:Key="LongToTableTypeConverter"/>
 
         <!-- Icon -->
         <OnPlatform x:Key="FontAwesomeBrands" x:TypeArguments="x:String">

@@ -12,6 +12,7 @@
              xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
              x:Class="CSM.Xam.Views.CSM_08_01Page"
              NavigationPage.HasNavigationBar="False"
+             x:Name="csm_08_02Page"
              Padding="{StaticResource LargeThickness}">
     <Grid Style="{StaticResource CommonWrapper}"
                 Margin="{StaticResource CommonThickness}">
@@ -53,8 +54,9 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        
                     </Grid.ColumnDefinitions>
-
+                    <!-- Ten khu vuc -->
                     <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" Margin="{StaticResource LargeRightThickness}">
                         <Grid Margin="{StaticResource CommonThickness}">
                             <Grid.ColumnDefinitions>
@@ -65,7 +67,8 @@
                             <tlrInput:RadEntry Grid.Column="1" Style="{StaticResource CommonRightEntry}" Text="{Binding ZoneBindProp.ZoneName, Mode=TwoWay}" WatermarkText="Tên khu vực"/>
                         </Grid>
                     </tlrPrimitives:RadBorder>
-
+                
+                    <!-- Nut them ban -->
                     <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonBorder}">
                         <mr:Label Padding="{StaticResource CommonThickness}" 
                                   Style="{StaticResource CommonLabelIcon}" 
@@ -73,6 +76,7 @@
                                   TappedCommand="{Binding AddTableCommand}"/>
                     </tlrPrimitives:RadBorder>
 
+                    <!-- List ban -->
                     <tlrPrimitives:RadBorder Margin="{StaticResource LargeTopThickness}" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CommonBorder}">
                         <dataControls:RadListView ItemsSource="{Binding ListTableBindProp, Mode=OneWay}">
                             <dataControls:RadListView.LayoutDefinition>
@@ -82,10 +86,10 @@
                                 <DataTemplate>
                                     <listView:ListViewTemplateCell>
                                         <listView:ListViewTemplateCell.View>
-                                            <Grid>
-                                                <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" Text="{Binding TableType, Converter={x:StaticResource LongToTableTypeConveter}}" />
+                                            <mr:Grid TappedCommand="{Binding BindingContext.ModifyTableCommand, Source={x:Reference csm_08_02Page}}" TappedCommandParameter="{Binding}">
+                                                <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" Text="{Binding TableType, Converter={x:StaticResource LongToTableTypeConverter}}" />
                                                 <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
-                                            </Grid>
+                                            </mr:Grid>
                                         </listView:ListViewTemplateCell.View>
                                     </listView:ListViewTemplateCell>
                                 </DataTemplate>

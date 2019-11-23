@@ -35,8 +35,14 @@ namespace CSM.Xam.ViewModels
         public bool IsEditing
         {
             get { return _IsEditing; }
-            set { SetProperty(ref _IsEditing, value); }
+            set 
+            { 
+                SetProperty(ref _IsEditing, value);
+                RaisePropertyChanged(nameof(IsNotEditing));
+            }
         }
+
+        public bool IsNotEditing { get { return !_IsEditing; } }
         #endregion
 
         #region NewCategoryNameBindProp

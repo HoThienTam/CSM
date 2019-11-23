@@ -37,8 +37,10 @@
                     <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" TappedCommand="{Binding GoBackCommand}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
 
                     <!--Right text-->
-                    <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
-
+                    <StackLayout Grid.Column="2" HorizontalOptions="End" Orientation="Horizontal">
+                        <mr:Label IsVisible="{Binding IsEditing}" Text="Xóa" TextColor="Red" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding DeleteCommand}"/>
+                        <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+                    </StackLayout>
                 </Grid>
                 <!--  Seperate line  -->
                 <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>

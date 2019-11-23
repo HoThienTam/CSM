@@ -1,5 +1,6 @@
 ﻿using CSM.EFCore;
 using CSM.Logic;
+using CSM.Logic.Enums;
 using CSM.Xam.Models;
 using CSM.Xam.Views;
 using Prism.Commands;
@@ -14,6 +15,7 @@ namespace CSM.Xam.ViewModels
     class CSM_08_01PageViewModel : ViewModelBase
     {
         private dataContext _dbContext = Helper.GetDataContext();
+        private List<VisualTableModel> _listDeletedTable = new List<VisualTableModel>();
         public CSM_08_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
 
@@ -83,10 +85,49 @@ namespace CSM.Xam.ViewModels
                     zone.Id = ZoneBindProp.Id;
                     zone.ZoneName = ZoneBindProp.ZoneName;
 
-                    await zoneLogic.UpdateAsync(zone);
+                    await zoneLogic.UpdateAsync(zone, false);
 
+                    foreach (var table in ListTableBindProp)
+                    {
+                        switch (table.Status)
+                        {
+                            case Status.New:
+                                await tableLogic.CreateAsync(new Table
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    FkZone = table.FkZone,
+                                    TableName = table.TableName,
+                                    TableSize = (int)table.TableSize,
+                                    TableType = (int)table.TableType
+                                }, false);
+                                break;
+                            case Status.Normal:
+                                break;
+                            case Status.Modified:
+                                await tableLogic.UpdateAsync(new Table
+                                {
+                                    Id = table.Id,
+                                    TableName = table.TableName,
+                                    TableSize = (int)table.TableSize,
+                                    TableType = (int)table.TableType
+                                }, false);
+                                break;
+                            case Status.Deleted:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    foreach (var table in _listDeletedTable)
+                    {
+                        await tableLogic.DeleteAsync(table.Id, false);
+                    }
+
+                    await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                     //gui thong tin den trang chu
                     MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+                    MessagingCenter.Send(ListTableBindProp, Messages.TABLE_MESSAGE);
 
                     await NavigationService.GoBackAsync();
                 }
@@ -97,26 +138,52 @@ namespace CSM.Xam.ViewModels
                         Id = ZoneBindProp.Id,
                         ZoneName = ZoneBindProp.ZoneName,
                     }, false);
-                    //gui ban da tao den trang chu
-                    if (ListTableBindProp != null)
+
+                    foreach (var table in ListTableBindProp)
                     {
-                        foreach (var table in ListTableBindProp)
+                        switch (table.Status)
                         {
-                            //await tableLogic.CreateAsync(table, false);
+                            case Status.New:
+                                await tableLogic.CreateAsync(new Table
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    FkZone = table.FkZone,
+                                    TableName = table.TableName,
+                                    TableSize = (int)table.TableSize,
+                                    TableType = (int)table.TableType
+                                }, false);
+                                break;
+                            case Status.Normal:
+                                break;
+                            case Status.Modified:
+                                await tableLogic.CreateAsync(new Table
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    FkZone = table.FkZone,
+                                    TableName = table.TableName,
+                                    TableSize = (int)table.TableSize,
+                                    TableType = (int)table.TableType
+                                }, false);
+                                break;
+                            case Status.Deleted:
+                                break;
+                            default:
+                                break;
                         }
-                        MessagingCenter.Send(ListTableBindProp, Messages.TABLE_MESSAGE);
                     }
+
+                    await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
                     //gui thong tin den trang chu
                     MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+                    MessagingCenter.Send(ListTableBindProp, Messages.TABLE_MESSAGE);
 
-                    await _dbContext.SaveChangesAsync();
                     var param = new NavigationParameters();
                     param.Add(Keys.ZONE, ZoneBindProp);
 
                     await NavigationService.GoBackAsync(param);
                 }
-                    
+
             }
             catch (Exception e)
             {
@@ -172,6 +239,45 @@ namespace CSM.Xam.ViewModels
         {
             AddTableCommand = new DelegateCommand<object>(OnAddTable);
             AddTableCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region ModifyTableCommand
+
+        public DelegateCommand<object> ModifyTableCommand { get; private set; }
+        private async void OnModifyTable(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var table = obj as VisualTableModel;
+                var param = new NavigationParameters();
+                param.Add(Keys.TABLE, table);
+                await NavigationService.NavigateAsync(nameof(CSM_08_02Page), param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitModifyTableCommand()
+        {
+            ModifyTableCommand = new DelegateCommand<object>(OnModifyTable);
+            ModifyTableCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
@@ -240,6 +346,10 @@ namespace CSM.Xam.ViewModels
             {
                 var listTable = await tableLogic.GetTableByZoneAsync(ZoneBindProp.Id);
                 var listVisualTable = Mapper.Map<List<VisualTableModel>>(listTable);
+                foreach (var table in listVisualTable)
+                {
+                    table.Status = Status.Normal;
+                }
                 ListTableBindProp = new ObservableCollection<VisualTableModel>(listVisualTable);
             }
         }
@@ -257,7 +367,16 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.TABLE))
                     {
                         var table = parameters[Keys.TABLE] as VisualTableModel;
-                        ListTableBindProp.Add(table);
+                        table.FkZone = ZoneBindProp.Id;
+                        if (table.Status == Status.Deleted)
+                        {
+                            _listDeletedTable.Add(table);
+                            ListTableBindProp.Remove(table);
+                        }
+                        else
+                        {
+                            ListTableBindProp.Add(table);
+                        }
                     }
                     break;
                 case NavigationMode.New:

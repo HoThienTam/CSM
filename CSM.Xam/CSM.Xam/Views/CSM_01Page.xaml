@@ -39,10 +39,10 @@
                     </mr:Label>
 
                     <!--Right text-->
-                    <mr:Label Text="Lưu" 
-                           Style="{StaticResource CommonHeaderRightText}"
-                           TappedCommand="{Binding SaveCommand}">
-                    </mr:Label>
+                    <StackLayout Grid.Column="2" HorizontalOptions="End" Orientation="Horizontal">
+                        <mr:Label Text="Xóa" TextColor="Red" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding DeleteCommand}"/>
+                        <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+                    </StackLayout>
                 </Grid>
 
                 <!--  Seperate header bottom line  -->
@@ -82,15 +82,6 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </FlexLayout>
-
-                        <tlrPrimitives:RadBorder 
-                           BorderColor="Red"
-                            Style="{StaticResource CommonButtonBorder}">
-                            <tlrInput:RadButton 
-                                Text="Xóa"
-                                TextColor="Red"
-                                Command="{Binding DeleteCommand}"/>
-                        </tlrPrimitives:RadBorder>
 
                     </StackLayout>
                 </ScrollView>

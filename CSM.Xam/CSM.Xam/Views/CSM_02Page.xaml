@@ -101,7 +101,7 @@
                                                Text="Danh mục"/>
 
                                         <tlrInput:RadEntry
-                                            IsEnabled="False"
+                                            InputTransparent="True"
                                             Text="{Binding CategoryBindProp.CategoryName, Mode=TwoWay}"
                                             Style="{StaticResource CommonRightEntry}"
                                             WatermarkText="Chọn danh mục" />

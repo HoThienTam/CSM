@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace CSM.Xam.Converters
 {
-    class LongToTableTypeConveter : IValueConverter
+    class LongToTableTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

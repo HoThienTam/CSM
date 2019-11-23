@@ -16,6 +16,8 @@ namespace CSM.Xam.ViewModels
             Title = "Thêm bàn";
         }
 
+        #region BindProp 
+
         #region ZoneIdBindProp
         private string _ZoneIdBindProp = string.Empty;
         public string ZoneIdBindProp
@@ -34,12 +36,33 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
+        {
+            get { return _IsEditing; }
+            set { SetProperty(ref _IsEditing, value); }
+        }
+        #endregion
+
+        #endregion
+
+        #region Command 
+
         #region SaveCommand
 
         public DelegateCommand<object> SaveCommand { get; private set; }
         private bool CanExecuteSave(object obj)
         {
             if (IsBusy)
+            {
+                return false;
+            }
+            if (TableBindProp.TableSize == null && TableBindProp.TableType == null)
+            {
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(TableBindProp.TableName))
             {
                 return false;
             }
@@ -52,7 +75,11 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-
+                if (IsEditing)
+                {
+                    TableBindProp.Status = Status.Modified;
+                    await NavigationService.GoBackAsync();
+                }
                 var param = new NavigationParameters();
                 param.Add(Keys.TABLE, TableBindProp);
                 await NavigationService.GoBackAsync(param);
@@ -72,6 +99,9 @@ namespace CSM.Xam.ViewModels
         {
             SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
             SaveCommand.ObservesProperty(() => IsNotBusy);
+            SaveCommand.ObservesProperty(() => TableBindProp.TableName);
+            SaveCommand.ObservesProperty(() => TableBindProp.TableSize);
+            SaveCommand.ObservesProperty(() => TableBindProp.TableType);
         }
 
         #endregion
@@ -174,6 +204,47 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region DeleteCommand
+
+        public DelegateCommand<object> DeleteCommand { get; private set; }
+        private async void OnDelete(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                TableBindProp.Status = Status.Deleted;
+                var param = new NavigationParameters();
+                param.Add(Keys.TABLE, TableBindProp);
+                await NavigationService.GoBackAsync(param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitDeleteCommand()
+        {
+            DeleteCommand = new DelegateCommand<object>(OnDelete);
+            DeleteCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #endregion
+
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
@@ -187,7 +258,9 @@ namespace CSM.Xam.ViewModels
 
                     if (parameters.ContainsKey(Keys.TABLE))
                     {
-                        
+                        TableBindProp = parameters[Keys.TABLE] as VisualTableModel;
+                        IsEditing = true;
+                        Title = "Sửa bàn";
                     }
                     else
                     {

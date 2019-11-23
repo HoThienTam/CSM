@@ -86,7 +86,7 @@
 
                                                     <tlrInput:RadEntry
                                                         Grid.Column="1"
-                                                        IsEnabled="{Binding BindingContext.IsEditing, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
+                                                        InputTransparent="{Binding BindingContext.IsNotEditing, Mode=OneWay, Source={x:Reference csm_02_01Page}}"
                                                         Style="{StaticResource CommonLeftEntry}"
                                                         WatermarkText="Tên danh mục"
                                                         Text="{Binding CategoryName, Mode=TwoWay}">
