@@ -1,24 +1,23 @@
-﻿using CSM.EFCore;
-using CSM.Logic.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CSM.EFCore;
+using CSM.Logic.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace CSM.Logic
 {
-    public class InvoiceLogic : BaseLogic
+    public class DiscountLogic : BaseLogic
     {
-        public InvoiceLogic(dataContext dbContext) : base(dbContext)
+        public DiscountLogic(dataContext dbContext) : base(dbContext)
         {
-
         }
 
-        public Task<List<Invoice>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<Discount>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<Discount> query = _DbContext.Discount;
             if (tracking)
             {
 
@@ -28,14 +27,13 @@ namespace CSM.Logic
                 query = query.AsNoTracking();
             }
 
-            query = query.Where(h => h.IsDeleted == (int)status).OrderBy(h => h.CreationDate);
+            query = query.Where(h => h.IsDeleted == (int)status);
 
             return query.ToListAsync();
         }
-
-        public Task<Invoice> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<Discount> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<Invoice> query = _DbContext.Invoice;
+            IQueryable<Discount> query = _DbContext.Discount;
             if (tracking)
             {
 
@@ -51,26 +49,23 @@ namespace CSM.Logic
 
             return item;
         }
-
-        public async Task<Invoice> CreateAsync(Invoice obj, bool saveChange = true)
+        public async Task<Discount> CreateAsync(Discount obj, bool saveChange = true)
         {
-            var item = new Invoice
+            var item = new Discount
             {
                 Id = obj.Id,
-                CreationDate = DateTime.Now.ToString(),
-                TotalPrice = obj.TotalPrice,
                 Creator = "Tam",
-                Status = obj.Status,
-                FkStore = "fg",
-                CloseDate = DateTime.Now.ToString(),
-                CustomerCount = obj.CustomerCount,
-                FkTable = obj.FkTable,
-                PaidAmount = obj.PaidAmount,
-                RefundedAmount = 0,
-                Tip = obj.Tip,
+                CreationDate = DateTime.Now.ToString(),
+                DiscountName = obj.DiscountName,
+                DiscountType = obj.DiscountType,
+                DiscountValue = obj.DiscountValue,
+                FkStore = "1",
+                IsDeleted = (int)IsDelete.Normal,
+                IsInPercent = obj.IsInPercent,
+                MaxValue = obj.MaxValue,
             };
 
-            _DbContext.Invoice.Add(item);
+            _DbContext.Discount.Add(item);
 
             try
             {
@@ -86,10 +81,9 @@ namespace CSM.Logic
 
             return item;
         }
-
-        public async Task<Invoice> UpdateAsync(Invoice obj, bool saveChange = true)
+        public async Task<Discount> UpdateAsync(Discount obj, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.Discount.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {
@@ -108,7 +102,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.Discount.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;
@@ -117,6 +111,7 @@ namespace CSM.Logic
             // Remove cac bang lien quan
 
             // Remove bang chinh
+            item.IsDeleted = (int)IsDelete.Deleted;
 
             try
             {

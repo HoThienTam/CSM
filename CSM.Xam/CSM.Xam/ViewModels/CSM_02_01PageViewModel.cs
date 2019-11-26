@@ -133,8 +133,8 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var resultConfirm = await PageDialogService.DisplayAlertAsync("Cảnh báo", "Bạn có chắc muốn xóa DANH MỤC này không?", "Có", "Không");
-                if (resultConfirm)
+                var accepted = await DisplayDeleteAlertAsync();
+                if (accepted)
                 {
                     var cate = obj as CategoryExtended;
 

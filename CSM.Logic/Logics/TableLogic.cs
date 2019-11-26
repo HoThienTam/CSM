@@ -113,6 +113,26 @@ namespace CSM.Logic
             item.TableName = obj.TableName;
             item.TableSize = obj.TableSize;
             item.TableType = obj.TableType;
+            item.IsSelected = obj.IsSelected;
+            try
+            {
+                if (saveChange)
+                {
+                    await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return item;
+        }
+        public async Task<Table> ChangeStatusAsync(Table obj, bool saveChange = true)
+        {
+            var item = await _DbContext.Table.FirstOrDefaultAsync(h => h.Id == obj.Id);
+
+            item.IsSelected = obj.IsSelected;
             try
             {
                 if (saveChange)

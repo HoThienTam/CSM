@@ -15,6 +15,7 @@ namespace CSM.Xam.Views
         public CSM_03Page()
         {
             InitializeComponent();
+            picker.SelectedIndex = 0;
         }
     }
 }

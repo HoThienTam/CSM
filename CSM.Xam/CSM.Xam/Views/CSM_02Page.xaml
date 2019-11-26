@@ -73,9 +73,7 @@
 
                                 <!--  ten mat hang  -->
                                 <tlrPrimitives:RadBorder Grid.Column="1"
-                                        BorderColor="{StaticResource SubColor}"
-                                        BorderThickness="1"
-                                        CornerRadius="5,5,0,0">
+                                        Style="{StaticResource CommonUpperBorder}">
                                     <StackLayout Orientation="Horizontal"
                                             Spacing="0">
                                         <Label
@@ -91,9 +89,7 @@
                                 <!--  Danh muc  -->
                                 <tlrPrimitives:RadBorder Grid.Row="1"
                                         Grid.Column="1"
-                                        BorderThickness="1,0,1,1"
-                                        BorderColor="{StaticResource SubColor}"
-                                        CornerRadius="0,0,5,5">
+                                        Style="{StaticResource CommonLowerBorder}">
                                     <mr:StackLayout Spacing="0"
                                             TappedCommand="{Binding TapCategoryCommand}"
                                             Orientation="Horizontal">

@@ -8,10 +8,11 @@ using CSM.EFCore;
 using CSM.Logic;
 using System.Linq;
 using CSM.Xam.Views;
-using Telerik.XamarinForms.DataControls.ListView.Commands;
 using CSM.Logic.Enums;
 using Xamarin.Forms;
 using Menu = CSM.EFCore.Menu;
+using Telerik.XamarinForms.DataControls.ListView.Commands;
+using Telerik.XamarinForms.DataControls.ListView;
 
 namespace CSM.Xam.ViewModels
 {
@@ -21,7 +22,8 @@ namespace CSM.Xam.ViewModels
         private Dictionary<string, List<VisualTableModel>> _tableInZone;
         private Dictionary<string, List<Item>> _itemInMenu;
         private string _menuId;
-        private List<Item> _listAllItem;
+        private string _selectedCategory;
+        private VisualTableModel _oldTable;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
@@ -182,11 +184,29 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListItemBindProp
-        private ObservableCollection<Item> _ListItemBindProp = null;
-        public ObservableCollection<Item> ListItemBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListItemBindProp = null;
+        public ObservableCollection<VisualItemMenuModel> ListItemBindProp
         {
             get { return _ListItemBindProp; }
             set { SetProperty(ref _ListItemBindProp, value); }
+        }
+        #endregion
+
+        #region ListDiscountBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListDiscountBindProp = null;
+        public ObservableCollection<VisualItemMenuModel> ListDiscountBindProp
+        {
+            get { return _ListDiscountBindProp; }
+            set { SetProperty(ref _ListDiscountBindProp, value); }
+        }
+        #endregion
+
+        #region ItemsFilterDescriptor
+        private ObservableCollection<FilterDescriptorBase> _ItemsFilterDescriptor;
+        public ObservableCollection<FilterDescriptorBase> ItemsFilterDescriptor
+        {
+            get { return _ItemsFilterDescriptor; }
+            set { SetProperty(ref _ItemsFilterDescriptor, value); }
         }
         #endregion
 
@@ -219,12 +239,12 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ZoneBindProp
-        private string _ZoneBindProp = "Chọn bàn";
-        public string ZoneBindProp
+        #region TableBindProp
+        private Tuple<string, string> _TableBindProp = new Tuple<string, string>("CHỌN BÀN", "");
+        public Tuple<string, string> TableBindProp
         {
-            get { return _ZoneBindProp; }
-            set { SetProperty(ref _ZoneBindProp, value); }
+            get { return _TableBindProp; }
+            set { SetProperty(ref _TableBindProp, value); }
         }
         #endregion
 
@@ -305,10 +325,27 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var selectedCategory = (obj as ItemTapCommandContext).Item as Category;
-
-                var listItem = _listAllItem.Where(h => h.FkCategory == selectedCategory.Id).ToList();
-                ListItemBindProp = new ObservableCollection<Item>(listItem);
+                if (obj is ItemTapCommandContext itemTap)
+                {
+                    _selectedCategory = (itemTap.Item as Category).Id;
+                    Title = (itemTap.Item as Category).CategoryName;
+                }
+                if (obj is string category)
+                {
+                    switch (category)
+                    {
+                        case "discount":
+                            _selectedCategory = "discount";
+                            Title = "Giảm  giá";
+                            break;
+                        case "allitem":
+                            _selectedCategory = "allitem";
+                            Title = "Tất cả mặt hàng";
+                            break;
+                    }
+                }
+                ItemsFilterDescriptor.Clear();
+                ItemsFilterDescriptor.Add(new DelegateFilterDescriptor { Filter = FilterByCategory });
                 IsVisibleListCategoryBindProp = false;
             }
             catch (Exception e)
@@ -389,6 +426,7 @@ namespace CSM.Xam.ViewModels
                             await NavigationService.NavigateAsync(nameof(CSM_02Page));
                             break;
                         case "giamgia":
+                            await NavigationService.NavigateAsync(nameof(CSM_03Page));
                             break;
                         case "danhmuc":
 
@@ -476,6 +514,7 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var invoiceLogic = new InvoiceLogic(_dbContext);
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+                var tableLogic = new TableLogic(_dbContext);
 
                 var invoice = new Invoice
                 {
@@ -484,8 +523,16 @@ namespace CSM.Xam.ViewModels
                     Status = (int)InvoiceStatus.Normal,
                     CreationDate = DateTime.Now.ToString("HH:mm:ss"),
                     PaidAmount = 0,
-                    Tip = 0
+                    Tip = 0,
+                    FkTable = TableBindProp.Item2,
+                    CustomerCount = 1
                 };
+
+                await tableLogic.ChangeStatusAsync(new Table
+                {
+                    Id = TableBindProp.Item2,
+                    IsSelected = 1
+                }, false);
 
                 await invoiceLogic.CreateAsync(invoice, false);
                 foreach (var item in ListItemInBillBindProp)
@@ -505,9 +552,11 @@ namespace CSM.Xam.ViewModels
                 IsVisibleFrameThucDonBindProp = false;
                 IsVisibleFrameBillBindProp = false;
 
+                //reset bill
                 ListItemInBillBindProp = null;
                 TotalPriceBindProp = 0;
                 ItemCountBindProp = 0;
+                _oldTable = null;
 
                 MessagingCenter.Send(invoice, Messages.INVOICE_MESSAGE);
             }
@@ -826,7 +875,16 @@ namespace CSM.Xam.ViewModels
                 if (obj is VisualTableModel table)
                 {
                     var zone = ListSectionBindProp.FirstOrDefault(h => h.Id == table.FkZone);
-                    ZoneBindProp = $"{zone.ZoneName} - {table.TableName}";
+                    // Luu ten ban va doi mau`
+                    TableBindProp = new Tuple<string, string>($"{zone.ZoneName} - {table.TableName}", table.Id);
+                    table.IsSelected = true;
+                    // Luu gia tri ban da chon
+                    if (_oldTable != null)
+                    {
+                        _oldTable.IsSelected = false;
+                    }
+                    _oldTable = table;
+
                     IsVisibleFrameThucDonBindProp = true;
                     IsVisibleFrameBillBindProp = true;
 
@@ -884,7 +942,7 @@ namespace CSM.Xam.ViewModels
             {
                 var param = new NavigationParameters();
                 param.Add(Keys.LIST_CATEGORY, ListCategoryBindProp);
-                param.Add(Keys.LIST_ITEM, _listAllItem);
+                param.Add(Keys.LIST_ITEM, ListItemBindProp);
                 param.Add(Keys.ZONE, _menuId);
                 await NavigationService.NavigateAsync(nameof(CSM_11Page), param);
             }
@@ -910,6 +968,26 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region Method
+
+        #region FilterByCategory
+        private bool FilterByCategory(object item)
+        {
+            var itemModel = (VisualItemMenuModel)item;
+            if (_selectedCategory.Equals("allitem"))
+            {
+                return !string.IsNullOrWhiteSpace(itemModel.FkCategory);
+            }
+            else if (_selectedCategory.Equals("discount"))
+            {
+                return string.IsNullOrWhiteSpace(itemModel.FkCategory);
+            }
+            else
+            {
+                return itemModel.FkCategory == _selectedCategory;
+            }
+        }
+        #endregion
+
         private async void GetAllInvoice()
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
@@ -937,21 +1015,28 @@ namespace CSM.Xam.ViewModels
             ListSectionBindProp = new ObservableCollection<VisualZoneModel>(listVisualZone);
         }
 
-        private async void GetAllMenu()
+        private async void GetAllMenuItem()
         {
-            //lay danh sach category va item
+            //lay danh sach category va item va discount
             var itemLogic = new ItemLogic(_dbContext);
+            var discountLogic = new DiscountLogic(_dbContext);
             var categorylogic = new CategoryLogic(_dbContext);
 
             var listItem = await itemLogic.GetAllAsync();
             var listCategory = await categorylogic.GetAllAsync();
+            var listDiscount = await discountLogic.GetAllAsync();
 
-            ListItemBindProp = new ObservableCollection<Item>(listItem);
-            _listAllItem = new List<Item>(listItem);
+            // Mapping data
+            var listVisualItem = Mapper.Map<List<VisualItemMenuModel>>(listItem);
+            var listVisualDiscount = Mapper.Map<List<VisualItemMenuModel>>(listDiscount);
+            //Gop 2 list
+            listVisualItem.AddRange(listVisualDiscount);
+
+            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listVisualItem);
 
             ListCategoryBindProp = new ObservableCollection<Category>(listCategory);
 
-            // lay danh sach menu va item trong menu
+            // lay danh sach menu va item trong tung menu
             var menuLogic = new MenuLogic(_dbContext);
             var menuItemLogic = new MenuItemLogic(_dbContext);
 
@@ -986,6 +1071,7 @@ namespace CSM.Xam.ViewModels
             ListMenuBindProp = new ObservableCollection<VisualMenuModel>(listVisualMenu);
 
         }
+
         #endregion
 
         #region MessageHandler
@@ -1033,11 +1119,12 @@ namespace CSM.Xam.ViewModels
                     {
                         var item = parameters[Keys.ITEM] as Item;
 
-                        ListItemBindProp.Add(new Item
+                        ListItemBindProp.Add(new VisualItemMenuModel
                         {
                             Id = item.Id,
-                            ItemName = item.ItemName,
-                            Price = item.Price,
+                            Name = item.ItemName,
+                            Value = item.Price,
+                            FkCategory = item.FkCategory,
                         });
                     }
                     if (parameters.ContainsKey(Keys.LIST_ITEM))
@@ -1063,8 +1150,7 @@ namespace CSM.Xam.ViewModels
 
                     GetAllInvoice();
                     GetAllZone();
-                    GetAllMenu();
-
+                    GetAllMenuItem();
                     break;
                 case NavigationMode.Forward:
                     break;

@@ -167,7 +167,15 @@
                                 <listView:ListViewTemplateCell.View>
                                     <mr:Grid TappedCommand="{Binding BindingContext.SelectTableCommand, Source={x:Reference mainPage}}"
                                              TappedCommandParameter="{Binding}">
-                                        <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" Text="{Binding TableType, Converter={x:StaticResource LongToTableTypeConverter}}" />
+                                        <Label Style="{StaticResource CommonLabelIcon}" FontSize="Header" 
+                                               Text="{Binding TableType, Converter={x:StaticResource LongToTableTypeConverter}}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="TextColor" Value="{StaticResource SelectedColor}"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+
                                         <Label Text="{Binding TableName}" Style="{StaticResource BanText}"/>
                                     </mr:Grid>
                                 </listView:ListViewTemplateCell.View>
@@ -242,7 +250,7 @@
 
                           <!--Title-->
                         <mr:Label Style="{StaticResource Bill_Table}" 
-                                  Text="{Binding ZoneBindProp}" 
+                                  Text="{Binding TableBindProp.Item1}" 
                                   TappedCommand="{Binding SelectTableCommand}"/>
 
                           <!--Seperate line-->  
@@ -348,6 +356,8 @@
                     <dataControls:RadListView
                         IsVisible="{Binding IsVisibleListItemBindProp}"
                         Margin="{StaticResource CommonThickness}"
+                        FilterDescriptors="{Binding ItemsFilterDescriptor, 
+                                 Mode=OneWayToSource}" 
                         Grid.Row="2"
                         ItemsSource="{Binding ListItemBindProp, Mode=OneWay}">
                         <dataControls:RadListView.LayoutDefinition>
@@ -361,9 +371,9 @@
                                             <!--Anh mat hang-->
                                             <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
                                             <!--Ten mat hang-->
-                                            <Label Text="{Binding ItemName}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                            <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
                                             <!--Gia-->
-                                            <Label Text="{Binding Price, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
+                                            <Label Text="{Binding Value, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
                                             <!--Icon bao thieu hang-->
                                             <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
                                         </mr:StackLayout>
@@ -380,6 +390,24 @@
                         Grid.Row="2"
                         SelectionMode="Single"
                         ItemsSource="{Binding ListCategoryBindProp, Mode=OneWay}">
+                        <dataControls:RadListView.HeaderTemplate>
+                            <DataTemplate>
+                                <StackLayout Spacing="2" Margin="0,0,0,1">
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding TapCategoryCommand, Mode=OneWay}" TappedCommandParameter="discount">
+                                        <!--Anh mat hang-->
+                                        <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                        <!--Ten mat hang-->
+                                        <Label Text="Giảm giá" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                    </mr:StackLayout>
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding TapCategoryCommand, Mode=OneWay}" TappedCommandParameter="allitem">
+                                        <!--Anh mat hang-->
+                                        <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                        <!--Ten mat hang-->
+                                        <Label Text="Tất cả mặt hàng" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                    </mr:StackLayout>
+                                </StackLayout>
+                            </DataTemplate>
+                        </dataControls:RadListView.HeaderTemplate>
                         <dataControls:RadListView.LayoutDefinition>
                             <listView:ListViewLinearLayout VerticalItemSpacing="1" />
                         </dataControls:RadListView.LayoutDefinition>

@@ -6,6 +6,7 @@
                         xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
                         xmlns:cvt="clr-namespace:CSM.Xam.Converters"
                         xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+                        xmlns:numericInput="clr-namespace:Telerik.XamarinForms.Input.NumericInput;assembly=Telerik.XamarinForms.Input"
                         x:Class="CSM.Xam.App">
     <Application.Resources>
         <!-- Application resource dictionary -->
@@ -174,6 +175,18 @@
             <Setter Property="BorderColor" Value="{StaticResource SubColor}" />
             <Setter Property="BorderThickness"
                     Value="{StaticResource CommonBorderThickness}" />
+        </Style>
+
+        <Style x:Key="CommonUpperBorder" TargetType="tlrPrimitives:RadBorder">
+            <Setter Property="CornerRadius" Value="5,5,0,0" />
+            <Setter Property="BorderColor" Value="{StaticResource SubColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="CommonLowerBorder" TargetType="tlrPrimitives:RadBorder">
+            <Setter Property="CornerRadius" Value="0,0,5,5" />
+            <Setter Property="BorderColor" Value="{StaticResource SubColor}" />
+            <Setter Property="BorderThickness" Value="1,0,1,1" />
         </Style>
 
         <Style x:Key="CommonHeaderText" TargetType="Label">
@@ -381,5 +394,40 @@
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="HorizontalOptions" Value="Center" />
         </Style>
+
+        <!--  Numeric input remove buttons  -->
+        <!--  Removed unused resources that were for columns and button sizing  -->
+        <OnPlatform x:Key="Height" x:TypeArguments="x:Double">
+            <On Platform="Android" Value="45" />
+        </OnPlatform>
+        <OnPlatform x:Key="MinimumHeight" x:TypeArguments="x:Double">
+            <On Platform="Android" Value="28" />
+        </OnPlatform>
+
+        <!--  Removed buttons and unused style, columns and spacing  -->
+        <ControlTemplate x:Key="CustomRadNumericInputControlTemplate">
+            <Grid HeightRequest="{StaticResource Height}" MinimumHeightRequest="{StaticResource MinimumHeight}">
+                <Grid.Resources>
+                    <ResourceDictionary>
+                        <Style Class="DefaultNumericInputEntryStyle" TargetType="numericInput:NumericInputEntry">
+                            <Setter Property="HorizontalTextAlignment" Value="End" />
+                            <Setter Property="VerticalTextAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="0,0,0,0" />
+                            <Setter Property="Keyboard" Value="Numeric" />
+                            <Setter Property="BorderStyle" Value="{StaticResource EntryBorderStyle}"/>
+                        </Style>
+                    </ResourceDictionary>
+                </Grid.Resources>
+
+                <numericInput:NumericInputEntry
+                        x:Name="PART_Entry"
+                        AutomationId="NumericEntry"
+                        InputTransparent="{TemplateBinding IsReadOnly}"
+                        StyleClass="DefaultNumericInputEntryStyle"
+                        Text="{TemplateBinding Value,
+                                               Mode=OneWay}" />
+            </Grid>
+
+        </ControlTemplate>
     </Application.Resources>
 </prism:PrismApplication>

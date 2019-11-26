@@ -10,7 +10,6 @@
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_08_02Page"
-             Visual="Material"
              Padding="{StaticResource LargeThickness}">
     <Grid Style="{StaticResource CommonWrapper}"
                 Margin="{StaticResource CommonThickness}">

@@ -219,10 +219,14 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                TableBindProp.Status = Status.Deleted;
-                var param = new NavigationParameters();
-                param.Add(Keys.TABLE, TableBindProp);
-                await NavigationService.GoBackAsync(param);
+                var accepted = await DisplayDeleteAlertAsync();
+                if (accepted)
+                {
+                    TableBindProp.Status = Status.Deleted;
+                    var param = new NavigationParameters();
+                    param.Add(Keys.TABLE, TableBindProp);
+                    await NavigationService.GoBackAsync(param);
+                }
             }
             catch (Exception e)
             {

@@ -116,5 +116,11 @@ namespace CSM.Xam.ViewModels
         {
             return PageDialogService.DisplayAlertAsync("Lỗi hệ thống", $"Đã có lỗi trong quá trình xử lý:\n{ex.Message}", "Đóng");
         }
+
+        protected async Task<bool> DisplayDeleteAlertAsync()
+        {
+            var result = await PageDialogService.DisplayAlertAsync("Cảnh báo", "Xác nhận xóa?", "Đồng ý", "Không");
+            return result;
+        }
     }
 }

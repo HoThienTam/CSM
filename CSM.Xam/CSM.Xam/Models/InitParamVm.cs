@@ -16,9 +16,20 @@ namespace CSM.Xam.Models
             PageDialogService = pageDialogService;
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Discount, VisualDiscountModel>();
                 cfg.CreateMap<Menu, VisualMenuModel>();
                 cfg.CreateMap<Table, VisualTableModel>();
                 cfg.CreateMap<Zone, VisualZoneModel>();
+                cfg.CreateMap<Item, VisualItemMenuModel>()
+                .ForMember( destination => destination.Name,
+               opts => opts.MapFrom(source => source.ItemName))
+                .ForMember(destination => destination.Value,
+               opts => opts.MapFrom(source => source.Price));
+                cfg.CreateMap<Discount, VisualItemMenuModel>()
+                .ForMember(destination => destination.Name,
+               opts => opts.MapFrom(source => source.DiscountName))
+                .ForMember(destination => destination.Value,
+               opts => opts.MapFrom(source => source.DiscountValue)); ;
             });
             Mapper = config.CreateMapper();
         }

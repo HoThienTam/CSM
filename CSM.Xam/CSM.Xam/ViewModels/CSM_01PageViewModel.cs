@@ -163,13 +163,18 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var menuLogic = new MenuLogic(_dbContext);
-                await menuLogic.DeleteAsync(Menu.Id);
+                var accepted = await DisplayDeleteAlertAsync();
 
-                var param = new NavigationParameters();
-                param.Add(Keys.MENU, Menu);
+                if (accepted)
+                {
+                    var menuLogic = new MenuLogic(_dbContext);
+                    await menuLogic.DeleteAsync(Menu.Id);
 
-                await NavigationService.GoBackAsync(param);
+                    var param = new NavigationParameters();
+                    param.Add(Keys.MENU, Menu);
+
+                    await NavigationService.GoBackAsync(param);
+                }
             }
             catch (Exception e)
             {

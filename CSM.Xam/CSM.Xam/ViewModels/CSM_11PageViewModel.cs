@@ -8,6 +8,7 @@ using CSM.Logic;
 using CSM.Xam.Models;
 using Prism.Commands;
 using Prism.Navigation;
+using Telerik.XamarinForms.DataControls.ListView;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
 
 namespace CSM.Xam.ViewModels
@@ -16,7 +17,7 @@ namespace CSM.Xam.ViewModels
     {
         private dataContext _dbContext = Helper.GetDataContext();
         private string _menuId;
-        private List<Item> _listAllItem;
+        private string _selectedCategory;
         public CSM_11PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             Title = "Thêm vào thực đơn";
@@ -34,8 +35,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListItemBindProp
-        private ObservableCollection<ItemExtended> _ListItemBindProp = null;
-        public ObservableCollection<ItemExtended> ListItemBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListItemBindProp = null;
+        public ObservableCollection<VisualItemMenuModel> ListItemBindProp
         {
             get { return _ListItemBindProp; }
             set { SetProperty(ref _ListItemBindProp, value); }
@@ -61,11 +62,20 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region SelectedItems
-        private List<Item> _SelectedItems;
-        public List<Item> SelectedItems
+        private List<VisualItemMenuModel> _SelectedItems;
+        public List<VisualItemMenuModel> SelectedItems
         {
             get { return _SelectedItems; }
             set { SetProperty(ref _SelectedItems, value); }
+        }
+        #endregion
+
+        #region ItemsFilterDescriptor
+        private ObservableCollection<FilterDescriptorBase> _ItemsFilterDescriptor;
+        public ObservableCollection<FilterDescriptorBase> ItemsFilterDescriptor
+        {
+            get { return _ItemsFilterDescriptor; }
+            set { SetProperty(ref _ItemsFilterDescriptor, value); }
         }
         #endregion
 
@@ -88,21 +98,29 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var selectedCategory = (obj as ItemTapCommandContext).Item as Category;
-
-                var listItem = _listAllItem.Where(h => h.FkCategory == selectedCategory.Id).ToList();
-                // Chuyen item thanh item extended
-                ListItemBindProp = new ObservableCollection<ItemExtended>();
-                foreach (var item in listItem)
+                if (obj is ItemTapCommandContext itemTap)
                 {
-                    ListItemBindProp.Add(new ItemExtended 
-                    {
-                        Id = item.Id,
-                        ItemName = item.ItemName,
-                        IsSelected = false,
-                        Price = item.Price
-                    });
+                    _selectedCategory = (itemTap.Item as Category).Id;
+                    Title = (itemTap.Item as Category).CategoryName;
                 }
+                if (obj is string category)
+                {
+                    switch (category)
+                    {
+                        case "discount":
+                            _selectedCategory = "discount";
+                            Title = "Giảm  giá";
+                            break;
+                        case "allitem":
+                            _selectedCategory = "allitem";
+                            Title = "Tất cả mặt hàng";
+                            break;
+                    }
+                }
+                ItemsFilterDescriptor.Clear();
+                ItemsFilterDescriptor.Add(new DelegateFilterDescriptor { Filter = FilterByCategory });
+                IsVisibleListCategoryBindProp = false;
+
                 IsVisibleListCategoryBindProp = false;
             }
             catch (Exception e)
@@ -148,11 +166,18 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var param = new NavigationParameters();
                 param.Add(Keys.LIST_ITEM, SelectedItems);
-
+                var listItem = new List<Item>();
+                foreach (var item in SelectedItems)
+                {
+                    listItem.Add(new Item 
+                    {
+                        Id = item.Id,
+                    });
+                }
                 var menuItemLogic = new MenuItemLogic(_dbContext);
 
                 //luu vao database
-                await menuItemLogic.CreateAsync(_menuId, SelectedItems);
+                await menuItemLogic.CreateAsync(_menuId, listItem);
 
                 await NavigationService.GoBackAsync(param);
             }
@@ -193,10 +218,10 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 if (SelectedItems == null)
                 {
-                    SelectedItems = new List<Item>();
+                    SelectedItems = new List<VisualItemMenuModel>();
                 }
 
-                var selectedItem = (obj as ItemTapCommandContext).Item as ItemExtended;
+                var selectedItem = (obj as ItemTapCommandContext).Item as VisualItemMenuModel;
                 if (selectedItem.IsSelected)
                 {
                     selectedItem.IsSelected = false;
@@ -270,6 +295,25 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region FilterByCategory
+        private bool FilterByCategory(object item)
+        {
+            var itemModel = (VisualItemMenuModel)item;
+            if (_selectedCategory.Equals("allitem"))
+            {
+                return !string.IsNullOrWhiteSpace(itemModel.FkCategory);
+            }
+            else if (_selectedCategory.Equals("discount"))
+            {
+                return string.IsNullOrWhiteSpace(itemModel.FkCategory);
+            }
+            else
+            {
+                return itemModel.FkCategory == _selectedCategory;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Navigate
@@ -283,7 +327,7 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     ListCategoryBindProp = parameters[Keys.LIST_CATEGORY] as ObservableCollection<Category>;
-                    _listAllItem = parameters[Keys.LIST_ITEM] as List<Item>;
+                    ListItemBindProp = parameters[Keys.LIST_ITEM] as ObservableCollection<VisualItemMenuModel>;
                     _menuId = parameters[Keys.ZONE] as string;
                     break;
                 case NavigationMode.Forward:

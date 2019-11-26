@@ -14,5 +14,6 @@ namespace CSM.EFCore
         public long IsDeleted { get; set; }
         public string FkZone { get; set; }
         public string FkStore { get; set; }
+        public long IsSelected { get; set; }
     }
 }

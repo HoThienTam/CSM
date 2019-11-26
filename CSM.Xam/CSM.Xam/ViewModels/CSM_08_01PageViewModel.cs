@@ -304,17 +304,21 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var zoneLogic = new ZoneLogic(_dbContext);
-                await zoneLogic.DeleteAsync(ZoneBindProp.Id);
+                var accepted = await DisplayDeleteAlertAsync();
+                if (accepted)
+                {
+                    var zoneLogic = new ZoneLogic(_dbContext);
+                    await zoneLogic.DeleteAsync(ZoneBindProp.Id);
 
-                ZoneBindProp.IsDeleted = true;
-                //gui thong tin den trang chu
-                MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
+                    ZoneBindProp.IsDeleted = true;
+                    //gui thong tin den trang chu
+                    MessagingCenter.Send(ZoneBindProp, Messages.ZONE_MESSAGE);
 
-                var param = new NavigationParameters();
-                param.Add(Keys.ZONE, ZoneBindProp);
+                    var param = new NavigationParameters();
+                    param.Add(Keys.ZONE, ZoneBindProp);
 
-                await NavigationService.GoBackAsync(param);
+                    await NavigationService.GoBackAsync(param);
+                }
             }
             catch (Exception e)
             {

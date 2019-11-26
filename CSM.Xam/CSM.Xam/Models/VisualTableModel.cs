@@ -59,5 +59,14 @@ namespace CSM.Xam.Models
         }
         #endregion
 
+        #region IsSelected
+        private bool _IsSelected;
+        public bool IsSelected
+        {
+            get { return _IsSelected; }
+            set { SetProperty(ref _IsSelected, value); }
+        }
+        #endregion
+
     }
 }
