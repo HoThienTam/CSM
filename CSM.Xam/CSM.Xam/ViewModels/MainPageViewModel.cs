@@ -20,7 +20,7 @@ namespace CSM.Xam.ViewModels
     {
         private dataContext _dbContext = Helper.GetDataContext();
         private Dictionary<string, List<VisualTableModel>> _tableInZone;
-        private Dictionary<string, List<Item>> _itemInMenu;
+        private Dictionary<string, List<VisualItemMenuModel>> _itemInMenu;
         private string _menuId;
         private string _selectedCategory;
         private VisualTableModel _oldTable;
@@ -29,6 +29,7 @@ namespace CSM.Xam.ViewModels
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
             MessagingCenter.Subscribe<ObservableCollection<VisualTableModel>>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
             MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
+            MessagingCenter.Subscribe<VisualCategoryModel>(this, Messages.CATEGORY_MESSAGE, ReceiveCategoryMessageHandler);
         }
 
         #region Bind Property
@@ -175,8 +176,8 @@ namespace CSM.Xam.ViewModels
         // Frame thu vien
 
         #region ListCategoryBindProp
-        private ObservableCollection<Category> _ListCategoryBindProp = null;
-        public ObservableCollection<Category> ListCategoryBindProp
+        private ObservableCollection<VisualCategoryModel> _ListCategoryBindProp = null;
+        public ObservableCollection<VisualCategoryModel> ListCategoryBindProp
         {
             get { return _ListCategoryBindProp; }
             set { SetProperty(ref _ListCategoryBindProp, value); }
@@ -251,8 +252,8 @@ namespace CSM.Xam.ViewModels
         // Frame menu
 
         #region ListItemInMenuBindProp
-        private ObservableCollection<Item> _ListItemInMenuBindProp;
-        public ObservableCollection<Item> ListItemInMenuBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListItemInMenuBindProp;
+        public ObservableCollection<VisualItemMenuModel> ListItemInMenuBindProp
         {
             get { return _ListItemInMenuBindProp; }
             set { SetProperty(ref _ListItemInMenuBindProp, value); }
@@ -327,8 +328,8 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 if (obj is ItemTapCommandContext itemTap)
                 {
-                    _selectedCategory = (itemTap.Item as Category).Id;
-                    Title = (itemTap.Item as Category).CategoryName;
+                    _selectedCategory = (itemTap.Item as VisualCategoryModel).Id;
+                    Title = (itemTap.Item as VisualCategoryModel).CategoryName;
                 }
                 if (obj is string category)
                 {
@@ -665,9 +666,9 @@ namespace CSM.Xam.ViewModels
 
                 _menuId = menu.Id;
 
-                var listItem = new List<Item>();
+                var listItem = new List<VisualItemMenuModel>();
                 _itemInMenu.TryGetValue(menu.Id, out listItem);
-                ListItemInMenuBindProp = new ObservableCollection<Item>(listItem);
+                ListItemInMenuBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
             }
             catch (Exception e)
             {
@@ -1034,7 +1035,8 @@ namespace CSM.Xam.ViewModels
 
             ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listVisualItem);
 
-            ListCategoryBindProp = new ObservableCollection<Category>(listCategory);
+            var listVisualCategory = Mapper.Map<List<VisualCategoryModel>>(listCategory);
+            ListCategoryBindProp = new ObservableCollection<VisualCategoryModel>(listVisualCategory);
 
             // lay danh sach menu va item trong tung menu
             var menuLogic = new MenuLogic(_dbContext);
@@ -1043,16 +1045,16 @@ namespace CSM.Xam.ViewModels
             var listMenu = await menuLogic.GetAllAsync();
             var listVisualMenu = Mapper.Map<List<VisualMenuModel>>(listMenu);
 
-            _itemInMenu = new Dictionary<string, List<Item>>();
+            _itemInMenu = new Dictionary<string, List<VisualItemMenuModel>>();
             //Lay danh sach item trong tung menu
             foreach (var menu in listMenu)
             {
                 var listItemIdInMenu = await menuItemLogic.GetAsync(menu.Id);
-                List<Item> listItemInMenu = new List<Item>();
+                List<VisualItemMenuModel> listItemInMenu = new List<VisualItemMenuModel>();
                 //lay thong tin tung item
                 foreach (var item in listItemIdInMenu)
                 {
-                    listItemInMenu.Add(listItem.FirstOrDefault(h => h.Id == item.FkItem));
+                    listItemInMenu.Add(listVisualItem.FirstOrDefault(h => h.Id == item.FkItem));
                 }
                 _itemInMenu.Add(menu.Id, listItemInMenu);
             }
@@ -1105,6 +1107,25 @@ namespace CSM.Xam.ViewModels
                 _tableInZone.Add(zone.Id, new List<VisualTableModel>());
             }
         }
+        private void ReceiveCategoryMessageHandler(VisualCategoryModel category)
+        {
+            switch (category.Status)
+            {
+                case Status.New:
+                    ListCategoryBindProp.Add(category);
+                    break;
+                case Status.Normal:
+                    break;
+                case Status.Modified:
+                    var cate = ListCategoryBindProp.FirstOrDefault(h => h.Id == category.Id);
+                    cate.CategoryName = category.CategoryName;
+                    break;
+                case Status.Deleted:
+                    var categ = ListCategoryBindProp.FirstOrDefault(h => h.Id == category.Id);
+                    ListCategoryBindProp.Remove(categ);
+                    break;
+            }
+        }
         #endregion
 
         #region Navigate
@@ -1115,6 +1136,7 @@ namespace CSM.Xam.ViewModels
             switch (parameters.GetNavigationMode())
             {
                 case NavigationMode.Back:
+                    //Back ve tu CSM 02
                     if (parameters.ContainsKey(Keys.ITEM))
                     {
                         var item = parameters[Keys.ITEM] as Item;
@@ -1127,9 +1149,10 @@ namespace CSM.Xam.ViewModels
                             FkCategory = item.FkCategory,
                         });
                     }
+                    //Back ve tu CSM 11
                     if (parameters.ContainsKey(Keys.LIST_ITEM))
                     {
-                        var listItems = parameters[Keys.LIST_ITEM] as List<Item>;
+                        var listItems = parameters[Keys.LIST_ITEM] as List<VisualItemMenuModel>;
 
                         foreach (var item in listItems)
                         {
@@ -1140,6 +1163,7 @@ namespace CSM.Xam.ViewModels
                             }
                         }
                     }
+                    //Back ve tu CSM 01
                     if (parameters.ContainsKey(Keys.MENU))
                     {
                         var menu = parameters[Keys.MENU] as VisualMenuModel;

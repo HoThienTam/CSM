@@ -26,8 +26,8 @@ namespace CSM.Xam.ViewModels
         #region Bind Prop
 
         #region ListCategoryBindProp
-        private ObservableCollection<Category> _ListCategoryBindProp = null;
-        public ObservableCollection<Category> ListCategoryBindProp
+        private ObservableCollection<VisualCategoryModel> _ListCategoryBindProp = null;
+        public ObservableCollection<VisualCategoryModel> ListCategoryBindProp
         {
             get { return _ListCategoryBindProp; }
             set { SetProperty(ref _ListCategoryBindProp, value); }
@@ -100,8 +100,8 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 if (obj is ItemTapCommandContext itemTap)
                 {
-                    _selectedCategory = (itemTap.Item as Category).Id;
-                    Title = (itemTap.Item as Category).CategoryName;
+                    _selectedCategory = (itemTap.Item as VisualCategoryModel).Id;
+                    Title = (itemTap.Item as VisualCategoryModel).CategoryName;
                 }
                 if (obj is string category)
                 {
@@ -326,7 +326,7 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    ListCategoryBindProp = parameters[Keys.LIST_CATEGORY] as ObservableCollection<Category>;
+                    ListCategoryBindProp = parameters[Keys.LIST_CATEGORY] as ObservableCollection<VisualCategoryModel>;
                     ListItemBindProp = parameters[Keys.LIST_ITEM] as ObservableCollection<VisualItemMenuModel>;
                     _menuId = parameters[Keys.ZONE] as string;
                     break;

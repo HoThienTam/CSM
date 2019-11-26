@@ -5,15 +5,18 @@ using CSM.Xam.Models;
 using Prism.Commands;
 using Prism.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
+using Xamarin.Forms;
 
 namespace CSM.Xam.ViewModels
 {
     public class CSM_02_01PageViewModel : ViewModelBase
     {
         private dataContext _dbContext = Helper.GetDataContext();
+        private List<VisualCategoryModel> _listDeleted = new List<VisualCategoryModel>();
         public CSM_02_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
 
@@ -22,8 +25,8 @@ namespace CSM.Xam.ViewModels
         #region Bind Property
 
         #region ListCategoryBindProp
-        private ObservableCollection<CategoryExtended> _ListCategoryBindProp = null;
-        public ObservableCollection<CategoryExtended> ListCategoryBindProp
+        private ObservableCollection<VisualCategoryModel> _ListCategoryBindProp = null;
+        public ObservableCollection<VisualCategoryModel> ListCategoryBindProp
         {
             get { return _ListCategoryBindProp; }
             set { SetProperty(ref _ListCategoryBindProp, value); }
@@ -55,8 +58,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region SelectedCategoryBindProp
-        private CategoryExtended _SelectedCategoryBindProp = null;
-        public CategoryExtended SelectedCategoryBindProp
+        private VisualCategoryModel _SelectedCategoryBindProp = null;
+        public VisualCategoryModel SelectedCategoryBindProp
         {
             get { return _SelectedCategoryBindProp; }
             set { SetProperty(ref _SelectedCategoryBindProp, value); }
@@ -89,7 +92,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var newCate = new CategoryExtended
+                var newCate = new VisualCategoryModel
                 {
                     Id = Guid.NewGuid().ToString(),
                     CategoryName = NewCategoryNameBindProp,
@@ -136,11 +139,10 @@ namespace CSM.Xam.ViewModels
                 var accepted = await DisplayDeleteAlertAsync();
                 if (accepted)
                 {
-                    var cate = obj as CategoryExtended;
+                    var cate = obj as VisualCategoryModel;
 
-                    var categoryLogic = new CategoryLogic(_dbContext);
-                    await categoryLogic.DeleteAsync(cate.Id, false);
                     ListCategoryBindProp.Remove(cate);
+                    _listDeleted.Add(cate);
                 }
             }
             catch (Exception e)
@@ -177,7 +179,7 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                if (obj is CategoryExtended cate)
+                if (obj is VisualCategoryModel cate)
                 {
                     cate.Status = Status.Modified;
                 }
@@ -225,7 +227,7 @@ namespace CSM.Xam.ViewModels
                         switch (category.Status)
                         {
                             case Status.New:
-                                var newCategory = new CategoryExtended
+                                var newCategory = new Category
                                 {
                                     Id = category.Id,
                                     CategoryName = category.CategoryName
@@ -235,7 +237,7 @@ namespace CSM.Xam.ViewModels
                             case Status.Normal:
                                 break;
                             case Status.Modified:
-                                var modCategory = new CategoryExtended
+                                var modCategory = new Category
                                 {
                                     Id = category.Id,
                                     CategoryName = category.CategoryName
@@ -247,17 +249,33 @@ namespace CSM.Xam.ViewModels
                             default:
                                 break;
                         }
+                        MessagingCenter.Send(category, Messages.CATEGORY_MESSAGE);
+                    }
+
+                    foreach (var cate in _listDeleted)
+                    {
+                       cate.Status = Status.Deleted;
+                       await categoryLogic.DeleteAsync(cate.Id, false);
+                       MessagingCenter.Send(cate, Messages.CATEGORY_MESSAGE);
+
                     }
                     //neu co nhap category moi thi tao roi quay ve
                     if (!string.IsNullOrWhiteSpace(NewCategoryNameBindProp))
                     {
-                        var newCate = new CategoryExtended
+                        var newCate = new Category
                         {
                             Id = Guid.NewGuid().ToString(),
-                            CategoryName = NewCategoryNameBindProp
+                            CategoryName = NewCategoryNameBindProp,
+                        };
+                        var newVsCate = new VisualCategoryModel
+                        {
+                            Id = newCate.Id,
+                            CategoryName = newCate.CategoryName,
+                            Status = Status.New
                         };
                         await categoryLogic.CreateAsync(newCate, false);
-                        ListCategoryBindProp.Add(newCate);
+                        ListCategoryBindProp.Add(newVsCate);
+                        MessagingCenter.Send(newCate, Messages.CATEGORY_MESSAGE);
                     }
 
                     await _dbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -273,12 +291,13 @@ namespace CSM.Xam.ViewModels
                         switch (category.Status)
                         {
                             case Status.New:
-                                var newCategory = new CategoryExtended
+                                var newCategory = new Category
                                 {
                                     Id = category.Id,
                                     CategoryName = category.CategoryName,
                                 };
                                 await categoryLogic.CreateAsync(newCategory, false);
+                                MessagingCenter.Send(category, Messages.CATEGORY_MESSAGE);
                                 category.Status = Status.Normal;
                                 break;
                             case Status.Normal:
@@ -287,7 +306,7 @@ namespace CSM.Xam.ViewModels
                                 break;
                             case Status.Deleted:
                                 break;
-                        }
+                        }                    
                     }
 
                     // neu khong nhap gi
@@ -311,13 +330,20 @@ namespace CSM.Xam.ViewModels
                     }
                     else // tao moi
                     {
-                        var newCate = new CategoryExtended
+                        var newCate = new Category
                         {
                             Id = Guid.NewGuid().ToString(),
-                            CategoryName = NewCategoryNameBindProp
+                            CategoryName = NewCategoryNameBindProp,
+                        };
+                        var newVsCate = new VisualCategoryModel
+                        {
+                            Id = newCate.Id,
+                            CategoryName = newCate.CategoryName,
+                            Status = Status.New
                         };
                         await categoryLogic.CreateAsync(newCate, false);
-                        ListCategoryBindProp.Add(newCate);
+                        ListCategoryBindProp.Add(newVsCate);
+                        MessagingCenter.Send(newCate, Messages.CATEGORY_MESSAGE);
 
                         await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -360,14 +386,14 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    ListCategoryBindProp = new ObservableCollection<CategoryExtended>();
+                    ListCategoryBindProp = new ObservableCollection<VisualCategoryModel>();
 
                     var categoryLogic = new CategoryLogic(_dbContext);
                     var listCate = await categoryLogic.GetAllAsync();
 
                     foreach (var category in listCate)
                     {
-                        ListCategoryBindProp.Add(new CategoryExtended
+                        ListCategoryBindProp.Add(new VisualCategoryModel
                         {
                             Id = category.Id,
                             Status = Status.Normal,

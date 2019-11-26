@@ -21,8 +21,8 @@ namespace CSM.Xam.ViewModels
         #region Bind Property
 
         #region CategoryBindProp
-        private CategoryExtended _CategoryBindProp = null;
-        public CategoryExtended CategoryBindProp
+        private VisualCategoryModel _CategoryBindProp = null;
+        public VisualCategoryModel CategoryBindProp
         {
             get { return _CategoryBindProp; }
             set { SetProperty(ref _CategoryBindProp, value); }
@@ -162,7 +162,7 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     if (parameters.ContainsKey(Keys.CATEGORY))
                     {
-                        CategoryBindProp = parameters[Keys.CATEGORY] as CategoryExtended;
+                        CategoryBindProp = parameters[Keys.CATEGORY] as VisualCategoryModel;
                     }
                     break;
                 case NavigationMode.New:

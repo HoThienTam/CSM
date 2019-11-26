@@ -9,6 +9,6 @@ namespace CSM.Logic.Enums
        New,
        Normal,
        Modified,
-       Deleted
+       Deleted,
     }
 }

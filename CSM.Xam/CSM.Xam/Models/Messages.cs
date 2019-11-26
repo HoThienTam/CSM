@@ -20,5 +20,10 @@ namespace CSM.Xam.Models
         /// Gui doi tuong table cho cac subcriber
         /// </summary>
         public const string TABLE_MESSAGE = "TABLE_MESSAGE";
+
+        /// <summary>
+        /// Gui doi tuong table cho cac subcriber
+        /// </summary>
+        public const string CATEGORY_MESSAGE = "CATEGORY_MESSAGE";
     }
 }

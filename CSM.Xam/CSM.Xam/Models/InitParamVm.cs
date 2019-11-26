@@ -16,6 +16,7 @@ namespace CSM.Xam.Models
             PageDialogService = pageDialogService;
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Category, VisualCategoryModel>();
                 cfg.CreateMap<Discount, VisualDiscountModel>();
                 cfg.CreateMap<Menu, VisualMenuModel>();
                 cfg.CreateMap<Table, VisualTableModel>();

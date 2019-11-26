@@ -56,8 +56,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region CategoryBindProp
-        private CategoryExtended _CategoryBindProp = null;
-        public CategoryExtended CategoryBindProp
+        private VisualCategoryModel _CategoryBindProp = null;
+        public VisualCategoryModel CategoryBindProp
         {
             get { return _CategoryBindProp; }
             set { SetProperty(ref _CategoryBindProp, value); }

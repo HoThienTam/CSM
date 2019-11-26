@@ -216,7 +216,7 @@
                                 <listView:ListViewTemplateCell.View>
                                     <mr:Grid TappedCommand="{Binding BindingContext.SelectItemCommand, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
                                         <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}" Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}" />
-                                        <Label Text="{Binding ItemName}" HorizontalOptions="Center" VerticalOptions="End" />
+                                        <Label Text="{Binding Name}" HorizontalOptions="Center" VerticalOptions="End" />
                                     </mr:Grid>
                                 </listView:ListViewTemplateCell.View>
                             </listView:ListViewTemplateCell>
