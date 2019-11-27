@@ -263,6 +263,13 @@
                     Value="{StaticResource CommonHorizontalThickness}" />
         </Style>
 
+        <Style x:Key="CommonRightNumericInput" TargetType="tlrInput:RadNumericInput">
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Margin"
+                    Value="{StaticResource CommonHorizontalThickness}" />
+        </Style>
+
         <Style x:Key="CommonLeftText" TargetType="Label">
             <Setter Property="HorizontalOptions" Value="Start" />
             <Setter Property="VerticalOptions" Value="Center" />

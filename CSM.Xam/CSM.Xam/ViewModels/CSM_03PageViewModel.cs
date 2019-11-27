@@ -7,6 +7,7 @@ using CSM.Xam.Models;
 using CSM.Xam.Views;
 using Prism.Commands;
 using Prism.Navigation;
+using Telerik.XamarinForms.Primitives.CheckBox.Commands;
 
 namespace CSM.Xam.ViewModels
 {
@@ -17,6 +18,7 @@ namespace CSM.Xam.ViewModels
         {
             Title = "Tạo giảm giá";
         }
+        #region Bindprop
 
         #region IsEditing
         private bool _IsEditing = false;
@@ -44,25 +46,73 @@ namespace CSM.Xam.ViewModels
             }
         }
         public bool IsCategoryDiscount { get { return !_IsNormalDiscount; } }
-    #endregion
+        #endregion
 
         #region DiscountBindProp
-        private VisualDiscountModel _DiscountBindProp = new VisualDiscountModel();
-        public VisualDiscountModel DiscountBindProp
+        private VisualItemMenuModel _DiscountBindProp = new VisualItemMenuModel();
+        public VisualItemMenuModel DiscountBindProp
         {
             get { return _DiscountBindProp; }
             set { SetProperty(ref _DiscountBindProp, value); }
         }
         #endregion
 
+        #region IsPercentCheckedBindProp
+        private bool _IsPercentCheckedBindProp = true;
+        public bool IsPercentCheckedBindProp
+        {
+            get { return _IsPercentCheckedBindProp; }
+            set 
+            { 
+                SetProperty(ref _IsPercentCheckedBindProp, value);
+                RaisePropertyChanged(nameof(IsMoneyCheckedBindProp));
+            }
+        }
+        public bool IsMoneyCheckedBindProp
+        {
+            get { return !_IsPercentCheckedBindProp; }
+        }
+        #endregion
+
+        #region CategoryDiscountValueBindProp
+        private double _CategoryDiscountValueBindProp = 0;
+        public double CategoryDiscountValueBindProp
+        {
+            get { return _CategoryDiscountValueBindProp; }
+            set { SetProperty(ref _CategoryDiscountValueBindProp, value); }
+        }
+        #endregion
+
+        #region NormalDiscountValueBindProp
+        private double _NormalDiscountValueBindProp = 0;
+        public double NormalDiscountValueBindProp
+        {
+            get { return _NormalDiscountValueBindProp; }
+            set { SetProperty(ref _NormalDiscountValueBindProp, value); }
+        }
+        #endregion
+
+        #region NormalDiscountPercentBindProp
+        private double _NormalDiscountPercentBindProp = 0;
+        public double NormalDiscountPercentBindProp
+        {
+            get { return _NormalDiscountPercentBindProp; }
+            set { SetProperty(ref _NormalDiscountPercentBindProp, value); }
+        }
+        #endregion
+
         #region CategoryBindProp
-        private VisualCategoryModel _CategoryBindProp = null;
+        private VisualCategoryModel _CategoryBindProp = new VisualCategoryModel();
         public VisualCategoryModel CategoryBindProp
         {
             get { return _CategoryBindProp; }
             set { SetProperty(ref _CategoryBindProp, value); }
         }
         #endregion
+
+        #endregion
+
+        #region Commands
 
         #region DeleteCommand
 
@@ -113,7 +163,11 @@ namespace CSM.Xam.ViewModels
             {
                 return false;
             }
-            if (DiscountBindProp.DiscountValue == 0 || string.IsNullOrWhiteSpace(DiscountBindProp.DiscountName))
+            if (string.IsNullOrWhiteSpace(DiscountBindProp.Name))
+            {
+                return false;
+            }
+            if (NormalDiscountPercentBindProp == 0 || NormalDiscountValueBindProp == 0 || CategoryDiscountValueBindProp == 0)
             {
                 return false;
             }
@@ -130,8 +184,8 @@ namespace CSM.Xam.ViewModels
                 await discountLogic.CreateAsync(new Discount
                 {
                     Id = Guid.NewGuid().ToString(),
-                    DiscountName = DiscountBindProp.DiscountName,
-                    DiscountValue = DiscountBindProp.DiscountValue,
+                    DiscountName = DiscountBindProp.Name,
+                    DiscountValue = DiscountBindProp.Value,
                     IsInPercent = 0,
                     MaxValue = 0,
                     DiscountType = 0,
@@ -210,10 +264,14 @@ namespace CSM.Xam.ViewModels
                 if (IsNormalDiscount)
                 {
                     IsNormalDiscount = false;
+                    NormalDiscountPercentBindProp = 0;
+                    NormalDiscountValueBindProp = 0;
                 }
                 else
                 {
                     IsNormalDiscount = true;
+                    CategoryDiscountValueBindProp = 0;
+                    IsPercentCheckedBindProp = true;
                 }
             }
             catch (Exception e)
@@ -235,6 +293,55 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region IsCheckedChangedCommand
+
+        public DelegateCommand<object> IsCheckedChangedCommand { get; private set; }
+        private bool CanExecuteIsCheckedChanged(object obj)
+        {
+            if (IsBusy)
+            {
+                return false;
+            }
+            if (IsMoneyCheckedBindProp)
+            {
+                return false;
+            }
+            return true;
+        }
+        private async void OnIsCheckedChanged(object obj)
+        {
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var isCheckedChanged = obj as CheckBoxIsCheckChangedCommandContext;
+                if (isCheckedChanged.OldState == true)
+                {
+                    return;
+                }
+                IsPercentCheckedBindProp = false;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitIsCheckedChangedCommand()
+        {
+            IsCheckedChangedCommand = new DelegateCommand<object>(OnIsCheckedChanged, CanExecuteIsCheckedChanged);
+            IsCheckedChangedCommand.ObservesProperty(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #endregion
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {

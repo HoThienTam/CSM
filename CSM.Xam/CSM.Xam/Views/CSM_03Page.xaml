@@ -8,6 +8,7 @@
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:commands="clr-namespace:Telerik.XamarinForms.Primitives.CheckBox.Commands;assembly=Telerik.XamarinForms.Primitives"
              NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_03Page"
              Padding="{StaticResource LargeThickness}">
@@ -91,7 +92,7 @@
                                         Text="Tên giảm giá" />
                                     <tlrInput:RadEntry
                                         Style="{StaticResource CommonRightEntry}"
-                                        Text="{Binding DiscountBindProp.DiscountName}"
+                                        Text="{Binding DiscountBindProp.Name}"
                                         WatermarkText="Tên giảm giá" />
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
@@ -101,10 +102,8 @@
                                         Grid.RowSpan="2"
                                         Style="{StaticResource CommonBorder}">
                                 <Grid WidthRequest="100">
-                                    <BoxView
-                                        BackgroundColor="{StaticResource MainColor}"
-                                        >
-                                    </BoxView>
+                                    <BoxView BackgroundColor="{StaticResource MainColor}"/>
+
                                     <Label
                                     HorizontalOptions="Center"
                                     Text="10%"
@@ -121,10 +120,9 @@
                                 <StackLayout Margin="{StaticResource CommonHorizontalThickness}" Orientation="Horizontal" Spacing="{StaticResource CommonThickness}">
 
                                     <tlrPrimitives:RadCheckBox
-                                        VerticalOptions="Center">
-                                        <tlrPrimitives:RadCheckBox.Behaviors>
-                                            <b:EventToCommandBehavior Command="{Binding CheckPrecentCommand}" EventName="IsCheckedChanged" />
-                                        </tlrPrimitives:RadCheckBox.Behaviors>
+                                        VerticalOptions="Center"
+                                        IsEnabled="{Binding IsMoneyCheckedBindProp}"
+                                        IsChecked="{Binding IsPercentCheckedBindProp, Mode=TwoWay}">
                                     </tlrPrimitives:RadCheckBox>
 
                                     <Label
@@ -132,10 +130,11 @@
                                         VerticalOptions="Center" />
 
                                     <tlrInput:RadNumericInput
+                                        Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
                                         Maximum="100" Minimum="0" 
                                         StringFormat="{}{0:N0}"                                   
-                                        Value="{Binding DiscountBindProp.DiscountValue}" />
+                                        Value="{Binding NormalDiscountPercentBindProp}" />
 
                                 </StackLayout>
 
@@ -146,10 +145,12 @@
                                 <StackLayout  Margin="{StaticResource CommonHorizontalThickness}" Orientation="Horizontal" Spacing="{StaticResource CommonThickness}">
 
                                     <tlrPrimitives:RadCheckBox
-                                         VerticalOptions="Center">
-                                        <tlrPrimitives:RadCheckBox.Behaviors>
-                                            <b:EventToCommandBehavior Command="{Binding CheckMoneyCommand}" EventName="IsCheckedChanged" />
-                                        </tlrPrimitives:RadCheckBox.Behaviors>
+                                         VerticalOptions="Center"                                        
+                                         IsEnabled="{Binding IsPercentCheckedBindProp}"
+                                         IsChecked="{Binding IsMoneyCheckedBindProp, Mode=TwoWay}">
+                                        <tlrPrimitives:RadCheckBox.Commands>
+                                            <commands:CheckBoxUserCommand Command="{Binding IsCheckedChangedCommand}" Id="IsCheckedChanged" SuppressDefaultCommand="False"/>
+                                        </tlrPrimitives:RadCheckBox.Commands>
                                     </tlrPrimitives:RadCheckBox>
 
                                     <Label
@@ -157,10 +158,12 @@
                                         VerticalOptions="Center" />
 
                                     <tlrInput:RadNumericInput
+                                        Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
-                                        Maximum="100" Minimum="0" 
+                                        Minimum="0" 
+                                        Maximum="10000000"
                                         StringFormat="{}{0:N0}"                                   
-                                        Value="{Binding DiscountBindProp.DiscountValue, Mode=TwoWay}" />
+                                        Value="{Binding NormalDiscountValueBindProp, Mode=TwoWay}" />
 
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
@@ -185,10 +188,11 @@
                                         VerticalOptions="Center" />
 
                                     <tlrInput:RadNumericInput
+                                        Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
                                         Maximum="100" Minimum="0" 
                                         StringFormat="{}{0:N0}"                                   
-                                        Value="{Binding DiscountBindProp.DiscountValue}" />
+                                        Value="{Binding CategoryDiscountValueBindProp, Mode=TwoWay}" />
 
                                 </StackLayout>
 
