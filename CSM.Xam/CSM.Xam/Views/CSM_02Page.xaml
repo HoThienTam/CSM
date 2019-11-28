@@ -119,10 +119,16 @@
                                         <Label Style="{StaticResource CommonLeftText}"
                                                 Text="Giá niêm yết"
                                                 WidthRequest="200" />
-                                    <tlrInput:RadEntry
+                                    <tlrInput:RadNumericInput
+                                        Style="{StaticResource CommonRightNumericInput}"
+                                        ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
+                                        StringFormat="{}{0:C}"
+                                        Maximum="1000000000" Minimum="0"                                  
+                                        Value="{Binding PriceBindProp, Mode=TwoWay}" />
+                                    <!--<tlrInput:RadEntry
                                         Text="{Binding PriceBindProp, Converter={StaticResource DoubleToCurrencyConverter}, Mode=TwoWay}"
                                         Keyboard="Numeric"
-                                        Style="{StaticResource CommonRightEntry}"/>
+                                        Style="{StaticResource CommonRightEntry}"/>-->
                                     </StackLayout>
                                 </tlrPrimitives:RadBorder>
                             <StackLayout Spacing="0">

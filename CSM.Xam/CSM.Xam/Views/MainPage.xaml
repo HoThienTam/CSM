@@ -323,7 +323,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                           <!--Title-->  
-                        <Label Style="{StaticResource CommonHeaderText}" Text="Tất cả mặt hàng"/>
+                        <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
                         
                           <!--Back icon-->
                         <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"

@@ -193,15 +193,6 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ListDiscountBindProp
-        private ObservableCollection<VisualItemMenuModel> _ListDiscountBindProp = null;
-        public ObservableCollection<VisualItemMenuModel> ListDiscountBindProp
-        {
-            get { return _ListDiscountBindProp; }
-            set { SetProperty(ref _ListDiscountBindProp, value); }
-        }
-        #endregion
-
         #region ItemsFilterDescriptor
         private ObservableCollection<FilterDescriptorBase> _ItemsFilterDescriptor;
         public ObservableCollection<FilterDescriptorBase> ItemsFilterDescriptor
@@ -1169,9 +1160,15 @@ namespace CSM.Xam.ViewModels
                         var menu = parameters[Keys.MENU] as VisualMenuModel;
                         ListMenuBindProp.Remove(menu);
                     }
+                    //Back ve tu CSM 03
+                    if (parameters.ContainsKey(Keys.DISCOUNT))
+                    {
+                        var discount = parameters[Keys.DISCOUNT] as VisualItemMenuModel;
+                        ListItemBindProp.Add(discount);
+                    }
                     break;
                 case NavigationMode.New:
-
+                    Title = "Thư viện";
                     GetAllInvoice();
                     GetAllZone();
                     GetAllMenuItem();

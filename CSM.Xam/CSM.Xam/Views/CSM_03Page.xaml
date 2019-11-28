@@ -130,11 +130,12 @@
                                         VerticalOptions="Center" />
 
                                     <tlrInput:RadNumericInput
+                                        IsEnabled="{Binding IsPercentCheckedBindProp}"
                                         Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
-                                        Maximum="100" Minimum="0" 
-                                        StringFormat="{}{0:N0}"                                   
-                                        Value="{Binding NormalDiscountPercentBindProp}" />
+                                        StringFormat="{}{0}%"
+                                        Maximum="100" Minimum="0"                                  
+                                        Value="{Binding NormalDiscountPercentBindProp, Mode=TwoWay}" />
 
                                 </StackLayout>
 
@@ -158,13 +159,13 @@
                                         VerticalOptions="Center" />
 
                                     <tlrInput:RadNumericInput
+                                        IsEnabled="{Binding IsMoneyCheckedBindProp}"
                                         Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
                                         Minimum="0" 
-                                        Maximum="10000000"
-                                        StringFormat="{}{0:N0}"                                   
+                                        StringFormat="{}{0:C}"
+                                        Maximum="1000000000"                               
                                         Value="{Binding NormalDiscountValueBindProp, Mode=TwoWay}" />
-
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
 

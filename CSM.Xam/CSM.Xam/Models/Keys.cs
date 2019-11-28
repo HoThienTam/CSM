@@ -55,5 +55,10 @@ namespace CSM.Xam.Models
         /// Truyen menu de add item
         /// </summary>
         public const string MENU = "MENU";
+
+        /// <summary>
+        /// Truyen discount 
+        /// </summary>
+        public const string DISCOUNT = "DISCOUNT";
     }
 }

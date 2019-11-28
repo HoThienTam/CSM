@@ -32,6 +32,7 @@ namespace CSM.Xam
             InitializeComponent();
 
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("vi-VN");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("vi-VN");
 
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data.db");
             DbConnectionString = $"Data Source={dbPath};";

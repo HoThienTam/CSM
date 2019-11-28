@@ -167,7 +167,7 @@ namespace CSM.Xam.ViewModels
             {
                 return false;
             }
-            if (NormalDiscountPercentBindProp == 0 || NormalDiscountValueBindProp == 0 || CategoryDiscountValueBindProp == 0)
+            if (NormalDiscountPercentBindProp == 0 && NormalDiscountValueBindProp == 0 && CategoryDiscountValueBindProp == 0)
             {
                 return false;
             }
@@ -181,15 +181,52 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 var discountLogic = new DiscountLogic(_dbContext);
-                await discountLogic.CreateAsync(new Discount
+                if (IsNormalDiscount)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    DiscountName = DiscountBindProp.Name,
-                    DiscountValue = DiscountBindProp.Value,
-                    IsInPercent = 0,
-                    MaxValue = 0,
-                    DiscountType = 0,
-                });
+                    if (IsMoneyCheckedBindProp)
+                    {
+                        await discountLogic.CreateAsync(new Discount
+                        {
+                            Id = DiscountBindProp.Id,
+                            DiscountName = DiscountBindProp.Name,
+                            DiscountValue = NormalDiscountValueBindProp,
+                            IsInPercent = 0,
+                            MaxValue = 0,
+                            DiscountType = 0,
+                        });
+                        DiscountBindProp.Value = NormalDiscountValueBindProp;
+                    }
+                    else
+                    {
+                        await discountLogic.CreateAsync(new Discount
+                        {
+                            Id = DiscountBindProp.Id,
+                            DiscountName = DiscountBindProp.Name,
+                            DiscountValue = NormalDiscountPercentBindProp,
+                            IsInPercent = 1,
+                            MaxValue = 0,
+                            DiscountType = 0,
+                        });
+                        DiscountBindProp.Value = NormalDiscountPercentBindProp;
+                    }
+                }
+                else
+                {
+                    await discountLogic.CreateAsync(new Discount
+                    {
+                        Id = DiscountBindProp.Id,
+                        DiscountName = DiscountBindProp.Name,
+                        DiscountValue = CategoryDiscountValueBindProp,
+                        IsInPercent = 0,
+                        MaxValue = 0,
+                        DiscountType = 1,
+                    });
+                    DiscountBindProp.Value = CategoryDiscountValueBindProp;
+                }
+                var param = new NavigationParameters();
+                param.Add(Keys.DISCOUNT, DiscountBindProp);
+
+                await NavigationService.GoBackAsync(param);
             }
             catch (Exception e)
             {
@@ -350,8 +387,21 @@ namespace CSM.Xam.ViewModels
             switch (parameters.GetNavigationMode())
             {
                 case NavigationMode.Back:
+                    //Back tu trang 02_01
+                    if (parameters.ContainsKey(Keys.CATEGORY))
+                    {
+                        CategoryBindProp = parameters[Keys.CATEGORY] as VisualCategoryModel;
+                    }
                     break;
                 case NavigationMode.New:
+                    if (parameters.ContainsKey(Keys.DISCOUNT))
+                    {
+                        DiscountBindProp = parameters[Keys.DISCOUNT] as VisualItemMenuModel;
+                    }
+                    else
+                    {
+                        DiscountBindProp.Id = Guid.NewGuid().ToString();
+                    }
                     break;
                 case NavigationMode.Forward:
                     break;
