@@ -1,5 +1,6 @@
 ﻿using CSM.EFCore;
 using CSM.Logic;
+using CSM.Logic.Enums;
 using CSM.Xam.Models;
 using CSM.Xam.Views;
 using Prism.Commands;
@@ -29,21 +30,21 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ItemNameBindProp
-        private string _ItemNameBindProp = string.Empty;
-        public string ItemNameBindProp
+        #region ItemBindProp
+        private VisualItemMenuModel _ItemBindProp = new VisualItemMenuModel();
+        public VisualItemMenuModel ItemBindProp
         {
-            get { return _ItemNameBindProp; }
-            set { SetProperty(ref _ItemNameBindProp, value); }
+            get { return _ItemBindProp; }
+            set { SetProperty(ref _ItemBindProp, value); }
         }
         #endregion
 
-        #region PriceBindProp
-        private double _PriceBindProp = 0;
-        public double PriceBindProp
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
         {
-            get { return _PriceBindProp; }
-            set { SetProperty(ref _PriceBindProp, value); }
+            get { return _IsEditing; }
+            set { SetProperty(ref _IsEditing, value); }
         }
         #endregion
 
@@ -96,11 +97,11 @@ namespace CSM.Xam.ViewModels
             {
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(ItemNameBindProp))
+            if (string.IsNullOrWhiteSpace(ItemBindProp.Name))
             {
                 return false;
             }
-            if (PriceBindProp <= 0)
+            if (ItemBindProp.Value <= 0)
             {
                 return false;
             }
@@ -116,17 +117,25 @@ namespace CSM.Xam.ViewModels
                 var itemLogic = new ItemLogic(_dbContext);
                 var item = new Item
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    ItemName = ItemNameBindProp,
+                    Id = ItemBindProp.Id,
+                    ItemName = ItemBindProp.Name,
                     FkCategory = CategoryBindProp.Id,
-                    Price = PriceBindProp
+                    Price = ItemBindProp.Value
                 };
-                await itemLogic.CreateAsync(item);
+                if (IsEditing)
+                {
+                    await itemLogic.UpdateAsync(item);
+                    await NavigationService.GoBackAsync();
+                }
+                else
+                {
+                    await itemLogic.CreateAsync(item);
 
-                var param = new NavigationParameters();
-                param.Add(Keys.ITEM, item);
+                    var param = new NavigationParameters();
+                    param.Add(Keys.ITEM, ItemBindProp);
 
-                await NavigationService.GoBackAsync(param);
+                    await NavigationService.GoBackAsync(param);
+                }
             }
             catch (Exception e)
             {
@@ -143,12 +152,56 @@ namespace CSM.Xam.ViewModels
         {
             SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
             SaveCommand.ObservesProperty(() => IsNotBusy);
-            SaveCommand.ObservesProperty(() => ItemNameBindProp);
-            SaveCommand.ObservesProperty(() => PriceBindProp);
+            SaveCommand.ObservesProperty(() => ItemBindProp.Name);
+            SaveCommand.ObservesProperty(() => ItemBindProp.Value);
         }
 
         #endregion
 
+        #region DeleteCommand
+
+        public DelegateCommand<object> DeleteCommand { get; private set; }
+        private async void OnDelete(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var canDelete = await DisplayDeleteAlertAsync();
+                if (canDelete)
+                {
+                    var itemLogic = new ItemLogic(_dbContext);
+                    await itemLogic.DeleteAsync(ItemBindProp.Id);
+                    ItemBindProp.IsDeleted = true;
+                    var param = new NavigationParameters();
+                    param.Add(Keys.DISCOUNT, ItemBindProp);
+                    await NavigationService.GoBackAsync(param);
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitDeleteCommand()
+        {
+            DeleteCommand = new DelegateCommand<object>(OnDelete);
+            DeleteCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
 
         #endregion
 
@@ -166,6 +219,22 @@ namespace CSM.Xam.ViewModels
                     }
                     break;
                 case NavigationMode.New:
+                    if (parameters.ContainsKey(Keys.ITEM))
+                    {
+                        IsEditing = true;
+                        Title = "Chỉnh sửa mặt hàng";
+                        var item = parameters[Keys.ITEM] as VisualItemMenuModel;
+                        var category = parameters[Keys.CATEGORY] as VisualCategoryModel;
+
+                        ItemBindProp = item;
+                        CategoryBindProp = category;
+                    }
+                    else
+                    {
+                        IsEditing = false;
+                        ItemBindProp.Id = Guid.NewGuid().ToString();
+                        Title = "Tạo mặt hàng";
+                    }
                     break;
                 case NavigationMode.Forward:
                     break;

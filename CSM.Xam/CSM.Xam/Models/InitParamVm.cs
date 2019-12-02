@@ -20,16 +20,19 @@ namespace CSM.Xam.Models
                 cfg.CreateMap<Menu, VisualMenuModel>();
                 cfg.CreateMap<Table, VisualTableModel>();
                 cfg.CreateMap<Zone, VisualZoneModel>();
+
                 cfg.CreateMap<Item, VisualItemMenuModel>()
-                .ForMember( destination => destination.Name,
+                .ForMember(destination => destination.Name,
                opts => opts.MapFrom(source => source.ItemName))
                 .ForMember(destination => destination.Value,
                opts => opts.MapFrom(source => source.Price));
+
                 cfg.CreateMap<Discount, VisualItemMenuModel>()
                 .ForMember(destination => destination.Name,
                opts => opts.MapFrom(source => source.DiscountName))
                 .ForMember(destination => destination.Value,
-               opts => opts.MapFrom(source => source.DiscountValue)); ;
+               opts => opts.MapFrom(source => source.DiscountValue))
+                .AfterMap((source, destination) => destination.IsDiscount = true);
             });
             Mapper = config.CreateMapper();
         }

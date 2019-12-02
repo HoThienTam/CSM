@@ -31,15 +31,16 @@
                         </Grid.ColumnDefinitions>
                         <!--Title-->
                         <Label Style="{StaticResource CommonHeaderText}"
-                                Text="Tạo mặt hàng" />
+                                Text="{Binding Title}" />
                         <!--Back icon-->
                         <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"
                                 Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}"
                                 TappedCommand="{Binding GoBackCommand}" />
                         <!--Right text-->
-                        <mr:Label Style="{StaticResource CommonHeaderRightText}"
-                                  TappedCommand="{Binding SaveCommand}"
-                                  Text="Lưu" />
+                        <StackLayout Grid.Column="2" HorizontalOptions="End" Orientation="Horizontal">
+                            <mr:Label IsVisible="{Binding IsEditing}" Text="Xóa" TextColor="Red" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding DeleteCommand}"/>
+                            <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+                        </StackLayout>
                     </Grid>
 
                     <BoxView Grid.Row="1"
@@ -81,7 +82,7 @@
                                             Style="{StaticResource CommonLeftText}"/>
                                         <tlrInput:RadEntry
                                             Style="{StaticResource CommonRightEntry}"
-                                            Text="{Binding ItemNameBindProp, Mode=TwoWay}"
+                                            Text="{Binding ItemBindProp.Name, Mode=TwoWay}"
                                             WatermarkText="Tên mặt hàng" />
                                     </StackLayout>
                                 </tlrPrimitives:RadBorder>
@@ -124,12 +125,8 @@
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
                                         StringFormat="{}{0:C}"
                                         Maximum="1000000000" Minimum="0"                                  
-                                        Value="{Binding PriceBindProp, Mode=TwoWay}" />
-                                    <!--<tlrInput:RadEntry
-                                        Text="{Binding PriceBindProp, Converter={StaticResource DoubleToCurrencyConverter}, Mode=TwoWay}"
-                                        Keyboard="Numeric"
-                                        Style="{StaticResource CommonRightEntry}"/>-->
-                                    </StackLayout>
+                                        Value="{Binding ItemBindProp.Value, Mode=TwoWay}" />
+                                </StackLayout>
                                 </tlrPrimitives:RadBorder>
                             <StackLayout Spacing="0">
                                 <!--  Tinh theo trong luong  -->
@@ -309,15 +306,6 @@
                                         Text="Bằng cách liên kết sản phẩm này với Hàng tồn kho, bạn có thể theo dõi hàng tồn kho của mình theo thời gian thực "
                                         VerticalTextAlignment="Center" />
                             </StackLayout>
-
-                            <!--  Button xoa  -->
-                            <tlrPrimitives:RadBorder
-                                    Style="{StaticResource CommonButtonBorder}"
-                                    BorderColor="Red">
-                                <tlrInput:RadButton TextColor="Red"
-                                        Command="{Binding DeleteItemCommand, Mode=OneWay}"
-                                        Text="Xóa Mặt Hàng" />
-                            </tlrPrimitives:RadBorder>
 
                         </StackLayout>
                     </ScrollView>

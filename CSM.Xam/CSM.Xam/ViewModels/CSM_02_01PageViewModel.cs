@@ -136,8 +136,8 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var accepted = await DisplayDeleteAlertAsync();
-                if (accepted)
+                var canDelete = await DisplayDeleteAlertAsync();
+                if (canDelete)
                 {
                     var cate = obj as VisualCategoryModel;
 

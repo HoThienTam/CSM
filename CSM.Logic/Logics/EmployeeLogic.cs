@@ -1,28 +1,23 @@
-﻿using CSM.EFCore;
-using CSM.Logic.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CSM.EFCore;
+using CSM.Logic.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace CSM.Logic
 {
-    public class ItemLogic : BaseLogic
+    public class EmployeeLogic : BaseLogic
     {
-        public IReadOnlyList<string> ListAccessRoleCode = new List<string>
+        public EmployeeLogic(dataContext dbContext) : base(dbContext)
         {
-
-        };
-
-        public ItemLogic(dataContext dbContext) : base(dbContext)
-        {
-
         }
-        public Task<List<Item>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+
+        public Task<List<Employee>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<Item> query = _DbContext.Item;
+            IQueryable<Employee> query = _DbContext.Employee;
             if (tracking)
             {
 
@@ -36,9 +31,9 @@ namespace CSM.Logic
 
             return query.ToListAsync();
         }
-        public Task<Item> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<Employee> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<Item> query = _DbContext.Item;
+            IQueryable<Employee> query = _DbContext.Employee;
             if (tracking)
             {
 
@@ -54,26 +49,29 @@ namespace CSM.Logic
 
             return item;
         }
-        public async Task<Item> CreateAsync(Item obj, bool saveChange = true)
+
+        public async Task<bool> LoginAsync(string username, string password)
         {
-            var item = new Item
+
+            var item = await _DbContext.Employee.FirstOrDefaultAsync(h => h.EmployeeName == username.Trim().ToLower() && h.Password == password.Trim().ToLower());
+
+            if (item != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        public async Task<Employee> CreateAsync(Employee obj, bool saveChange = true)
+        {
+            var item = new Employee
             {
                 Id = obj.Id,
-                CreationDate = DateTime.Now.ToString(),
                 Creator = "Tam",
-                FkStore = "fg",
-                FkCategory = obj.FkCategory,
-                IsStaticPrice = 1,
-                FkWeightUnit = "a",
-                IsChargedByWeight = 0,
-                IsDeleted = (int)IsDelete.Normal,
-                ItemImage = "a",
-                ItemName = obj.ItemName,
-                ManagementMethod = 0,
-                Price = obj.Price
+                CreationDate = DateTime.Now.ToString(),
+                IsDeleted = (int)IsDelete.Normal
             };
 
-            _DbContext.Item.Add(item);
+            _DbContext.Employee.Add(item);
 
             try
             {
@@ -89,13 +87,10 @@ namespace CSM.Logic
 
             return item;
         }
-        public async Task<Item> UpdateAsync(Item obj, bool saveChange = true)
+        public async Task<Employee> UpdateAsync(Employee obj, bool saveChange = true)
         {
-            var item = await _DbContext.Item.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.Employee.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
-            item.ItemName = obj.ItemName;
-            item.FkCategory = obj.FkCategory;
-            item.Price = obj.Price;
             try
             {
                 if (saveChange)
@@ -113,7 +108,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.Item.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.Employee.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;

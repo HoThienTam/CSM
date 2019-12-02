@@ -10,7 +10,6 @@
                         x:Class="CSM.Xam.App">
     <Application.Resources>
         <!-- Application resource dictionary -->
-        <cvt:DoubleToCurrencyConverter x:Key="DoubleToCurrencyConverter"/>
         <cvt:LongToTableTypeConverter x:Key="LongToTableTypeConverter"/>
 
         <!-- Icon -->

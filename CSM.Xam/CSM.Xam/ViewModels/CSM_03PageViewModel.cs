@@ -129,10 +129,16 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
-                var accepted = await DisplayDeleteAlertAsync();
-                if (accepted)
+                var canDelete = await DisplayDeleteAlertAsync();
+                if (canDelete)
                 {
+                    var discountLogic = new DiscountLogic(_dbContext);
+                    await discountLogic.DeleteAsync(DiscountBindProp.Id);
 
+                    DiscountBindProp.IsDeleted = true;
+                    var param = new NavigationParameters();
+                    param.Add(Keys.DISCOUNT, DiscountBindProp);
+                    await NavigationService.GoBackAsync(param);
                 }
             }
             catch (Exception e)
@@ -181,20 +187,40 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 var discountLogic = new DiscountLogic(_dbContext);
-                if (IsNormalDiscount)
+                if (IsEditing)
                 {
-                    if (IsMoneyCheckedBindProp)
+
+                }
+                else
+                {
+                    if (IsNormalDiscount)
                     {
-                        await discountLogic.CreateAsync(new Discount
+                        if (IsMoneyCheckedBindProp)
                         {
-                            Id = DiscountBindProp.Id,
-                            DiscountName = DiscountBindProp.Name,
-                            DiscountValue = NormalDiscountValueBindProp,
-                            IsInPercent = 0,
-                            MaxValue = 0,
-                            DiscountType = 0,
-                        });
-                        DiscountBindProp.Value = NormalDiscountValueBindProp;
+                            await discountLogic.CreateAsync(new Discount
+                            {
+                                Id = DiscountBindProp.Id,
+                                DiscountName = DiscountBindProp.Name,
+                                DiscountValue = NormalDiscountValueBindProp,
+                                IsInPercent = 0,
+                                MaxValue = 0,
+                                DiscountType = 0,
+                            }); ;
+                            DiscountBindProp.Value = NormalDiscountValueBindProp;
+                        }
+                        else
+                        {
+                            await discountLogic.CreateAsync(new Discount
+                            {
+                                Id = DiscountBindProp.Id,
+                                DiscountName = DiscountBindProp.Name,
+                                DiscountValue = NormalDiscountPercentBindProp,
+                                IsInPercent = 1,
+                                MaxValue = 0,
+                                DiscountType = 0,
+                            });
+                            DiscountBindProp.Value = NormalDiscountPercentBindProp;
+                        }
                     }
                     else
                     {
@@ -202,31 +228,18 @@ namespace CSM.Xam.ViewModels
                         {
                             Id = DiscountBindProp.Id,
                             DiscountName = DiscountBindProp.Name,
-                            DiscountValue = NormalDiscountPercentBindProp,
-                            IsInPercent = 1,
+                            DiscountValue = CategoryDiscountValueBindProp,
+                            IsInPercent = 0,
                             MaxValue = 0,
-                            DiscountType = 0,
+                            DiscountType = 1,
                         });
-                        DiscountBindProp.Value = NormalDiscountPercentBindProp;
+                        DiscountBindProp.Value = CategoryDiscountValueBindProp;
                     }
-                }
-                else
-                {
-                    await discountLogic.CreateAsync(new Discount
-                    {
-                        Id = DiscountBindProp.Id,
-                        DiscountName = DiscountBindProp.Name,
-                        DiscountValue = CategoryDiscountValueBindProp,
-                        IsInPercent = 0,
-                        MaxValue = 0,
-                        DiscountType = 1,
-                    });
-                    DiscountBindProp.Value = CategoryDiscountValueBindProp;
-                }
-                var param = new NavigationParameters();
-                param.Add(Keys.DISCOUNT, DiscountBindProp);
+                    var param = new NavigationParameters();
+                    param.Add(Keys.DISCOUNT, DiscountBindProp);
 
-                await NavigationService.GoBackAsync(param);
+                    await NavigationService.GoBackAsync(param);
+                }
             }
             catch (Exception e)
             {
@@ -396,11 +409,26 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.New:
                     if (parameters.ContainsKey(Keys.DISCOUNT))
                     {
+                        IsEditing = true;
+                        Title = "Chỉnh sửa giảm giá";
                         DiscountBindProp = parameters[Keys.DISCOUNT] as VisualItemMenuModel;
+                        if (DiscountBindProp.IsInPercent)
+                        {
+                            NormalDiscountPercentBindProp = DiscountBindProp.Value;
+                        }
+                        else if (DiscountBindProp.DiscountType == 1)
+                        {
+                            CategoryDiscountValueBindProp = DiscountBindProp.Value;
+                        }
+                        else
+                        {
+                            NormalDiscountValueBindProp = DiscountBindProp.Value;
+                        }
                     }
                     else
                     {
                         DiscountBindProp.Id = Guid.NewGuid().ToString();
+                        DiscountBindProp.IsDiscount = true;
                     }
                     break;
                 case NavigationMode.Forward:

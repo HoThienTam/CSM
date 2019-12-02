@@ -11,85 +11,42 @@
              NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_01Page"
              x:Name="csm_01Page"
+             Visual="Material"
              Padding="{StaticResource LargeThickness}">
 
-    <Grid Style="{StaticResource CommonWrapper}" Margin="{StaticResource CommonThickness}">
-        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
-            <Grid Style="{StaticResource CommonWrapper}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+    <Grid Margin="{StaticResource LargeFrameThickness}">
+        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" BackgroundColor="{StaticResource BackgroundColor}">
+        <StackLayout Spacing="{StaticResource LargeThickness}" Margin="{StaticResource LargeFrameThickness}">
+            <Label Style="{StaticResource CommonLabelIcon}" FontFamily="{StaticResource FontAwesomeBrands}" FontSize="Header" Text="{x:Static lcModels:FontAwesomeIcon.Pagelines}"/>
 
-                <Grid Style="{StaticResource CommonWrapper}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <Label TextColor="Red" HorizontalOptions="CenterAndExpand" Text="{Binding ErrorBindProp}" />
+            
+                <Label
+                FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" Text="ĐĂNG NHẬP" />
 
-                    <!--Title-->
-                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
+                <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                    <tlrInput:RadEntry                      
+                        Text="{Binding UsernameBindProp, Mode=TwoWay}"
+                        VerticalOptions="CenterAndExpand" WatermarkText="Tên tài khoản" />
+                </tlrPrimitives:RadBorder>
 
-                    <!--Back icon-->
-                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"
-                                  Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" 
-                                  TappedCommand="{Binding GoBackCommand}">
-                    </mr:Label>
+                <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                    <tlrInput:RadEntry
+                        IsPassword="True"
+                        Text="{Binding PasswordBindProp, Mode=TwoWay}"
+                        VerticalOptions="CenterAndExpand" WatermarkText="Mật khẩu" />
+                </tlrPrimitives:RadBorder>
+            <tlrPrimitives:RadBorder WidthRequest="200" Style="{StaticResource CommonButtonBorder}">
+            <tlrInput:RadButton
+                    TextColor="{StaticResource MainColor}"
+                    Command="{Binding LoginCommand, Mode=OneWay}"
+                    Text="Tiếp theo"/>
+            </tlrPrimitives:RadBorder>
 
-                    <!--Right text-->
-                    <StackLayout Grid.Column="2" HorizontalOptions="End" Orientation="Horizontal">
-                        <mr:Label Text="Xóa" TextColor="Red" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding DeleteCommand}"/>
-                        <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
-                    </StackLayout>
-                </Grid>
-
-                <!--  Seperate header bottom line  -->
-                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
-
-                <ScrollView Grid.Row="2">
-                    <StackLayout Padding="{StaticResource LargeFrameThickness}">
-
-                        <!--  Ten thuc don  -->
-                        <Grid>
-                            <BoxView Style="{StaticResource CommonTitleRule}"/>
-                            <Label Text="TÊN THỰC ĐƠN" Style="{StaticResource CommonTitle}"/>
-                        </Grid>
-
-                        <tlrPrimitives:RadBorder Margin="{StaticResource LargeThickness}" Style="{StaticResource CommonBorder}">
-                            <tlrInput:RadEntry WatermarkText="Tên thực đơn" Text="{Binding Menu.MenuName, Mode=TwoWay}" Style="{StaticResource CommonLeftEntry}"/>
-                        </tlrPrimitives:RadBorder>
-
-                        <!--  Bieu tuong thuc don  -->
-                        <Grid>
-                            <BoxView Style="{StaticResource CommonTitleRule}"/>
-                            <Label Text="CHỌN BIỂU TƯỢNG" Style="{StaticResource CommonTitle}"/>
-                        </Grid>
-
-                        <FlexLayout BindableLayout.ItemsSource="{Binding ListIcon}" JustifyContent="Center" Wrap="Wrap">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <mr:Grid
-                                        WidthRequest="80" HeightRequest="80"
-                                        Margin="{StaticResource CommonThickness}"
-                                        TappedCommand="{Binding BindingContext.SelectIconCommand, Source={x:Reference csm_01Page}, Mode=OneWay}"
-                                        TappedCommandParameter="{Binding}">
-                                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
-                                            <Label Text="{Binding}" FontSize="Title" Style="{StaticResource CommonLabelIcon}"/>
-                                        </tlrPrimitives:RadBorder>
-                                    </mr:Grid>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </FlexLayout>
-
-                    </StackLayout>
-                </ScrollView>
-            </Grid>
-
+        </StackLayout>
         </tlrPrimitives:RadBorder>
 
-        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+        <tlrPrimitives:RadBusyIndicator Style="{x:StaticResource LoadingIndicator}" />
     </Grid>
 
 </ContentPage>

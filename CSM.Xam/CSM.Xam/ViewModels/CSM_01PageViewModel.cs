@@ -1,6 +1,7 @@
 ﻿using CSM.EFCore;
 using CSM.Logic;
 using CSM.Xam.Models;
+using CSM.Xam.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using System;
@@ -12,122 +13,75 @@ namespace CSM.Xam.ViewModels
     {
         private dataContext _dbContext = Helper.GetDataContext();
         public CSM_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
-        {
-            Title = "Chỉnh sửa trang";
-            ListIcon = new ObservableCollection<string>();
-            ListIcon.Add(FontAwesomeIcon.Salad);
-            ListIcon.Add(FontAwesomeIcon.Beer);
-            ListIcon.Add(FontAwesomeIcon.BreadSlice);
-            ListIcon.Add(FontAwesomeIcon.Cocktail);
-            ListIcon.Add(FontAwesomeIcon.Coffee);
-            ListIcon.Add(FontAwesomeIcon.CoffeeTogo);
-            ListIcon.Add(FontAwesomeIcon.FrenchFries);
-            ListIcon.Add(FontAwesomeIcon.Pie);
-            ListIcon.Add(FontAwesomeIcon.Soup);
-            ListIcon.Add(FontAwesomeIcon.WineGlass);
-            ListIcon.Add(FontAwesomeIcon.IceCream);
-            ListIcon.Add(FontAwesomeIcon.Pizza);
-            ListIcon.Add(FontAwesomeIcon.Burrito);
-            ListIcon.Add(FontAwesomeIcon.Sandwich);
+        {         
+
         }
 
-        #region ListIcon
-        private ObservableCollection<string> _ListIcon = null;
-        public ObservableCollection<string> ListIcon
+        #region UsernameBindProp
+        private string _UsernameBindProp = string.Empty;
+        public string UsernameBindProp
         {
-            get { return _ListIcon; }
-            set { SetProperty(ref _ListIcon, value); }
+            get { return _UsernameBindProp; }
+            set { SetProperty(ref _UsernameBindProp, value); }
         }
         #endregion
 
-        #region Menu
-        private VisualMenuModel _Menu = null;
-        public VisualMenuModel Menu
+        #region PasswordBindProp
+        private string _PasswordBindProp = string.Empty;
+        public string PasswordBindProp
         {
-            get { return _Menu; }
-            set { SetProperty(ref _Menu, value); }
+            get { return _PasswordBindProp; }
+            set { SetProperty(ref _PasswordBindProp, value); }
         }
         #endregion
 
-        #region SaveCommand
+        #region ErrorBindProp
+        private string _ErrorBindProp = string.Empty;
+        public string ErrorBindProp
+        {
+            get { return _ErrorBindProp; }
+            set { SetProperty(ref _ErrorBindProp, value); }
+        }
+        #endregion
 
-        public DelegateCommand<object> SaveCommand { get; private set; }
-        private bool CanExecuteSave(object obj)
+        #region LoginCommand
+
+        public DelegateCommand<object> LoginCommand { get; private set; }
+        private bool CanExecuteLogin(object obj)
         {
             if (IsBusy)
             {
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(Menu.MenuName))
+            if (string.IsNullOrWhiteSpace(UsernameBindProp))
+            {
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(PasswordBindProp))
             {
                 return false;
             }
             return true;
         }
-        private async void OnSave(object obj)
+        private async void OnLogin(object obj)
         {
             IsBusy = true;
 
             try
             {
                 // Thuc hien cong viec tai day
-                var menuLogic = new MenuLogic(_dbContext);
+                var employeeLogic = new EmployeeLogic(_dbContext);
 
-                await menuLogic.UpdateAsync(new Menu
+                var canLogin = await employeeLogic.LoginAsync(UsernameBindProp, PasswordBindProp);
+                if (canLogin)
                 {
-                    Id = Menu.Id,
-                    ImageIcon = Menu.ImageIcon,
-                    MenuName = Menu.MenuName
-                });
-
-                var param = new NavigationParameters();
-                param.Add(Keys.MENU, Menu);
-                await NavigationService.GoBackAsync(param);
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitSaveCommand()
-        {
-            SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
-            SaveCommand.ObservesProperty(() => IsNotBusy);
-            SaveCommand.ObservesProperty(() => Menu.MenuName);
-        }
-
-        #endregion
-
-        #region SelectIconCommand
-
-        public DelegateCommand<object> SelectIconCommand { get; private set; }
-        private async void OnSelectIcon(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                var icon = obj as string;
-                if (string.IsNullOrWhiteSpace(icon))
-                {
-                    Menu.ImageIcon = "\uf0f4";
+                    await NavigationService.NavigateAsync(nameof(MainPage));
                 }
                 else
                 {
-                    Menu.ImageIcon = icon;
+                    ErrorBindProp = "Sai tên tài khoản hoặc mật khẩu";
                 }
+
             }
             catch (Exception e)
             {
@@ -140,79 +94,13 @@ namespace CSM.Xam.ViewModels
 
         }
         [Initialize]
-        private void InitSelectIconCommand()
+        private void InitLoginCommand()
         {
-            SelectIconCommand = new DelegateCommand<object>(OnSelectIcon);
-            SelectIconCommand.ObservesCanExecute(() => IsNotBusy);
+            LoginCommand = new DelegateCommand<object>(OnLogin, CanExecuteLogin);
+            LoginCommand.ObservesProperty(() => IsNotBusy);
         }
 
         #endregion
 
-        #region DeleteCommand
-
-        public DelegateCommand<object> DeleteCommand { get; private set; }
-        private async void OnDelete(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                var accepted = await DisplayDeleteAlertAsync();
-
-                if (accepted)
-                {
-                    var menuLogic = new MenuLogic(_dbContext);
-                    await menuLogic.DeleteAsync(Menu.Id);
-
-                    var param = new NavigationParameters();
-                    param.Add(Keys.MENU, Menu);
-
-                    await NavigationService.GoBackAsync(param);
-                }
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitDeleteCommand()
-        {
-            DeleteCommand = new DelegateCommand<object>(OnDelete);
-            DeleteCommand.ObservesCanExecute(() => IsNotBusy);
-        }
-
-        #endregion
-
-        public override void OnNavigatedTo(INavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-
-            switch (parameters.GetNavigationMode())
-            {
-                case NavigationMode.Back:
-                    break;
-                case NavigationMode.New:
-                    Menu = parameters[Keys.MENU] as VisualMenuModel;
-                    break;
-                case NavigationMode.Forward:
-                    break;
-                case NavigationMode.Refresh:
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }

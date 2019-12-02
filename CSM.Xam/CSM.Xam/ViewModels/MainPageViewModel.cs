@@ -202,14 +202,32 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region ListItem
+        private List<VisualItemMenuModel> _ListItem = null;
+        public List<VisualItemMenuModel> ListItem
+        {
+            get { return _ListItem; }
+            set { SetProperty(ref _ListItem, value); }
+        }
+        #endregion
+
         //Frame bill
 
         #region ListItemInBillBindProp
-        private ObservableCollection<Item> _ListItemInBillBindProp = null;
-        public ObservableCollection<Item> ListItemInBillBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListItemInBillBindProp = null;
+        public ObservableCollection<VisualItemMenuModel> ListItemInBillBindProp
         {
             get { return _ListItemInBillBindProp; }
             set { SetProperty(ref _ListItemInBillBindProp, value); }
+        }
+        #endregion
+
+        #region ListDiscountBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListDiscountBindProp = new ObservableCollection<VisualItemMenuModel>();
+        public ObservableCollection<VisualItemMenuModel> ListDiscountBindProp
+        {
+            get { return _ListDiscountBindProp; }
+            set { SetProperty(ref _ListDiscountBindProp, value); }
         }
         #endregion
 
@@ -273,14 +291,54 @@ namespace CSM.Xam.ViewModels
             {
                 if (ListItemInBillBindProp == null)
                 {
-                    ListItemInBillBindProp = new ObservableCollection<Item>();
+                    ListItemInBillBindProp = new ObservableCollection<VisualItemMenuModel>();
                 }
                 // Thuc hien cong viec tai day
-                if (obj is Item item)
+                if (obj is VisualItemMenuModel item)
                 {
-                    ListItemInBillBindProp.Add(item);
-                    ItemCountBindProp++;
-                    TotalPriceBindProp += item.Price;
+                    if (IsNotEditting)
+                    {
+                        if (item.IsDiscount)
+                        {
+                            if (ListDiscountBindProp.Any(h => h.Id == item.Id))
+                            {
+                                return;
+                            }
+                            ListDiscountBindProp.Add(item);
+                            if (item.IsInPercent)
+                            {
+                                item.Value = 15000;
+                                TotalPriceBindProp -= item.Value = 15000; ;
+                            }
+                            else
+                            {
+                                TotalPriceBindProp -= item.Value;
+                            }
+                        }
+                        else
+                        {
+                            ListItemInBillBindProp.Add(item);
+                            ItemCountBindProp++;
+                            TotalPriceBindProp += item.Value;
+                        }
+                    }
+                    else
+                    {
+                        var param = new NavigationParameters();
+                        if (item.IsDiscount)
+                        {
+                            param.Add(Keys.DISCOUNT, item);
+                            await NavigationService.NavigateAsync(nameof(CSM_03Page), param);
+                        }
+                        else
+                        {
+                            var category = ListCategoryBindProp.FirstOrDefault(h => h.Id == item.FkCategory);
+
+                            param.Add(Keys.CATEGORY, category);
+                            param.Add(Keys.ITEM, item);
+                            await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -328,16 +386,23 @@ namespace CSM.Xam.ViewModels
                     {
                         case "discount":
                             _selectedCategory = "discount";
-                            Title = "Giảm  giá";
+                            var listDiscount = ListItem.Where(h => h.IsDiscount == true).ToList();
+                            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listDiscount);
+                            Title = "Giảm giá";
                             break;
                         case "allitem":
                             _selectedCategory = "allitem";
+                            var listItem = ListItem.Where(h => h.IsDiscount == false).ToList();
+                            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
                             Title = "Tất cả mặt hàng";
                             break;
                     }
                 }
-                ItemsFilterDescriptor.Clear();
-                ItemsFilterDescriptor.Add(new DelegateFilterDescriptor { Filter = FilterByCategory });
+                else
+                {
+                    var listItem = ListItem.Where(h => h.FkCategory == _selectedCategory).ToList();
+                    ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
+                }
                 IsVisibleListCategoryBindProp = false;
             }
             catch (Exception e)
@@ -375,6 +440,7 @@ namespace CSM.Xam.ViewModels
             {
                 // Thuc hien cong viec tai day
                 IsVisibleListCategoryBindProp = true;
+                Title = "Thư viện";
             }
             catch (Exception e)
             {
@@ -706,7 +772,7 @@ namespace CSM.Xam.ViewModels
 
                 var param = new NavigationParameters();
                 param.Add(Keys.MENU, menu);
-                await NavigationService.NavigateAsync(nameof(CSM_01Page), param);
+                await NavigationService.NavigateAsync(nameof(CSM_12Page), param);
             }
             catch (Exception e)
             {
@@ -961,25 +1027,6 @@ namespace CSM.Xam.ViewModels
 
         #region Method
 
-        #region FilterByCategory
-        private bool FilterByCategory(object item)
-        {
-            var itemModel = (VisualItemMenuModel)item;
-            if (_selectedCategory.Equals("allitem"))
-            {
-                return !string.IsNullOrWhiteSpace(itemModel.FkCategory);
-            }
-            else if (_selectedCategory.Equals("discount"))
-            {
-                return string.IsNullOrWhiteSpace(itemModel.FkCategory);
-            }
-            else
-            {
-                return itemModel.FkCategory == _selectedCategory;
-            }
-        }
-        #endregion
-
         private async void GetAllInvoice()
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
@@ -1024,6 +1071,7 @@ namespace CSM.Xam.ViewModels
             //Gop 2 list
             listVisualItem.AddRange(listVisualDiscount);
 
+            ListItem = new List<VisualItemMenuModel>(listVisualItem);
             ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listVisualItem);
 
             var listVisualCategory = Mapper.Map<List<VisualCategoryModel>>(listCategory);
@@ -1130,15 +1178,17 @@ namespace CSM.Xam.ViewModels
                     //Back ve tu CSM 02
                     if (parameters.ContainsKey(Keys.ITEM))
                     {
-                        var item = parameters[Keys.ITEM] as Item;
-
-                        ListItemBindProp.Add(new VisualItemMenuModel
+                        var item = parameters[Keys.ITEM] as VisualItemMenuModel;
+                        if (item.IsDeleted)
                         {
-                            Id = item.Id,
-                            Name = item.ItemName,
-                            Value = item.Price,
-                            FkCategory = item.FkCategory,
-                        });
+                           var deletedItem =  ListItem.Find(h => h.Id == item.Id);
+                           ListItem.Remove(deletedItem);
+                        }
+                        else
+                        {
+                            ListItemBindProp.Add(item);
+                        }
+                        IsVisibleListCategoryBindProp = true;
                     }
                     //Back ve tu CSM 11
                     if (parameters.ContainsKey(Keys.LIST_ITEM))
@@ -1164,7 +1214,16 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.DISCOUNT))
                     {
                         var discount = parameters[Keys.DISCOUNT] as VisualItemMenuModel;
-                        ListItemBindProp.Add(discount);
+                        if (discount.IsDeleted)
+                        {
+                            var deletedItem = ListItem.Find(h => h.Id == discount.Id);
+                            ListItem.Remove(deletedItem);
+                        }
+                        else
+                        {
+                            ListItemBindProp.Add(discount);
+                        }
+                        IsVisibleListCategoryBindProp = true;
                     }
                     break;
                 case NavigationMode.New:

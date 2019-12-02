@@ -218,5 +218,10 @@ namespace CSM.Xam.Models
         /// Icon Hexagon
         /// </summary>
         public const string Hexagon = "\uf312";
+
+        /// <summary>
+        /// Icon Pagelines
+        /// </summary>
+        public const string Pagelines = "\uf18c";
     }
 }
