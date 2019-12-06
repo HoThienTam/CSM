@@ -11,6 +11,7 @@
     <Application.Resources>
         <!-- Application resource dictionary -->
         <cvt:LongToTableTypeConverter x:Key="LongToTableTypeConverter"/>
+        <cvt:LongToRoleConverter x:Key="LongToRoleConverter"/>
 
         <!-- Icon -->
         <OnPlatform x:Key="FontAwesomeBrands" x:TypeArguments="x:String">
@@ -391,7 +392,7 @@
             <Setter Property="FontSize" Value="Large" />
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="HorizontalOptions" Value="StartAndExpand" />
-            <Setter Property="Padding" Value="{StaticResource LargeThickness}" />
+            <Setter Property="Padding" Value="{StaticResource CommonThickness}" />
         </Style>
 
         <!--  Ban  -->

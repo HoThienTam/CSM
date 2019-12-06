@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             mc:Ignorable="d"
+             x:Class="CSM.Xam.Views.CSM_07_01Page"
+             NavigationPage.HasNavigationBar="False"
+             Padding="{StaticResource LargeThickness}">
+
+    <Grid Style="{StaticResource CommonWrapper}"
+                Margin="{StaticResource CommonThickness}">
+
+        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
+
+                    <!--Back icon-->
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" TappedCommand="{Binding GoBackCommand}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" />
+
+                    <!--Right text-->
+                    <mr:Label Grid.Column="2" Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+                </Grid>
+
+                <!--  Seperate header bottom line  -->
+                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+
+                <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
+                    <StackLayout Spacing="0">
+                        <Label Text="{Binding ErrorBindProp}" TextColor="Red"/>
+                        <!--  Họ tên  -->
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonUpperBorder}">
+                            <mr:StackLayout Orientation="Horizontal" Spacing="0">
+                                <Label
+                                Text="Họ tên"
+                                Style="{StaticResource CommonLeftText}"/>
+
+                                <tlrInput:RadEntry
+                                Text="{Binding EmployeeBindProp.FullName, Mode=TwoWay}"
+                                Style="{StaticResource CommonRightEntry}"
+                                WatermarkText="Họ tên"/>
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <!--  Tên người dùng  -->
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonLowerBorder}">
+                            <mr:StackLayout Orientation="Horizontal" Spacing="0">
+
+                                <Label
+                                Text="Tên tài khoản"
+                                Style="{StaticResource CommonLeftText}"/>
+
+                                <tlrInput:RadEntry
+                                Text="{Binding EmployeeBindProp.EmployeeName, Mode=TwoWay}"
+                                Style="{StaticResource CommonRightEntry}"
+                                WatermarkText="Tên tài khoản"/>
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <StackLayout IsVisible="{Binding IsNotEditing}" Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonVerticalThickness}">
+                            <Label Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
+                            <Label Text="Tên người dùng được sử dụng để nhân viên đăng nhập và không thể thay đổi sau khi cài đặt." VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <!--  Mật khẩu  -->
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonUpperBorder}">
+                            <mr:StackLayout Orientation="Horizontal" Spacing="0">
+
+                                <Label
+                                    Style="{StaticResource CommonLeftText}"
+                                    Text="Mật khẩu"/>
+
+                                <tlrInput:RadEntry
+                                IsPassword="True"
+                                Text="{Binding PasswordBindProp, Mode=TwoWay}"
+                                WatermarkText="Mật khẩu"
+                                Style="{StaticResource CommonRightEntry}" />
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <!--  Xác nhận Mật khẩu  -->
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonLowerBorder}" Margin="{StaticResource CommonBottomThickness}">
+                            <mr:StackLayout Orientation="Horizontal" Spacing="0">
+
+                                <Label
+                                Style="{StaticResource CommonLeftText}" Text="Xác nhận mật khẩu"/>
+
+                                <tlrInput:RadEntry
+                                IsPassword="True" 
+                                Style="{StaticResource CommonRightEntry}"
+                                Text="{Binding ConfirmedPasswordBindProp, Mode=TwoWay}"
+                                WatermarkText="Xác nhận mật khẩu"/>
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <!--  Quyền  -->
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonBorder}">
+                            <mr:StackLayout Orientation="Horizontal" Spacing="0">
+
+                                <Label
+                                Style="{StaticResource CommonLeftText}" Text="Quyền" />
+
+                                <Picker
+                                    Margin="{StaticResource CommonRightThickness}"
+                                    x:Name="picker"
+                                    Title="Chọn quyền nhân viên"
+                                    HorizontalOptions="EndAndExpand"
+                                    WidthRequest="100">
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>Quản lý</x:String>
+                                            <x:String>Nhân viên</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </mr:StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <StackLayout IsVisible="{Binding IsNotEditing}" Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonVerticalThickness}">
+                            <Label Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
+                            <Label Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật." VerticalOptions="Center" />
+                        </StackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </Grid>
+
+        </tlrPrimitives:RadBorder>
+
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}"/>
+    </Grid>
+</ContentPage>

@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <None Remove="Files\9.png" />
+    <None Remove="Files\background.jpg" />
     <None Remove="Files\data.db" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Files\background.jpg" />
     <EmbeddedResource Include="Files\data.db" />
   </ItemGroup>
 
@@ -84,6 +86,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\CSM_07Page.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CSM_07_01Page.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\CSM_08Page.xaml">

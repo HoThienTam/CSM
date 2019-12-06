@@ -515,6 +515,8 @@ namespace CSM.Xam.ViewModels
                         case "hanghoa":
                             break;
                         case "nhanvien":
+                            IsVisiblePopupBindProp = false;
+                            await NavigationService.NavigateAsync(nameof(CSM_07Page));
                             break;
                         case "caidat":
                             IsVisiblePopupBindProp = false;

@@ -3,13 +3,210 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
              mc:Ignorable="d"
+             x:Name="csm_07Page"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_07Page">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+
+    <Grid Style="{StaticResource CommonWrapper}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!--  Frame trai  -->
+        <Grid Style="{StaticResource CommonWrapper}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!--  Title  -->
+                <Label Style="{StaticResource CommonHeaderText}" Text="Quản lý nhân viên" />
+                <!--Back icon-->
+                <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" TappedCommand="{Binding GoBackCommand}" />
+                <!--Right text-->
+                <Label Style="{StaticResource CommonHeaderRightText}"/>
+            </Grid>
+
+            <!--  Seperate header bottom line  -->
+            <BoxView Grid.Row="1"
+                            BackgroundColor="{StaticResource SubColor}"
+                            HeightRequest="1" />
+
+            <ScrollView Grid.Row="2">
+                <StackLayout Spacing="0" BindableLayout.ItemsSource="{Binding ListEmployeeBindProp, Mode=OneWay}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <mr:StackLayout Spacing="0" TappedCommand="{Binding BindingContext.TapEmployeeCommand, Source={x:Reference csm_07Page}, Mode=OneWay}" TappedCommandParameter="{Binding}">
+                                <StackLayout.Triggers>
+                                    <DataTrigger TargetType="StackLayout" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
+                                    </DataTrigger>
+                                </StackLayout.Triggers>
+                                <Grid Padding="{StaticResource SmallThickness}">
+                                    <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}">
+                                </Label>
+
+                                <Label
+                                    Grid.Column="1"
+                                    InputTransparent="True"
+                                    Text="{Binding FullName}"/>
+
+                                <Label
+                                    Grid.Column="2"
+                                    InputTransparent="True"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Role, Converter={StaticResource LongToRoleConverter}}"/>
+
+                            </Grid>
+                                <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                            </mr:StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
+                <tlrPrimitives:RadBorder HorizontalOptions="FillAndExpand" Style="{StaticResource CommonButtonBorder}">
+                    <tlrInput:RadButton Command="{Binding AddEmployeeCommand}" Text="Thêm nhân viên mới"/>
+                </tlrPrimitives:RadBorder>
+            </Grid>
+
+        </Grid>
+
+        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>
+
+        <!--  Frame phai  -->
+        <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  Title  -->
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--Title-->
+                <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
+
+                <!--Back icon-->
+                <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="" />
+
+                <!--Right text-->
+                <mr:Label Grid.Column="2" Text="" Style="{StaticResource CommonHeaderRightText}"/>
+            </Grid>
+
+            <!--  Seperate header bottom line  -->
+            <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+
+            <ScrollView Grid.Row="2">
+                <Grid Margin="{StaticResource LargeThickness}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Image x:Name="background" Aspect="AspectFill" BackgroundColor="Red" Source="CSM.Xam.Files.background.jpg" HeightRequest="200"/>
+                    <StackLayout VerticalOptions="Center">
+                        <Label Text="Tên tài khoản" FontSize="Small" TextColor="White" HorizontalOptions="Center"/>
+                        <Label Text="{Binding SelectedEmployeeBindProp.EmployeeName}" TextColor="White" FontSize="Large" HorizontalOptions="Center"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="2" Text="{Binding SelectedEmployeeBindProp.Role, Converter={StaticResource LongToRoleConverter}}" HorizontalOptions="Center" FontSize="Small" TextColor="White"/>
+                            <BoxView Grid.Column="1" Style="{StaticResource CommonTitleRule}" BackgroundColor="White"/>
+                            <BoxView Grid.Column="3" Style="{StaticResource CommonTitleRule}" BackgroundColor="White"/>
+                        </Grid>
+                    </StackLayout>
+                    
+                    <!--  Họ tên  -->
+                    <tlrPrimitives:RadBorder Grid.Row="1" Style="{StaticResource CommonBorder}">
+                        <mr:StackLayout Orientation="Horizontal" Spacing="0">
+                            <Label Style="{StaticResource CommonLeftText}" Text="Họ tên" />
+                            <Label
+                                Style="{StaticResource CommonRightText}"
+                                Text="{Binding SelectedEmployeeBindProp.FullName, Mode=OneWay}"/>
+                        </mr:StackLayout>
+                    </tlrPrimitives:RadBorder>
+
+                    <!--  Quyền  -->
+                    <tlrPrimitives:RadBorder
+                            Grid.Row="2"
+                            IsEnabled="True"
+                            Style="{StaticResource CommonBorder}">
+                        <mr:StackLayout Orientation="Horizontal" Spacing="0">
+                            <Label Style="{StaticResource CommonLeftText}" Text="Quyền"/>
+                            <Label
+                                  Style="{StaticResource CommonRightText}"
+                                  Text="{Binding SelectedEmployeeBindProp.Role, Converter={StaticResource LongToRoleConverter}}"/>
+                        </mr:StackLayout>
+                    </tlrPrimitives:RadBorder>
+
+                    <!--  Chú thích  -->
+                    <Label
+                            Grid.Row="3"
+                            Margin="{StaticResource CommonThickness}"
+                            FontSize="Small"
+                            Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật, nhưng sẽ không làm ảnh hưởng đến hoạt động kinh doanh của bạn. Quản lý có quyền truy cập tương tự như chủ cửa hàng,nhưng không thể thay đổi quyền nhân viên thành quyền quản lý."
+                            VerticalOptions="Center" VerticalTextAlignment="Start" />
+
+                    <!--  Button  -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Grid.Row="4">
+                        <tlrPrimitives:RadBorder  Style="{StaticResource CommonButtonBorder}">
+                            <tlrInput:RadButton
+                                    Command="{Binding ChangePasswordCommand, Mode=OneWay}"
+                                    Text="Đổi mật khẩu"/>
+
+                        </tlrPrimitives:RadBorder>
+
+                        <tlrPrimitives:RadBorder BorderColor="Red" Style="{StaticResource CommonButtonBorder}">
+                            <tlrInput:RadButton
+                                TextColor="Red"
+                                Command="{Binding DeleteCommand, Mode=OneWay}"
+                                Text="Xóa nhân viên"/>
+
+                        </tlrPrimitives:RadBorder>
+                    </StackLayout>
+                </Grid>
+            </ScrollView>
+        </Grid>
+
+    </Grid>
 </ContentPage>

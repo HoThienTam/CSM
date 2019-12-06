@@ -66,7 +66,8 @@ namespace CSM.Xam
             containerRegistry.RegisterForNavigation<CSM_04Page>(); // Trang hoat dong
             containerRegistry.RegisterForNavigation<CSM_05Page>(); // Trang thong ke
             containerRegistry.RegisterForNavigation<CSM_06Page>(); // Trang hang hoa
-            containerRegistry.RegisterForNavigation<CSM_07Page>(); // Trang nhan vien
+            containerRegistry.RegisterForNavigation<CSM_07Page, CSM_07PageViewModel>(); // Trang nhan vien
+            containerRegistry.RegisterForNavigation<CSM_07_01Page, CSM_07_01PageViewModel>(); // Trang tao nhan vien
             containerRegistry.RegisterForNavigation<CSM_08Page, CSM_08PageViewModel>(); // Trang cai dat
             containerRegistry.RegisterForNavigation<CSM_08_01Page, CSM_08_01PageViewModel>(); // Trang tao khu vuc
             containerRegistry.RegisterForNavigation<CSM_08_02Page, CSM_08_02PageViewModel>(); // Trang tao ban

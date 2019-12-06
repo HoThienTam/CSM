@@ -10,12 +10,12 @@ using Xamarin.Forms.Xaml;
 namespace CSM.Xam.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CSM_07Page : ContentPage
+    public partial class CSM_07_01Page : ContentPage
     {
-        public CSM_07Page()
+        public CSM_07_01Page()
         {
             InitializeComponent();
-            background.Source = ImageSource.FromResource("CSM.Xam.Files.background.jpg");
+            picker.SelectedIndex = 0;
         }
     }
 }

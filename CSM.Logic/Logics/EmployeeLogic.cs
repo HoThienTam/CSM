@@ -68,7 +68,11 @@ namespace CSM.Logic
                 Id = obj.Id,
                 Creator = "Tam",
                 CreationDate = DateTime.Now.ToString(),
-                IsDeleted = (int)IsDelete.Normal
+                IsDeleted = (int)IsDelete.Normal,
+                Role = obj.Role,
+                EmployeeName = obj.EmployeeName,
+                FullName = obj.FullName,
+                Password = obj.Password
             };
 
             _DbContext.Employee.Add(item);

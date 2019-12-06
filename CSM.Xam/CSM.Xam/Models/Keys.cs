@@ -60,5 +60,10 @@ namespace CSM.Xam.Models
         /// Truyen discount 
         /// </summary>
         public const string DISCOUNT = "DISCOUNT";
+
+        /// <summary>
+        /// Truyen employee 
+        /// </summary>
+        public const string EMPLOYEE = "EMPLOYEE";
     }
 }

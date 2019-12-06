@@ -48,7 +48,7 @@
                 <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                 <ScrollView Grid.Row="2">
-                    <StackLayout>
+                    <StackLayout Spacing="0">
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
                         <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
@@ -95,6 +95,7 @@
 
                     <!--Seperate line-->
                     <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+                    
                     <ScrollView Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
                         <datacontrols:RadListView SelectionMode="Single" ItemsSource="{Binding ListSectionBindProp}">
                             <datacontrols:RadListView.FooterTemplate>

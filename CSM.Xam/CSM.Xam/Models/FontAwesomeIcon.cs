@@ -223,5 +223,11 @@ namespace CSM.Xam.Models
         /// Icon Pagelines
         /// </summary>
         public const string Pagelines = "\uf18c";
+
+        /// <summary>
+        /// info-circle
+        /// </summary>
+        public const string InfoCircle = "\uf05a";
+
     }
 }
