@@ -158,24 +158,31 @@
                     
                     <!--  Họ tên  -->
                     <tlrPrimitives:RadBorder Grid.Row="1" Style="{StaticResource CommonBorder}">
-                        <mr:StackLayout Orientation="Horizontal" Spacing="0">
-                            <Label Style="{StaticResource CommonLeftText}" Text="Họ tên" />
+                        <mr:StackLayout Orientation="Horizontal" Spacing="0" TappedCommand="{Binding EditCommand}">
+                            <tlrInput:RadEntry InputTransparent="True" Style="{StaticResource CommonLeftEntry}" Text="Họ tên" />
                             <Label
                                 Style="{StaticResource CommonRightText}"
                                 Text="{Binding SelectedEmployeeBindProp.FullName, Mode=OneWay}"/>
+                            <Label
+                                Style="{StaticResource CommonLabelIcon}"
+                                Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"
+                                Margin="{StaticResource CommonRightThickness}"/>
                         </mr:StackLayout>
                     </tlrPrimitives:RadBorder>
 
                     <!--  Quyền  -->
                     <tlrPrimitives:RadBorder
                             Grid.Row="2"
-                            IsEnabled="True"
                             Style="{StaticResource CommonBorder}">
-                        <mr:StackLayout Orientation="Horizontal" Spacing="0">
-                            <Label Style="{StaticResource CommonLeftText}" Text="Quyền"/>
+                        <mr:StackLayout Orientation="Horizontal" Spacing="0" TappedCommand="{Binding EditCommand}">
+                            <tlrInput:RadEntry InputTransparent="True" Style="{StaticResource CommonLeftEntry}" Text="Quyền"/>
                             <Label
                                   Style="{StaticResource CommonRightText}"
                                   Text="{Binding SelectedEmployeeBindProp.Role, Converter={StaticResource LongToRoleConverter}}"/>
+                            <Label
+                                Style="{StaticResource CommonLabelIcon}"
+                                Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}"
+                                Margin="{StaticResource CommonRightThickness}"/>
                         </mr:StackLayout>
                     </tlrPrimitives:RadBorder>
 
@@ -184,7 +191,7 @@
                             Grid.Row="3"
                             Margin="{StaticResource CommonThickness}"
                             FontSize="Small"
-                            Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật, nhưng sẽ không làm ảnh hưởng đến hoạt động kinh doanh của bạn. Quản lý có quyền truy cập tương tự như chủ cửa hàng,nhưng không thể thay đổi quyền nhân viên thành quyền quản lý."
+                            Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật, nhưng sẽ không làm ảnh hưởng đến hoạt động kinh doanh của bạn. Quản lý có quyền truy cập tương tự như chủ cửa hàng, nhưng không thể thay đổi quyền nhân viên thành quyền quản lý."
                             VerticalOptions="Center" VerticalTextAlignment="Start" />
 
                     <!--  Button  -->

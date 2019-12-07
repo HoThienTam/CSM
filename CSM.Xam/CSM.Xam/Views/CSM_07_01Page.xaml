@@ -7,6 +7,7 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              mc:Ignorable="d"
              x:Class="CSM.Xam.Views.CSM_07_01Page"
              NavigationPage.HasNavigationBar="False"
@@ -45,23 +46,27 @@
 
                 <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
                     <StackLayout Spacing="0">
-                        <Label Text="{Binding ErrorBindProp}" TextColor="Red"/>
                         <!--  Họ tên  -->
-                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonUpperBorder}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsChangingInfo}" Style="{StaticResource CommonUpperBorder}">
                             <mr:StackLayout Orientation="Horizontal" Spacing="0">
                                 <Label
                                 Text="Họ tên"
                                 Style="{StaticResource CommonLeftText}"/>
 
                                 <tlrInput:RadEntry
-                                Text="{Binding EmployeeBindProp.FullName, Mode=TwoWay}"
-                                Style="{StaticResource CommonRightEntry}"
-                                WatermarkText="Họ tên"/>
+                                    Text="{Binding EmployeeBindProp.FullName, Mode=TwoWay}"
+                                    Style="{StaticResource CommonRightEntry}"
+                                    WatermarkText="Họ tên"/>
                             </mr:StackLayout>
                         </tlrPrimitives:RadBorder>
 
                         <!--  Tên người dùng  -->
-                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonLowerBorder}">
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonLowerBorder}" Margin="{StaticResource CommonBottomThickness}">
+                            <tlrPrimitives:RadBorder.Triggers>
+                                <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding IsChangingInfo}" Value="False">
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                </DataTrigger>
+                            </tlrPrimitives:RadBorder.Triggers>
                             <mr:StackLayout Orientation="Horizontal" Spacing="0">
 
                                 <Label
@@ -69,19 +74,20 @@
                                 Style="{StaticResource CommonLeftText}"/>
 
                                 <tlrInput:RadEntry
-                                Text="{Binding EmployeeBindProp.EmployeeName, Mode=TwoWay}"
-                                Style="{StaticResource CommonRightEntry}"
-                                WatermarkText="Tên tài khoản"/>
+                                    InputTransparent="{Binding IsEditing}" 
+                                    Text="{Binding EmployeeBindProp.EmployeeName, Mode=TwoWay}"
+                                    Style="{StaticResource CommonRightEntry}"
+                                    WatermarkText="Tên tài khoản"/>
                             </mr:StackLayout>
                         </tlrPrimitives:RadBorder>
 
-                        <StackLayout IsVisible="{Binding IsNotEditing}" Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonVerticalThickness}">
-                            <Label Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
-                            <Label Text="Tên người dùng được sử dụng để nhân viên đăng nhập và không thể thay đổi sau khi cài đặt." VerticalOptions="Center" />
+                        <StackLayout Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonBottomThickness}">
+                            <Label FontSize="Small" Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
+                            <Label FontSize="Small" Text="Tên người dùng được sử dụng để nhân viên đăng nhập và không thể thay đổi sau khi cài đặt." VerticalOptions="Center" />
                         </StackLayout>
 
                         <!--  Mật khẩu  -->
-                        <tlrPrimitives:RadBorder Style="{StaticResource CommonUpperBorder}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsChangingPassword}" Style="{StaticResource CommonUpperBorder}">
                             <mr:StackLayout Orientation="Horizontal" Spacing="0">
 
                                 <Label
@@ -97,7 +103,7 @@
                         </tlrPrimitives:RadBorder>
 
                         <!--  Xác nhận Mật khẩu  -->
-                        <tlrPrimitives:RadBorder Style="{StaticResource CommonLowerBorder}" Margin="{StaticResource CommonBottomThickness}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsChangingPassword}" Style="{StaticResource CommonLowerBorder}" Margin="{StaticResource CommonBottomThickness}">
                             <mr:StackLayout Orientation="Horizontal" Spacing="0">
 
                                 <Label
@@ -112,7 +118,7 @@
                         </tlrPrimitives:RadBorder>
 
                         <!--  Quyền  -->
-                        <tlrPrimitives:RadBorder IsVisible="{Binding IsNotEditing}" Style="{StaticResource CommonBorder}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding IsChangingInfo}" Style="{StaticResource CommonBorder}">
                             <mr:StackLayout Orientation="Horizontal" Spacing="0">
 
                                 <Label
@@ -126,17 +132,20 @@
                                     WidthRequest="100">
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
-                                            <x:String>Quản lý</x:String>
                                             <x:String>Nhân viên</x:String>
+                                            <x:String>Quản lý</x:String>
                                         </x:Array>
                                     </Picker.ItemsSource>
+                                    <Picker.Behaviors>
+                                        <b:EventToCommandBehavior Command="{Binding SelectedChangedCommand}" CommandParameter="{Binding}" EventName="SelectedIndexChanged"/>
+                                    </Picker.Behaviors>
                                 </Picker>
                             </mr:StackLayout>
                         </tlrPrimitives:RadBorder>
 
-                        <StackLayout IsVisible="{Binding IsNotEditing}" Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonVerticalThickness}">
-                            <Label Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
-                            <Label Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật." VerticalOptions="Center" />
+                        <StackLayout IsVisible="{Binding IsChangingInfo}" Orientation="Horizontal" Spacing="0" Margin="{StaticResource CommonVerticalThickness}">
+                            <Label FontSize="Small" Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
+                            <Label Text="Nhân viên sẽ được hạn chế quyền truy cập vì lý do bảo mật." VerticalOptions="Center" FontSize="Small" />
                         </StackLayout>
                     </StackLayout>
                 </ScrollView>

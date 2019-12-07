@@ -156,6 +156,46 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region EditCommand
+
+        public DelegateCommand<object> EditCommand { get; private set; }
+        private async void OnEdit(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var param = new NavigationParameters();
+                param.Add(Keys.IS_EDITING, "");
+                param.Add(Keys.EMPLOYEE, SelectedEmployeeBindProp);
+
+                await NavigationService.NavigateAsync(nameof(CSM_07_01Page), param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitEditCommand()
+        {
+            EditCommand = new DelegateCommand<object>(OnEdit);
+            EditCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         #region TapEmployeeCommand
 
         public DelegateCommand<object> TapEmployeeCommand { get; private set; }
@@ -176,6 +216,7 @@ namespace CSM.Xam.ViewModels
                 var employee = obj as VisualEmployeeModel;
                 SelectedEmployeeBindProp = employee;
                 SelectedEmployeeBindProp.IsSelected = true;
+                Title = SelectedEmployeeBindProp.FullName;
             }
             catch (Exception e)
             {
@@ -204,6 +245,7 @@ namespace CSM.Xam.ViewModels
             ListEmployeeBindProp = new ObservableCollection<VisualEmployeeModel>(listVisualEmployee);
             SelectedEmployeeBindProp = ListEmployeeBindProp[0];
             SelectedEmployeeBindProp.IsSelected = true;
+            Title = SelectedEmployeeBindProp.FullName;
         }
         public override void OnNavigatedTo(INavigationParameters parameters)
         {

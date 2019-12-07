@@ -26,10 +26,26 @@ namespace CSM.Xam.ViewModels
             set 
             { 
                 SetProperty(ref _IsEditing, value);
-                RaisePropertyChanged(nameof(IsNotEditing));
             }
         }
-        public bool IsNotEditing { get { return !_IsEditing; } }
+        #endregion
+
+        #region IsChangingPassword
+        private bool _IsChangingPassword = false;
+        public bool IsChangingPassword
+        {
+            get { return _IsChangingPassword; }
+            set { SetProperty(ref _IsChangingPassword, value); }
+        }
+        #endregion
+
+        #region IsChangingInfo
+        private bool _IsChangingInfo = false;
+        public bool IsChangingInfo
+        {
+            get { return _IsChangingInfo; }
+            set { SetProperty(ref _IsChangingInfo, value); }
+        }
         #endregion
 
         #region EmployeeBindProp
@@ -73,41 +89,28 @@ namespace CSM.Xam.ViewModels
         #region SaveCommand
 
         public DelegateCommand<object> SaveCommand { get; private set; }
-        private bool CanExecuteSave(object obj)
+        private async void OnSave(object obj)
         {
-            if (IsBusy)
+            if (string.IsNullOrWhiteSpace(PasswordBindProp) && IsChangingPassword)
             {
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(PasswordBindProp))
-            {
-                ErrorBindProp = "Chưa nhập mật khẩu!";
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(ConfirmedPasswordBindProp))
-            {
-                ErrorBindProp = "Chưa nhập lại mật khẩu!";
-                return false;
+                await PageDialogService.DisplayAlertAsync("", "Chưa nhập mật khẩu!", "OK");
+                return;
             }
             if (string.IsNullOrWhiteSpace(EmployeeBindProp.EmployeeName))
             {
-                ErrorBindProp = "Chưa nhập tên tài khoản!";
-                return false;
+                await PageDialogService.DisplayAlertAsync("", "Chưa nhập tên tài khoản!", "OK");
+                return;
             }
             if (string.IsNullOrWhiteSpace(EmployeeBindProp.FullName))
             {
-                ErrorBindProp = "Chưa nhập tên nhân viên!";
-                return false;
+                await PageDialogService.DisplayAlertAsync("", "Chưa nhập tên nhân viên!", "OK");
+                return;
             }
             if (PasswordBindProp != ConfirmedPasswordBindProp)
             {
-                ErrorBindProp = "Mật khẩu không trùng khớp!";
-                return false;
+                await PageDialogService.DisplayAlertAsync("", "Mật khẩu không trùng khớp!", "OK");
+                return;
             }
-            return true;
-        }
-        private async void OnSave(object obj)
-        {
             IsBusy = true;
 
             try
@@ -116,18 +119,34 @@ namespace CSM.Xam.ViewModels
                 var employeeLogic = new EmployeeLogic(_dbContext);
                 if (IsEditing)
                 {
-
+                    if (IsChangingPassword)
+                    {
+                        await employeeLogic.UpdateAsync(new Employee
+                        {
+                            Id = EmployeeBindProp.Id,
+                            Password = PasswordBindProp,
+                        });
+                    }
+                    if (IsChangingInfo)
+                    {
+                        await employeeLogic.UpdateAsync(new Employee
+                        {
+                            Id = EmployeeBindProp.Id,
+                            FullName = EmployeeBindProp.FullName,
+                            Role = EmployeeBindProp.Role
+                        });
+                    }
+                    await NavigationService.GoBackAsync();
                 }
                 else
-                {
-                    
+                {                  
                     await employeeLogic.CreateAsync(new Employee
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = EmployeeBindProp.Id,
                         EmployeeName = EmployeeBindProp.EmployeeName,
                         FullName = EmployeeBindProp.FullName,
                         Password = PasswordBindProp,
-                        Role = 1
+                        Role = EmployeeBindProp.Role
                     });
 
                     var param = new NavigationParameters();
@@ -149,12 +168,54 @@ namespace CSM.Xam.ViewModels
         [Initialize]
         private void InitSaveCommand()
         {
-            SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
-            SaveCommand.ObservesProperty(() => IsNotBusy);
+            SaveCommand = new DelegateCommand<object>(OnSave);
+            SaveCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
 
+        #region SelectedChangedCommand
+
+        public DelegateCommand<object> SelectedChangedCommand { get; private set; }
+        private async void OnSelectedChanged(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (EmployeeBindProp.Role == 0)
+                {
+                    EmployeeBindProp.Role = 1;
+                }
+                else
+                {
+                    EmployeeBindProp.Role = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectedChangedCommand()
+        {
+            SelectedChangedCommand = new DelegateCommand<object>(OnSelectedChanged);
+            SelectedChangedCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -168,13 +229,29 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.EMPLOYEE))
                     {
                         IsEditing = true;
-                        Title = "Đổi mật khẩu";
+                        if (parameters.ContainsKey(Keys.IS_EDITING))
+                        {
+                            IsChangingInfo = true;
+                            IsChangingPassword = false;
+                            Title = "Chỉnh sửa nhân viên";
+                            EmployeeBindProp = parameters[Keys.EMPLOYEE] as VisualEmployeeModel;
+                        }
+                        else
+                        {
+                            IsChangingPassword = true;
+                            IsChangingInfo = false;
+                            Title = "Đổi mật khẩu";
+                            EmployeeBindProp = parameters[Keys.EMPLOYEE] as VisualEmployeeModel;
+                        }
                     }                  
                     else
                     {
                         IsEditing = false;
+                        IsChangingInfo = true;
+                        IsChangingPassword = true;
                         Title = "Thêm nhân viên mới";
                         EmployeeBindProp = new VisualEmployeeModel();
+                        EmployeeBindProp.Id = Guid.NewGuid().ToString();
                     }
                     break;
                 case NavigationMode.Forward:

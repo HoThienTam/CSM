@@ -95,6 +95,15 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Employee.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            if (!string.IsNullOrWhiteSpace(obj.Password))
+            {
+                item.Password = obj.Password;
+            }
+            else
+            {
+                item.FullName = obj.FullName;
+                item.Role = obj.Role;
+            }
             try
             {
                 if (saveChange)
