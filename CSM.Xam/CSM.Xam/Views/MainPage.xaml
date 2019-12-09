@@ -292,15 +292,42 @@
                             <StackLayout BindableLayout.ItemsSource="{Binding ListItemInBillBindProp, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="{StaticResource SmallVerticalThickness}">
+                                        <mr:Grid Margin="{StaticResource SmallVerticalThickness}" TappedCommand="{Binding}" TappedCommandParameter="{Binding}">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
                                             <Label Style="{StaticResource Bill_ItemName}" Text="{Binding Name}" />
+                                            <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Quantity, StringFormat='x{0}'}" />
                                             <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding Value, StringFormat='{0:C}'}" />
-                                        </Grid>
+
+                                            <!--  Danh sach sub item  -->
+                                            <StackLayout
+                                                Grid.Row="1" Grid.ColumnSpan="3"
+                                                BindableLayout.ItemsSource="{Binding ListSubItem, Mode=OneWay}"
+                                                Spacing="0">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <mr:Grid Margin="{StaticResource SmallVerticalThickness}" >
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="2*" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Label Style="{StaticResource BillSubItem_ItemName}" Text="{Binding Name}" />
+                                                            <Label Style="{StaticResource BillSubItem_ItemPrice}" Text="{Binding Value, Mode=OneWay, StringFormat='{0:C}'}" />
+                                                        </mr:Grid>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+
+                                        </mr:Grid>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </StackLayout>
@@ -403,7 +430,8 @@
                     <ScrollView IsVisible="{Binding IsVisibleListItemBindProp}"
                                 Grid.Row="2">
                         <StackLayout BindableLayout.ItemsSource="{Binding ListItemBindProp, Mode=OneWay}"
-                                 Margin="{StaticResource CommonThickness}">
+                                 Margin="{StaticResource CommonThickness}"
+                                     Spacing="2">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.SelectItemCommand, Mode=OneWay, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
@@ -417,7 +445,7 @@
                                                    Margin="{StaticResource CommonHorizontalThickness}">
                                             <Label.Triggers>
                                                 <DataTrigger Binding="{Binding IsInPercent}" Value="True" TargetType="Label">
-                                                    <Setter Property="Text" Value="{Binding Value, StringFormat='{0}%'}"/>
+                                                    <Setter Property="Text" Value="{Binding Value, StringFormat='{0} %'}"/>
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
@@ -560,10 +588,12 @@
                     <Label Style="{StaticResource BottomMenu_Icon}" Text="{x:Static lcModels:FontAwesomeIcon.Ellipsis}" />
                     <tlrPrimitives:RadPopup.Popup>
                         <tlrPrimitives:RadPopup
-                            IsOpen="{Binding IsVisiblePopupBindProp, Mode=TwoWay}"
-                                    IsModal="False">
-                            <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" 
-                                                     Margin="{StaticResource CommonThickness}">
+                                IsOpen="{Binding IsVisiblePopupBindProp, Mode=TwoWay}"
+                                IsModal="False">
+                            <tlrPrimitives:RadBorder 
+                                    BackgroundColor="{StaticResource BackgroundColor}"
+                                    Style="{StaticResource CommonBorder}" 
+                                    Margin="{StaticResource CommonThickness}">
                                 <StackLayout Padding="{StaticResource CommonThickness}">
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hoatdong">
                                         <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.BallotCheck}" />
@@ -646,7 +676,9 @@
                     <Label Style="{StaticResource BottomMenu_ItemText}" Grid.Row="1" Text="Thư viện" />
                 </mr:Grid>
             </Grid>
+
         </Grid>
         <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+
     </Grid>
 </ContentPage>

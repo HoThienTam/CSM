@@ -37,7 +37,7 @@ namespace CSM.Xam
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data.db");
             DbConnectionString = $"Data Source={dbPath};";
 
-            File.Delete(dbPath);
+            //File.Delete(dbPath);
             if (File.Exists(dbPath) == false)
             {
                 var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
@@ -62,9 +62,9 @@ namespace CSM.Xam
             containerRegistry.RegisterForNavigation<CSM_01Page, CSM_01PageViewModel>(); // Trang dang nhap
             containerRegistry.RegisterForNavigation<CSM_02Page, CSM_02PageViewModel>(); // Trang tao mat hang
             containerRegistry.RegisterForNavigation<CSM_02_01Page, CSM_02_01PageViewModel>(); // Trang danh muc
-            containerRegistry.RegisterForNavigation<CSM_03Page>(); // Trang tao giam gia
-            containerRegistry.RegisterForNavigation<CSM_04Page>(); // Trang hoat dong
-            containerRegistry.RegisterForNavigation<CSM_05Page>(); // Trang thong ke
+            containerRegistry.RegisterForNavigation<CSM_03Page, CSM_03PageViewModel>(); // Trang tao giam gia
+            containerRegistry.RegisterForNavigation<CSM_04Page, CSM_04PageViewModel>(); // Trang hoat dong
+            containerRegistry.RegisterForNavigation<CSM_05Page, CSM_05PageViewModel>(); // Trang thong ke
             containerRegistry.RegisterForNavigation<CSM_06Page>(); // Trang hang hoa
             containerRegistry.RegisterForNavigation<CSM_07Page, CSM_07PageViewModel>(); // Trang nhan vien
             containerRegistry.RegisterForNavigation<CSM_07_01Page, CSM_07_01PageViewModel>(); // Trang tao nhan vien

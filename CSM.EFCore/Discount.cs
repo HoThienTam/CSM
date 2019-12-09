@@ -11,7 +11,6 @@ namespace CSM.EFCore
         public string Creator { get; set; }
         public long IsDeleted { get; set; }
         public string FkStore { get; set; }
-        public long DiscountType { get; set; }
         public double DiscountValue { get; set; }
         public double MaxValue { get; set; }
         public long IsInPercent { get; set; }

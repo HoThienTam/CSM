@@ -31,6 +31,9 @@
     <Reference Include="MR.Gestures">
       <HintPath>..\..\..\..\ATSolution\at-pos\Libs\Portable\MR.Gestures.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.XamarinForms.Chart">
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Chart.dll</HintPath>
+    </Reference>
     <Reference Include="Telerik.XamarinForms.Common">
       <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
     </Reference>

@@ -3,13 +3,247 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:tlrChart="clr-namespace:Telerik.XamarinForms.Chart;assembly=Telerik.XamarinForms.Chart"
              mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_05Page">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Grid Style="{StaticResource CommonWrapper}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!-- Navigation bar -->
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!--Title-->
+                <Label Style="{StaticResource CommonHeaderText}" Text="Thống kê"/>
+
+                <!--Back icon-->
+                <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" TappedCommand="{Binding GoBackCommand}" />
+
+                <!--Right text-->
+                <Label Style="{StaticResource CommonHeaderRightText}"/>
+            </Grid>
+
+            <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+
+            <ScrollView Grid.Row="2">
+                <StackLayout Spacing="0">
+                    <Label Text="Doanh thu tổng quan"/>
+                    <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+                </StackLayout>
+            </ScrollView>
+
+        </Grid>
+
+        <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>
+
+        <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}">
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title}"/>
+
+                    <!--Back icon-->
+                    <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="" />
+
+                    <!--Right text-->
+                    <Label Text="" Style="{StaticResource CommonHeaderRightText}"/>
+                </Grid>
+
+                <!--Seperate line-->
+                <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+
+                <ScrollView Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
+                    <!--  Detail  -->
+                    <StackLayout Spacing="{StaticResource CommonThickness}">
+                        <Label Text="2019/21/11"></Label>
+
+                        <!-- Tong tien -->
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label HorizontalOptions="StartAndExpand" Text="Tổng số tiền thu được"/>
+                                    <Label HorizontalOptions="End" Text="Tổng giao dịch"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Spacing="0" Grid.Row="1">
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" 
+                                        Text="{Binding TongTienThuDuocBindProp, StringFormat='{0:C}'}" />
+                                    <Label
+                                       FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End" 
+                                        Text="{Binding TongGiaoDichBindProp}"/>
+                                </StackLayout>
+                            </Grid>
+                        </tlrPrimitives:RadBorder>
+
+                        <!--Doanh thu theo gio-->
+                        <tlrPrimitives:RadBorder  Style="{StaticResource CommonBorder}">
+                            <StackLayout Orientation="Vertical">
+                                <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="Doanh thu bình quân giờ" />
+                                <tlrChart:RadCartesianChart>
+                                    <tlrChart:RadCartesianChart.HorizontalAxis>
+                                        <tlrChart:CategoricalAxis/>
+                                    </tlrChart:RadCartesianChart.HorizontalAxis>
+                                    <tlrChart:RadCartesianChart.VerticalAxis>
+                                        <tlrChart:NumericalAxis/>
+                                    </tlrChart:RadCartesianChart.VerticalAxis>
+                                    <tlrChart:RadCartesianChart.Series>
+                                        <tlrChart:BarSeries ValueBinding="Value"
+                                                            CategoryBinding="Category"
+                                                            ItemsSource="{Binding Data}" />
+                                    </tlrChart:RadCartesianChart.Series>
+                                </tlrChart:RadCartesianChart>
+                                <Label
+                                        HorizontalOptions="StartAndExpand" Text="Doanh thu bình quân giờ = (Tổng doanh thu trong một giờ) / (Tổng số ngày)"/>
+                            </StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <!--Doanh thu theo ngay -->
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                            <StackLayout Orientation="Vertical">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="Doanh thu theo ngày"/>
+                                    <Label
+                                        HorizontalOptions="EndAndExpand" Text="{Binding SelectedDateBindProp}"/>
+                                </StackLayout>
+                                <tlrChart:RadCartesianChart>
+                                    <tlrChart:RadCartesianChart.HorizontalAxis>
+                                        <tlrChart:CategoricalAxis PlotMode="OnTicks" MajorTickInterval="{Binding Interval}"/>
+                                    </tlrChart:RadCartesianChart.HorizontalAxis>
+                                    <tlrChart:RadCartesianChart.VerticalAxis>
+                                        <tlrChart:NumericalAxis LabelFormat="C"/>
+                                    </tlrChart:RadCartesianChart.VerticalAxis>
+                                    <tlrChart:RadCartesianChart.Series>
+                                        <tlrChart:AreaSeries 
+                                                            CategoryBinding="DateTime"
+                                                            ValueBinding="Value" 
+                                                            ItemsSource="{Binding AverageData, Mode=OneWay}"/>
+                                    </tlrChart:RadCartesianChart.Series>
+                                </tlrChart:RadCartesianChart>
+                                <Label
+                                        HorizontalOptions="StartAndExpand" Text="Doanh thu ngày = (Tổng số tiền đã thu) - (Hoàn tiền từng phần/toàn bộ) - (Tiền tip)" />
+                            </StackLayout>
+                        </tlrPrimitives:RadBorder>
+
+                        <!-- Thong ke-->
+                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                            <StackLayout Orientation="Vertical">
+                                <StackLayout Orientation="Vertical" Spacing="0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="Đơn tại quán"/>
+                                    <Label
+                                        HorizontalOptions="StartAndExpand" Text="Tổng số tiền thu được"/>
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="{Binding TongTienThuDuocBindProp, StringFormat='{0:C}'}"/>
+                                </StackLayout>
+
+                                <BoxView  HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        HorizontalOptions="StartAndExpand" Text="Số lượng giao dịch"/>
+                                    <Label
+                                        HorizontalOptions="End" Text="Giá trị/Giao dịch"/>
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="{Binding TongGiaoDichBindProp}" />
+                                    <Label
+                                         FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End" Text="{Binding SoTienTrungBinhBindProp, StringFormat='{0:C}'}"/>
+                                </StackLayout>
+
+                                <BoxView  HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        HorizontalOptions="StartAndExpand" Text="Giảm giá" />
+                                    <Label
+                                        HorizontalOptions="End" Text="Hoàn tiền"/>
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="0đ"/>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End" Text="0đ"/>
+                                </StackLayout>
+
+                                <BoxView  HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        HorizontalOptions="StartAndExpand" Text="Tổng phí dịch vụ thu được"/>
+                                    <Label
+                                        HorizontalOptions="End" Text="Tổng thuế thu được"/>
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="StartAndExpand" Text="0đ" />
+                                    <Label
+                                        FontSize="Large"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End" Text="0đ"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </tlrPrimitives:RadBorder>
+                    </StackLayout>
+                </ScrollView>
+            </Grid>
+        </Grid>
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+    </Grid>
 </ContentPage>

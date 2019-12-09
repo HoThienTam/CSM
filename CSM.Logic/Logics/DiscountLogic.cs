@@ -57,7 +57,6 @@ namespace CSM.Logic
                 Creator = "Tam",
                 CreationDate = DateTime.Now.ToString(),
                 DiscountName = obj.DiscountName,
-                DiscountType = obj.DiscountType,
                 DiscountValue = obj.DiscountValue,
                 FkStore = "1",
                 IsDeleted = (int)IsDelete.Normal,
@@ -85,6 +84,10 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Discount.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            item.DiscountName = obj.DiscountName;
+            item.DiscountValue = obj.DiscountValue;
+            item.IsInPercent = obj.IsInPercent;
+            item.MaxValue = obj.MaxValue;
             try
             {
                 if (saveChange)

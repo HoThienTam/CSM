@@ -193,15 +193,6 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ItemsFilterDescriptor
-        private ObservableCollection<FilterDescriptorBase> _ItemsFilterDescriptor;
-        public ObservableCollection<FilterDescriptorBase> ItemsFilterDescriptor
-        {
-            get { return _ItemsFilterDescriptor; }
-            set { SetProperty(ref _ItemsFilterDescriptor, value); }
-        }
-        #endregion
-
         #region ListItem
         private List<VisualItemMenuModel> _ListItem = null;
         public List<VisualItemMenuModel> ListItem
@@ -304,20 +295,45 @@ namespace CSM.Xam.ViewModels
                             {
                                 return;
                             }
-                            ListDiscountBindProp.Add(item);
                             if (item.IsInPercent)
                             {
-                                item.Value = 15000;
-                                TotalPriceBindProp -= item.Value = 15000; ;
+                                var discount = new VisualItemMenuModel
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Value = item.Value * TotalPriceBindProp / 100
+                                };
+                                ListDiscountBindProp.Add(discount);
+                                TotalPriceBindProp -= discount.Value;
                             }
                             else
                             {
+                                ListDiscountBindProp.Add(item);
                                 TotalPriceBindProp -= item.Value;
+                            }
+                            if (TotalPriceBindProp < 0)
+                            {
+                                TotalPriceBindProp = 0;
                             }
                         }
                         else
                         {
-                            ListItemInBillBindProp.Add(item);
+                            if (ListItemInBillBindProp.Any(h => h.Id == item.Id))
+                            {
+                                var billItem =  ListItemInBillBindProp.First(h => h.Id == item.Id);
+                                billItem.Quantity++;
+                            }
+                            else
+                            {
+                                var billItem = new VisualItemMenuModel
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Value = item.Value,
+                                    Quantity = 1
+                                };
+                                ListItemInBillBindProp.Add(billItem);
+                            }
                             ItemCountBindProp++;
                             TotalPriceBindProp += item.Value;
                         }
@@ -509,8 +525,12 @@ namespace CSM.Xam.ViewModels
                             IsVisibleFrameBillBindProp = true;
                             break;
                         case "hoatdong":
+                            IsVisiblePopupBindProp = false;
+                            await NavigationService.NavigateAsync(nameof(CSM_04Page));
                             break;
                         case "thongke":
+                            IsVisiblePopupBindProp = false;
+                            await NavigationService.NavigateAsync(nameof(CSM_05Page));
                             break;
                         case "hanghoa":
                             break;
@@ -1002,8 +1022,8 @@ namespace CSM.Xam.ViewModels
             {
                 var param = new NavigationParameters();
                 param.Add(Keys.LIST_CATEGORY, ListCategoryBindProp);
-                param.Add(Keys.LIST_ITEM, ListItemBindProp);
-                param.Add(Keys.ZONE, _menuId);
+                param.Add(Keys.LIST_ITEM, ListItem);
+                param.Add(Keys.MENU, _menuId);
                 await NavigationService.NavigateAsync(nameof(CSM_11Page), param);
             }
             catch (Exception e)
@@ -1183,12 +1203,12 @@ namespace CSM.Xam.ViewModels
                         var item = parameters[Keys.ITEM] as VisualItemMenuModel;
                         if (item.IsDeleted)
                         {
-                           var deletedItem =  ListItem.Find(h => h.Id == item.Id);
-                           ListItem.Remove(deletedItem);
+                            var deletedItem = ListItem.Find(h => h.Id == item.Id);
+                            ListItem.Remove(deletedItem);
                         }
                         else
                         {
-                            ListItemBindProp.Add(item);
+                            ListItem.Add(item);
                         }
                         IsVisibleListCategoryBindProp = true;
                     }
@@ -1223,7 +1243,7 @@ namespace CSM.Xam.ViewModels
                         }
                         else
                         {
-                            ListItemBindProp.Add(discount);
+                            ListItem.Add(discount);
                         }
                         IsVisibleListCategoryBindProp = true;
                     }

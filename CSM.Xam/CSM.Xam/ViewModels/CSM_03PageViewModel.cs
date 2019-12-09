@@ -25,27 +25,13 @@ namespace CSM.Xam.ViewModels
         public bool IsEditing
         {
             get { return _IsEditing; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _IsEditing, value);
                 RaisePropertyChanged(nameof(IsNotEditing));
             }
         }
         public bool IsNotEditing { get { return !_IsEditing; } }
-        #endregion
-
-        #region IsNormalDiscount
-        private bool _IsNormalDiscount = true;
-        public bool IsNormalDiscount
-        {
-            get { return _IsNormalDiscount; }
-            set 
-            { 
-                SetProperty(ref _IsNormalDiscount, value);
-                RaisePropertyChanged(nameof(IsCategoryDiscount));
-            }
-        }
-        public bool IsCategoryDiscount { get { return !_IsNormalDiscount; } }
         #endregion
 
         #region DiscountBindProp
@@ -62,8 +48,8 @@ namespace CSM.Xam.ViewModels
         public bool IsPercentCheckedBindProp
         {
             get { return _IsPercentCheckedBindProp; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _IsPercentCheckedBindProp, value);
                 RaisePropertyChanged(nameof(IsMoneyCheckedBindProp));
             }
@@ -173,7 +159,7 @@ namespace CSM.Xam.ViewModels
             {
                 return false;
             }
-            if (NormalDiscountPercentBindProp == 0 && NormalDiscountValueBindProp == 0 && CategoryDiscountValueBindProp == 0)
+            if (NormalDiscountPercentBindProp == 0 && NormalDiscountValueBindProp == 0)
             {
                 return false;
             }
@@ -189,38 +175,49 @@ namespace CSM.Xam.ViewModels
                 var discountLogic = new DiscountLogic(_dbContext);
                 if (IsEditing)
                 {
+                    if (IsMoneyCheckedBindProp)
+                    {
+                        await discountLogic.UpdateAsync(new Discount
+                        {
+                            Id = DiscountBindProp.Id,
+                            DiscountName = DiscountBindProp.Name,
+                            DiscountValue = NormalDiscountValueBindProp,
+                            IsInPercent = 0,
+                            MaxValue = 0,
+                        });
+                        DiscountBindProp.Value = NormalDiscountValueBindProp;
+                        DiscountBindProp.IsInPercent = false;
+                    }
+                    else
+                    {
+                        await discountLogic.UpdateAsync(new Discount
+                        {
+                            Id = DiscountBindProp.Id,
+                            DiscountName = DiscountBindProp.Name,
+                            DiscountValue = NormalDiscountPercentBindProp,
+                            IsInPercent = 1,
+                            MaxValue = 0,
+                        });
+                        DiscountBindProp.Value = NormalDiscountPercentBindProp;
+                        DiscountBindProp.IsInPercent = true;
+                    }
 
+                    await NavigationService.GoBackAsync();
                 }
                 else
                 {
-                    if (IsNormalDiscount)
+                    if (IsMoneyCheckedBindProp)
                     {
-                        if (IsMoneyCheckedBindProp)
+                        await discountLogic.CreateAsync(new Discount
                         {
-                            await discountLogic.CreateAsync(new Discount
-                            {
-                                Id = DiscountBindProp.Id,
-                                DiscountName = DiscountBindProp.Name,
-                                DiscountValue = NormalDiscountValueBindProp,
-                                IsInPercent = 0,
-                                MaxValue = 0,
-                                DiscountType = 0,
-                            }); ;
-                            DiscountBindProp.Value = NormalDiscountValueBindProp;
-                        }
-                        else
-                        {
-                            await discountLogic.CreateAsync(new Discount
-                            {
-                                Id = DiscountBindProp.Id,
-                                DiscountName = DiscountBindProp.Name,
-                                DiscountValue = NormalDiscountPercentBindProp,
-                                IsInPercent = 1,
-                                MaxValue = 0,
-                                DiscountType = 0,
-                            });
-                            DiscountBindProp.Value = NormalDiscountPercentBindProp;
-                        }
+                            Id = DiscountBindProp.Id,
+                            DiscountName = DiscountBindProp.Name,
+                            DiscountValue = NormalDiscountValueBindProp,
+                            IsInPercent = 0,
+                            MaxValue = 0,
+                        });
+                        DiscountBindProp.Value = NormalDiscountValueBindProp;
+                        DiscountBindProp.IsInPercent = false;
                     }
                     else
                     {
@@ -228,13 +225,14 @@ namespace CSM.Xam.ViewModels
                         {
                             Id = DiscountBindProp.Id,
                             DiscountName = DiscountBindProp.Name,
-                            DiscountValue = CategoryDiscountValueBindProp,
-                            IsInPercent = 0,
+                            DiscountValue = NormalDiscountPercentBindProp,
+                            IsInPercent = 1,
                             MaxValue = 0,
-                            DiscountType = 1,
                         });
-                        DiscountBindProp.Value = CategoryDiscountValueBindProp;
+                        DiscountBindProp.Value = NormalDiscountPercentBindProp;
+                        DiscountBindProp.IsInPercent = true;
                     }
+
                     var param = new NavigationParameters();
                     param.Add(Keys.DISCOUNT, DiscountBindProp);
 
@@ -256,89 +254,6 @@ namespace CSM.Xam.ViewModels
         {
             SaveCommand = new DelegateCommand<object>(OnSave, CanExecuteSave);
             SaveCommand.ObservesProperty(() => IsNotBusy);
-        }
-
-        #endregion
-
-        #region TapCategoryCommand
-
-        public DelegateCommand<object> TapCategoryCommand { get; private set; }
-        private async void OnTapCategory(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                await NavigationService.NavigateAsync(nameof(CSM_02_01Page));
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitTapCategoryCommand()
-        {
-            TapCategoryCommand = new DelegateCommand<object>(OnTapCategory);
-            TapCategoryCommand.ObservesCanExecute(() => IsNotBusy);
-        }
-
-        #endregion
-
-        #region SelectedChangedCommand
-
-        public DelegateCommand<object> SelectedChangedCommand { get; private set; }
-        private async void OnSelectedChanged(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                if (IsNormalDiscount)
-                {
-                    IsNormalDiscount = false;
-                    NormalDiscountPercentBindProp = 0;
-                    NormalDiscountValueBindProp = 0;
-                }
-                else
-                {
-                    IsNormalDiscount = true;
-                    CategoryDiscountValueBindProp = 0;
-                    IsPercentCheckedBindProp = true;
-                }
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-        }
-        [Initialize]
-        private void InitSelectedChangedCommand()
-        {
-            SelectedChangedCommand = new DelegateCommand<object>(OnSelectedChanged);
-            SelectedChangedCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
@@ -415,10 +330,6 @@ namespace CSM.Xam.ViewModels
                         if (DiscountBindProp.IsInPercent)
                         {
                             NormalDiscountPercentBindProp = DiscountBindProp.Value;
-                        }
-                        else if (DiscountBindProp.DiscountType == 1)
-                        {
-                            CategoryDiscountValueBindProp = DiscountBindProp.Value;
                         }
                         else
                         {

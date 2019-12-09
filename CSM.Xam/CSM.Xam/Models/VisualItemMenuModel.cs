@@ -1,6 +1,7 @@
 ﻿using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace CSM.Xam.Models
@@ -79,15 +80,6 @@ namespace CSM.Xam.Models
         }
         #endregion
 
-        #region DiscountType
-        private int _DiscountType;
-        public int DiscountType
-        {
-            get { return _DiscountType; }
-            set { SetProperty(ref _DiscountType, value); }
-        }
-        #endregion
-
         #region MaxValue
         private double _MaxValue;
         public double MaxValue
@@ -105,5 +97,24 @@ namespace CSM.Xam.Models
             set { SetProperty(ref _IsDeleted, value); }
         }
         #endregion
+
+        #region Quantity
+        private int _Quantity;
+        public int Quantity
+        {
+            get { return _Quantity; }
+            set { SetProperty(ref _Quantity, value); }
+        }
+        #endregion
+
+        #region ListSubItem
+        private ObservableCollection<VisualItemMenuModel> _ListSubItem = new ObservableCollection<VisualItemMenuModel>();
+        public ObservableCollection<VisualItemMenuModel> ListSubItem
+        {
+            get { return _ListSubItem; }
+            set { SetProperty(ref _ListSubItem, value); }
+        }
+        #endregion
+
     }
 }

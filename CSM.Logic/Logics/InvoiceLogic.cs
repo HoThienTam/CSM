@@ -68,6 +68,10 @@ namespace CSM.Logic
                 PaidAmount = obj.PaidAmount,
                 RefundedAmount = 0,
                 Tip = obj.Tip,
+                InvoiceNumber = obj.InvoiceNumber,
+                IsDeleted = (int)IsDelete.Normal,
+                IsTakeAway = obj.IsTakeAway,
+                PaymentMethod = obj.PaymentMethod
             };
 
             _DbContext.Invoice.Add(item);

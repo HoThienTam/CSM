@@ -70,12 +70,12 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ItemsFilterDescriptor
-        private ObservableCollection<FilterDescriptorBase> _ItemsFilterDescriptor;
-        public ObservableCollection<FilterDescriptorBase> ItemsFilterDescriptor
+        #region ListItem
+        private List<VisualItemMenuModel> _ListItem = null;
+        public List<VisualItemMenuModel> ListItem
         {
-            get { return _ItemsFilterDescriptor; }
-            set { SetProperty(ref _ItemsFilterDescriptor, value); }
+            get { return _ListItem; }
+            set { SetProperty(ref _ListItem, value); }
         }
         #endregion
 
@@ -109,18 +109,23 @@ namespace CSM.Xam.ViewModels
                     {
                         case "discount":
                             _selectedCategory = "discount";
-                            Title = "Giảm  giá";
+                            var listDiscount = ListItem.Where(h => h.IsDiscount == true).ToList();
+                            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listDiscount);
+                            Title = "Giảm giá";
                             break;
                         case "allitem":
                             _selectedCategory = "allitem";
+                            var listItem = ListItem.Where(h => h.IsDiscount == false).ToList();
+                            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
                             Title = "Tất cả mặt hàng";
                             break;
                     }
                 }
-                ItemsFilterDescriptor.Clear();
-                ItemsFilterDescriptor.Add(new DelegateFilterDescriptor { Filter = FilterByCategory });
-                IsVisibleListCategoryBindProp = false;
-
+                else
+                {
+                    var listItem = ListItem.Where(h => h.FkCategory == _selectedCategory).ToList();
+                    ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
+                }
                 IsVisibleListCategoryBindProp = false;
             }
             catch (Exception e)
@@ -295,25 +300,6 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        #region FilterByCategory
-        private bool FilterByCategory(object item)
-        {
-            var itemModel = (VisualItemMenuModel)item;
-            if (_selectedCategory.Equals("allitem"))
-            {
-                return !string.IsNullOrWhiteSpace(itemModel.FkCategory);
-            }
-            else if (_selectedCategory.Equals("discount"))
-            {
-                return string.IsNullOrWhiteSpace(itemModel.FkCategory);
-            }
-            else
-            {
-                return itemModel.FkCategory == _selectedCategory;
-            }
-        }
-        #endregion
-
         #endregion
 
         #region Navigate
@@ -327,8 +313,8 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     ListCategoryBindProp = parameters[Keys.LIST_CATEGORY] as ObservableCollection<VisualCategoryModel>;
-                    ListItemBindProp = parameters[Keys.LIST_ITEM] as ObservableCollection<VisualItemMenuModel>;
-                    _menuId = parameters[Keys.ZONE] as string;
+                    ListItem = parameters[Keys.LIST_ITEM] as List<VisualItemMenuModel>;
+                    _menuId = parameters[Keys.MENU] as string;
                     break;
                 case NavigationMode.Forward:
                     break;

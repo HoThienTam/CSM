@@ -270,16 +270,18 @@
                             Padding="{StaticResource CommonThickness}"
                             Margin="{StaticResource LargeThickness}">
                             <StackLayout Orientation="Horizontal" Spacing="0">
-                                <tlrInput:RadEntry HorizontalOptions="StartAndExpand"
-                                                   Keyboard="Numeric"
-                                                   VerticalOptions="Center"
-                                                   WatermarkText="Số tiền tip"/>
-                                <mr:Grid TappedCommand="{Binding TienTipCommand}">
+                                <mr:Grid TappedCommand="{Binding TipCommand}">
                                     <Label 
                                         Style="{StaticResource CommonHeaderRightText}"
                                         Grid.Column="0"
                                         Text="Khách không lấy tiền trả lại" />
                                 </mr:Grid>
+                                <tlrInput:RadNumericInput HorizontalOptions="FillAndExpand"
+                                        Value="{Binding TipBindProp, Mode=TwoWay}"
+                                        StringFormat="{}{0:C}"
+                                        Maximum="1000000000" Minimum="0"  
+                                        VerticalOptions="Center"
+                                        ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"/>
                             </StackLayout>
                         </tlrPrimitives:RadBorder>
                         <tlrPrimitives:RadBorder 

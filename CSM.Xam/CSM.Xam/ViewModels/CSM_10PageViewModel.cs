@@ -132,6 +132,10 @@ namespace CSM.Xam.ViewModels
                 {
                     ChangeMoneyBindProp = ReceivedMoneyBindProp - TotalMoneyBindProp;
                 }
+                else
+                {
+                    ChangeMoneyBindProp = 0;
+                }
             }
             catch (Exception e)
             {
@@ -179,9 +183,13 @@ namespace CSM.Xam.ViewModels
                     {
                         Id = Guid.NewGuid().ToString(),
                         TotalPrice = TotalMoneyBindProp,
-                        Status = (int)InvoiceStatus.Paid,  
+                        Status = (int)InvoiceStatus.Paid,
                         PaidAmount = ReceivedMoneyBindProp,
-                        Tip = TipBindProp
+                        CustomerCount = 1,
+                        Tip = TipBindProp,
+                        PaymentMethod = 0,
+                        InvoiceNumber = 001,
+                        IsTakeAway = 0,
                     };
 
                     await invoiceLogic.CreateAsync(invoice, false);
@@ -214,6 +222,42 @@ namespace CSM.Xam.ViewModels
         {
             CompeletePaymentCommand = new DelegateCommand<object>(OnCompeletePayment);
             CompeletePaymentCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region TipCommand
+
+        public DelegateCommand<object> TipCommand { get; private set; }
+        private async void OnTip(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                TipBindProp = ChangeMoneyBindProp;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitTipCommand()
+        {
+            TipCommand = new DelegateCommand<object>(OnTip);
+            TipCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion

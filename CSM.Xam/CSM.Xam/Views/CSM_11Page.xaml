@@ -50,44 +50,35 @@
                 <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
                 <!--List item -->
-                <dataControls:RadListView
-                    IsVisible="{Binding IsVisibleListItemBindProp}"
-                    Margin="{StaticResource CommonThickness}"
-                    FilterDescriptors="{Binding ItemsFilterDescriptor, 
-                                 Mode=OneWayToSource}" 
-                    Grid.Row="2"
-                    SelectionMode="Multiple"
-                    ItemsSource="{Binding ListItemBindProp, Mode=OneWay}">
-                    <dataControls:RadListView.LayoutDefinition>
-                        <listView:ListViewLinearLayout VerticalItemSpacing="1" />
-                    </dataControls:RadListView.LayoutDefinition>
-                    <dataControls:RadListView.SelectedItemStyle>
-                        <listView:ListViewItemStyle BackgroundColor="{StaticResource SelectedColor}"/>
-                    </dataControls:RadListView.SelectedItemStyle>
-                    <dataControls:RadListView.Commands>
-                        <commands:ListViewUserCommand
-                                            Command="{Binding TapItemCommand, Mode=OneWay}"
-                                            Id="ItemTap" />
-                    </dataControls:RadListView.Commands>
-                    <dataControls:RadListView.ItemTemplate>
-                        <DataTemplate>
-                            <listView:ListViewTemplateCell>
-                                <listView:ListViewTemplateCell.View>
-                                    <StackLayout Orientation="Horizontal">
-                                        <!--Anh mat hang-->
-                                        <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
-                                        <!--Ten mat hang-->
-                                        <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
-                                        <!--Gia-->
-                                        <Label Text="{Binding Value, StringFormat='{0:C}'}" HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource CommonHorizontalThickness}"/>
-                                        <!--Icon bao thieu hang-->
-                                        <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
-                                    </StackLayout>
-                                </listView:ListViewTemplateCell.View>
-                            </listView:ListViewTemplateCell>
-                        </DataTemplate>
-                    </dataControls:RadListView.ItemTemplate>
-                </dataControls:RadListView>
+                <ScrollView IsVisible="{Binding IsVisibleListItemBindProp}"
+                                Grid.Row="2">
+                    <StackLayout BindableLayout.ItemsSource="{Binding ListItemBindProp, Mode=OneWay}"
+                                 Margin="{StaticResource CommonThickness}"
+                                     Spacing="2">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.SelectItemCommand, Mode=OneWay, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
+                                    <!--Anh mat hang-->
+                                    <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                    <!--Ten mat hang-->
+                                    <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+                                    <!--Gia-->
+                                    <Label Text="{Binding Value, StringFormat='{0:C}'}" 
+                                                   HorizontalOptions="End" VerticalOptions="Center" 
+                                                   Margin="{StaticResource CommonHorizontalThickness}">
+                                        <Label.Triggers>
+                                            <DataTrigger Binding="{Binding IsInPercent}" Value="True" TargetType="Label">
+                                                <Setter Property="Text" Value="{Binding Value, StringFormat='{0} %'}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <!--Icon bao thieu hang-->
+                                    <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
+                                </mr:StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </ScrollView>
 
                 <!-- List category -->
                 <dataControls:RadListView

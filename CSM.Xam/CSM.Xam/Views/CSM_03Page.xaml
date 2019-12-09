@@ -60,26 +60,15 @@
 
                               <!--Loai giam gia-->  
                             <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonUpperBorder}">
-                                <StackLayout Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
+                                <StackLayout Orientation="Horizontal" Margin="{StaticResource CommonLeftThickness}">
                                     <Label
                                         VerticalOptions="Center"
                                         HorizontalOptions="FillAndExpand"
                                         Text="Loại giảm giá"/>
-                                    <Picker      
-                                        x:Name="picker"
-                                        HorizontalOptions="End"                                       
-                                        WidthRequest="200"                                       
-                                        VerticalOptions="Center">
-                                        <Picker.ItemsSource>
-                                            <x:Array Type="{x:Type x:String}">
-                                                <x:String>Giảm giá thường</x:String>
-                                                <x:String>Giảm giá danh mục</x:String>
-                                            </x:Array>
-                                        </Picker.ItemsSource>
-                                        <Picker.Behaviors>
-                                            <b:EventToCommandBehavior Command="{Binding SelectedChangedCommand}" CommandParameter="{Binding}" EventName="SelectedIndexChanged"/>
-                                        </Picker.Behaviors>
-                                    </Picker>
+                                    <tlrInput:RadEntry
+                                        Style="{StaticResource CommonRightEntry}"
+                                        InputTransparent="True"
+                                        Text="Giảm giá thường" />
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
 
@@ -169,64 +158,14 @@
                             </tlrPrimitives:RadBorder>
 
                             <StackLayout Orientation="Horizontal" Spacing="0">
-                                <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
+                                <Label FontSize="Small" Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
                                 <Label FontSize="Small" 
                                        Text="Mức giảm giá để trống sẽ được nhập tại thời điểm bán hàng. Giảm giá áp dụng vào phiếu trước khi tính thuế." 
                                        VerticalOptions="Center" />
                             </StackLayout>
 
                         </StackLayout>
-
-                        <!--  Section giam gia danh muc  -->
-                        <StackLayout Spacing="0" IsVisible="{Binding IsCategoryDiscount}">
-                            <!--  Phan tram  -->
-                            <tlrPrimitives:RadBorder Style="{StaticResource CommonUpperBorder}">
-
-                                <StackLayout Margin="{StaticResource CommonHorizontalThickness}" Orientation="Horizontal" Spacing="{StaticResource CommonThickness}">
-                                    <Label
-                                        HorizontalOptions="FillAndExpand" Text="Phần trăm"
-                                        VerticalOptions="Center" />
-
-                                    <tlrInput:RadNumericInput
-                                        Style="{StaticResource CommonRightNumericInput}"
-                                        ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
-                                        Maximum="100" Minimum="0" 
-                                        StringFormat="{}{0:N0}"                                   
-                                        Value="{Binding CategoryDiscountValueBindProp, Mode=TwoWay}" />
-
-                                </StackLayout>
-
-                            </tlrPrimitives:RadBorder>
-
-                            <!--  Danh muc  -->
-                            <tlrPrimitives:RadBorder Style="{StaticResource CommonLowerBorder}">
-                                <mr:StackLayout Margin="{StaticResource CommonHorizontalThickness}" 
-                                                Orientation="Horizontal" 
-                                                Spacing="{StaticResource CommonThickness}"
-                                                TappedCommand="{Binding TapCategoryCommand}">
-                                    <Label
-                                        HorizontalOptions="FillAndExpand" Text="Danh mục"
-                                        VerticalOptions="Center" />
-
-                                    <tlrInput:RadEntry
-                                            InputTransparent="True"
-                                            Text="{Binding CategoryBindProp.CategoryName, Mode=TwoWay}"
-                                            Style="{StaticResource CommonRightEntry}"
-                                            WatermarkText="Chọn danh mục" />
-
-                                    <Label
-                                        HorizontalOptions="End"
-                                        Style="{StaticResource CommonLabelIcon}"
-                                        Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}" />
-                                </mr:StackLayout>
-                            </tlrPrimitives:RadBorder>
-
-                            <StackLayout Orientation="Horizontal" Spacing="0">
-                                <Label Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" />
-                                <Label FontSize="Small" Text="Giảm giá dược áp dụng cho hóa đơn khi tính toán thuế." VerticalOptions="Center" />
-                            </StackLayout>
-                        </StackLayout>
-
+                     
                     </StackLayout>
                 </ScrollView>
             </Grid>

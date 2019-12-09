@@ -3,13 +3,352 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             xmlns:dataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
              mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             x:Name="csm_04Page"
              x:Class="CSM.Xam.Views.CSM_04Page">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <Grid>
+        <Grid Style="{StaticResource CommonWrapper}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Frame hang ton trai  -->
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Title  -->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="Hoạt động" />
+
+                    <!--  Back icon  -->
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" TappedCommand="{Binding GoBackCommand}" />
+
+                    <!--Right text-->
+                    <Label Style="{StaticResource CommonHeaderRightText}"/>
+                </Grid>
+
+                <!--  Seperate header bottom line  -->
+                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+
+                <!--  Danh sách Hoạt động  -->
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!--  Thanh tìm kiếm  -->
+                    <SearchBar Placeholder="Tìm kiếm Số biên lai" Text="{Binding}">
+                        <SearchBar.Behaviors>
+                            <b:EventToCommandBehavior Command="{Binding Command}" CommandParameter="{Binding}" EventName="TextChanged" />
+                        </SearchBar.Behaviors>
+                    </SearchBar>
+
+                    <!--  Danh sách hoạt dộng  -->
+                    <dataControls:RadListView
+                            Grid.Row="1"
+                            ItemsSource="{Binding Command, Mode=OneWay}">
+
+                        <dataControls:RadListView.GroupDescriptors>
+                            <listView:PropertyGroupDescriptor PropertyName="NgaytaoBindProp" SortOrder="Descending" />
+                        </dataControls:RadListView.GroupDescriptors>
+
+                        <dataControls:RadListView.ItemTemplate>
+                            <DataTemplate>
+                                <listView:ListViewTemplateCell>
+                                    <mr:Grid TappedCommand="{Binding Command, Source={x:Reference csm_04Page}}" TappedCommandParameter="{Binding}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.UsdCircle}"/>
+
+                                        <Grid Grid.Column="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+
+                                            <Label Text="{Binding Command, StringFormat='\{0:C}', Mode=OneWay}"/>
+
+                                            <Label Grid.Row="1" Text="{Binding Command, Mode=OneWay}"/>
+                                        </Grid>
+
+                                        <Label Grid.Column="2"  Text="{Binding Command, Mode=OneWay}"/>
+                                    </mr:Grid>
+                                </listView:ListViewTemplateCell>
+                            </DataTemplate>
+                        </dataControls:RadListView.ItemTemplate>
+                    </dataControls:RadListView>
+                </Grid>
+
+            </Grid>
+
+            <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>
+           
+            <!--  Chi tiết hóa đơn  -->
+            <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}" Margin="{StaticResource LargeFrameThickness}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" />
+
+                    <!--  Title  -->
+                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title, Mode=OneWay}" />
+
+                    <!--  Right text  -->
+                    <mr:Label Style="{StaticResource CommonHeaderRightIcon}" />
+                </Grid>
+
+                <!--  Seperate header bottom line  -->
+                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+
+                <!--  Hóa đơn chi tiết  -->
+                <ScrollView Grid.Row="2">
+                    <StackLayout Margin="{StaticResource LargeThickness}">
+                        <!--  biên lai  -->
+                        <Grid>
+                            <BoxView Style="{StaticResource CommonTitleRule}" />
+                            <Label Style="{StaticResource CommonTitle}" Text="BIÊN LAI" />
+                        </Grid>
+                        <!--  Dùng tại bàn  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Loại phục vụ"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+                        <!--  Phục vụ bởi  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label  
+                                    HorizontalOptions="FillAndExpand" Text="Phục vụ bởi"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+
+                        <!--  Giờ vào  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Giờ vào"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                        <!--  Giờ ra  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Giờ ra"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView Margin="0,0,0,30" BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                        <!--  Thanh toán  -->
+                        <Grid>
+                            <BoxView Style="{StaticResource CommonTitleRule}" />
+                            <Label Style="{StaticResource CommonTitle}" Text="THANH TOÁN" />
+                        </Grid>
+
+                        <!--  Số biên lai  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Số biên lai"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                        <!--  Mặt hàng  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Mặt hàng"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
+
+                        <!--  Đanh sách mặt hàng  -->
+                        <StackLayout BindableLayout.ItemsSource="{Binding Command, Mode=OneWay}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label FontSize="5" Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
+
+                                        <Label LineBreakMode="TailTruncation" Style="{StaticResource Bill_ItemName}" Text="{Binding Name}" />
+
+                                        <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Quantity}" />
+
+                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding TotalPrice}" />
+
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+
+                        <!--  Chi tiết  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Chi tiết"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                        <!--  Danh sách chi tiết  -->
+                        <StackLayout BindableLayout.ItemsSource="{Binding Command, Mode=OneWay}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label FontSize="5" Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
+
+                                        <Label Style="{StaticResource Bill_ItemName}" Text="{Binding MainText}" />
+
+                                        <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Percent}" />
+
+                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding TotalPrice}" />
+
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+
+                        <!--  Thanh toán  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Thanh toán"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView Margin="0,0,0,30" BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
+
+                        <!--  TỔNG  -->
+                        <Grid>
+                            <BoxView Style="{StaticResource CommonTitleRule}" />
+                            <Label Style="{StaticResource CommonTitle}" Text="TỔNG" />
+                        </Grid>
+
+                        <!--  Tổng  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Tổng"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
+
+                        <!--  Hoàn tiền  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Hoàn tiền"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
+
+                        <!--  Tổng thu  -->
+                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
+                            <Label
+                                    HorizontalOptions="FillAndExpand" Text="Tổng thu"
+                                    VerticalOptions="Center" />
+                            <Label
+                                    HorizontalOptions="End"
+                                    Text="{Binding Command, Mode=OneWay}"
+                                    VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
+
+                    </StackLayout>
+                </ScrollView>
+            </Grid>
+
+        </Grid>
+        <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+    </Grid>
 </ContentPage>
