@@ -314,7 +314,7 @@
                                                 Spacing="0">
                                                 <BindableLayout.ItemTemplate>
                                                     <DataTemplate>
-                                                        <mr:Grid Margin="{StaticResource SmallVerticalThickness}" >
+                                                        <mr:Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="2*" />
                                                                 <ColumnDefinition Width="*" />
@@ -677,8 +677,135 @@
                 </mr:Grid>
             </Grid>
 
+            <!--  Input bill hoa don  -->
+            <Grid
+                IsVisible="{Binding IsVisibleFrameItemBindProp}"
+                BackgroundColor="White"
+                Grid.RowSpan="2" Grid.ColumnSpan="2"
+                Style="{StaticResource CommonWrapper}">
+                <tlrPrimitives:RadBorder Margin="{StaticResource LargeThickness}" Style="{StaticResource CommonBorder}">
+                    <Grid Style="{StaticResource CommonWrapper}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Style="{StaticResource CommonWrapper}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Style="{StaticResource CommonHeaderText}" Text="{Binding SelectedItem.Name}" />
+
+                            <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="back"/>
+
+                            <mr:Label Style="{StaticResource CommonHeaderRightText}" Text="Lưu" TappedCommand="{Binding SaveCommand}"/>
+                        </Grid>
+                        <!--  Seperate header bottom line  -->
+                        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
+
+                        <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
+                            <StackLayout Spacing="0">
+
+                                <tlrPrimitives:RadBorder
+                                        HeightRequest="{StaticResource CommonHeight}"
+                                        Style="{StaticResource CommonUpperBorder}">
+                                    <StackLayout Orientation="Horizontal" Spacing="0">
+
+                                        <Label Style="{StaticResource CommonLeftText}" 
+                                                Text="Giá niêm yết"
+                                                VerticalOptions="Center" />
+
+                                        <Label Style="{StaticResource CommonRightText}"
+                                               Text="{Binding SelectedItem.Value, StringFormat='{0:C}'}" />
+                                    </StackLayout>
+                                </tlrPrimitives:RadBorder>
+
+                                <tlrPrimitives:RadBorder
+                                        Style="{StaticResource CommonLowerBorder}"
+                                        HeightRequest="{StaticResource CommonHeight}">
+                                    <StackLayout Orientation="Horizontal"
+                                            Spacing="0">
+
+                                        <Label  Style="{StaticResource CommonLeftText}"
+                                                Text="Số lượng"/>
+
+                                        <tlrInput:RadNumericInput 
+                                            ControlTemplate="{StaticResource CustomRadNumericInput_ControlTemplate}"
+                                            Value="{Binding SelectedItem.Quantity, FallbackValue=0, Mode=TwoWay}"
+                                            HorizontalOptions="EndAndExpand" 
+                                            Minimum="0" Maximum="100"/>
+                                    </StackLayout>
+                                </tlrPrimitives:RadBorder>
+
+                                <!--  Giam gia  -->
+                                <Grid Margin="{StaticResource CommonVerticalThickness}">
+                                    <BoxView Style="{StaticResource CommonTitleRule}" />
+                                    <Label Style="{StaticResource CommonTitle}" Text="Giảm giá" />
+                                </Grid>
+                                <FlexLayout
+                                    BindableLayout.ItemsSource="{Binding ListAllDiscountBindProp, Mode=OneWay}"
+                                    JustifyContent="Start" Wrap="Wrap">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <tlrPrimitives:RadBorder
+                                                Margin="{StaticResource CommonThickness}"
+                                                Style="{StaticResource CommonBorder}"
+                                                HorizontalOptions="Start" 
+                                                HeightRequest="80"
+                                                VerticalOptions="Start" WidthRequest="150">
+                                                <tlrPrimitives:RadBorder.Triggers>
+                                                    <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
+                                                    </DataTrigger>
+                                                </tlrPrimitives:RadBorder.Triggers>
+                                                <mr:Grid
+                                                    TappedCommand="{Binding BindingContext.SelectDiscountCommand, Source={x:Reference mainPage}}"
+                                                    TappedCommandParameter="{Binding}"
+                                                    Margin="{StaticResource CommonThickness}"
+                                                    Style="{StaticResource CommonWrapper}">
+                                                    <Grid.Triggers>
+                                                        <DataTrigger TargetType="Grid" Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
+                                                        </DataTrigger>
+                                                    </Grid.Triggers>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Label
+                                                        Margin="{StaticResource CommonBottomThickness}"
+                                                        HorizontalOptions="FillAndExpand"
+                                                        Text="{Binding Name, Mode=OneWay}"
+                                                        VerticalOptions="Center" />
+                                                    <Label
+                                                        Grid.Row="1"
+                                                        HorizontalOptions="End"
+                                                        Text="{Binding Value, StringFormat='{0:C}'}"
+                                                        VerticalOptions="Center">
+                                                        <Label.Triggers>
+                                                            <DataTrigger Binding="{Binding IsInPercent}" Value="True" TargetType="Label">
+                                                                <Setter Property="Text" Value="{Binding Value, StringFormat='{0} %'}"/>
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+
+                                                </mr:Grid>
+                                            </tlrPrimitives:RadBorder>
+
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </FlexLayout>
+
+                            </StackLayout>
+                        </ScrollView>
+                    </Grid>
+                </tlrPrimitives:RadBorder>
+            </Grid>
         </Grid>
         <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
-
     </Grid>
 </ContentPage>

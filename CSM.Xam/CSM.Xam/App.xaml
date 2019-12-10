@@ -119,7 +119,7 @@
         <Color x:Key="SelectedBottomMenuColor">#7f8c8d</Color>
 
         <tlrInput:BorderStyle x:Key="EntryBorderStyle" BorderThickness="0"/>
-        
+
         <!--  Common item -->
         <Style TargetType="Label">
             <Setter Property="TextColor" Value="Black" />
@@ -452,7 +452,82 @@
                         Text="{TemplateBinding Value,
                                                Mode=OneWay}" />
             </Grid>
+        </ControlTemplate>
 
+        <ControlTemplate x:Key="CustomRadNumericInput_ControlTemplate">
+            <Grid  
+                Margin="{StaticResource CommonHorizontalThickness}"
+                HeightRequest="{StaticResource Height}"
+          MinimumHeightRequest="{StaticResource MinimumHeight}">
+                <Grid.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="numericInput:NumericInputButton" Class="DefaultNumericInputButtonStyle">
+                            <Setter Property="BorderRadius">
+                                <Setter.Value>
+                                    <OnPlatform x:TypeArguments="x:Int32">
+                                        <On Platform="iOS" Value="10"/>
+                                        <On Platform="UWP" Value="0"/>
+                                    </OnPlatform>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderColor" Value="{StaticResource SubColor}"/>
+                            <Setter Property="TextColor" Value="Black"/>
+                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="HeightRequest" Value="30"/>
+                            <Setter Property="VerticalOptions" Value="Center"/>
+                            <Setter Property="HorizontalOptions" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,0,0,0"/>
+                        </Style>
+                        <Style TargetType="numericInput:NumericInputEntry" Class="DefaultNumericInputEntryStyle">
+                            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                            <Setter Property="VerticalTextAlignment" Value="Center"/>
+                            <Setter Property="WidthRequest" Value="30"/>
+                            <Setter Property="Padding" Value="0,0,0,0"/>
+                            <Setter Property="Keyboard" Value="Numeric"/>
+                        </Style>
+                    </ResourceDictionary>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+
+                <numericInput:NumericInputButton Text="{TemplateBinding DecreaseButtonText}"
+                                                     Command="{TemplateBinding DecreaseCommand}"
+                                                     StyleClass="DefaultNumericInputButtonStyle"
+                                                     AutomationId="NumericDecreaseButton">
+                    <AutomationProperties.HelpText>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <On Platform="UWP" Value="NumericDecreaseButton"/>
+                            <On Platform="iOS" Value="NumericDecreaseButton"/>
+                        </OnPlatform>
+                    </AutomationProperties.HelpText>
+                </numericInput:NumericInputButton>
+
+                <numericInput:NumericInputEntry Grid.Column="1"
+                                            x:Name="PART_Entry"
+                                            StyleClass="DefaultNumericInputEntryStyle"
+                                            Text="{TemplateBinding Value, Mode=OneWay}"
+                                            InputTransparent="{TemplateBinding IsReadOnly}"
+                                            AutomationId="NumericEntry"/>
+
+                <numericInput:NumericInputButton Grid.Column="2"
+                                             Text="{TemplateBinding IncreaseButtonText}"
+                                             Command="{TemplateBinding IncreaseCommand}"
+                                             StyleClass="DefaultNumericInputButtonStyle"
+                                             AutomationId="NumericIncreaseButton">
+                    <AutomationProperties.HelpText>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <On Platform="iOS" Value="NumericIncreaseButton"/>
+                            <On Platform="UWP" Value="NumericIncreaseButton"/>
+                        </OnPlatform>
+                    </AutomationProperties.HelpText>
+                </numericInput:NumericInputButton>
+            </Grid>
         </ControlTemplate>
     </Application.Resources>
 </prism:PrismApplication>

@@ -249,7 +249,7 @@
                                 <!--  Quan ly nguyen lieu  -->
                                 <tlrPrimitives:RadBorder
                                         HeightRequest="{StaticResource CommonHeight}"
-                                        CornerRadius="5,5,0,0" Style="{StaticResource CommonBorder}">
+                                        Style="{StaticResource CommonUpperBorder}">
                                     <StackLayout Orientation="Horizontal" Spacing="0">
 
                                         <Label Style="{StaticResource CommonLeftText}" 
@@ -264,10 +264,8 @@
                                 </tlrPrimitives:RadBorder>
 
                                 <!--  theo doi hang ton  -->
-                                <tlrPrimitives:RadBorder Margin="0"
-                                        BorderThickness="1,0,1,1"
-                                        CornerRadius="0,0,5,5"
-                                        Style="{StaticResource CommonBorder}"
+                                <tlrPrimitives:RadBorder
+                                        Style="{StaticResource CommonLowerBorder}"
                                         HeightRequest="{StaticResource CommonHeight}">
                                     <StackLayout Orientation="Horizontal"
                                             Spacing="0">

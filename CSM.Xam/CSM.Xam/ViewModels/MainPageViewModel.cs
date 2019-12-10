@@ -24,6 +24,7 @@ namespace CSM.Xam.ViewModels
         private string _menuId;
         private string _selectedCategory;
         private VisualTableModel _oldTable;
+        private double _totalPrice = 0;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
@@ -113,6 +114,15 @@ namespace CSM.Xam.ViewModels
         {
             get { return _IsVisiblePopupBindProp; }
             set { SetProperty(ref _IsVisiblePopupBindProp, value); }
+        }
+        #endregion
+
+        #region IsVisibleFrameItemBindProp
+        private bool _IsVisibleFrameItemBindProp = false;
+        public bool IsVisibleFrameItemBindProp
+        {
+            get { return _IsVisibleFrameItemBindProp; }
+            set { SetProperty(ref _IsVisibleFrameItemBindProp, value); }
         }
         #endregion
 
@@ -260,6 +270,26 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        // Frame mat hang
+
+        #region ListAllDiscountBindProp
+        private ObservableCollection<VisualItemMenuModel> _ListAllDiscountBindProp = null;
+        public ObservableCollection<VisualItemMenuModel> ListAllDiscountBindProp
+        {
+            get { return _ListAllDiscountBindProp; }
+            set { SetProperty(ref _ListAllDiscountBindProp, value); }
+        }
+        #endregion
+
+        #region SelectedItem
+        private VisualItemMenuModel _SelectedItem = null;
+        public VisualItemMenuModel SelectedItem
+        {
+            get { return _SelectedItem; }
+            set { SetProperty(ref _SelectedItem, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Command
@@ -301,7 +331,10 @@ namespace CSM.Xam.ViewModels
                                 {
                                     Id = item.Id,
                                     Name = item.Name,
-                                    Value = item.Value * TotalPriceBindProp / 100
+                                    Value = item.Value * TotalPriceBindProp / 100,
+                                    IsInPercent = item.IsInPercent,
+                                    //Giu gia tri % lai
+                                    Quantity = (int)item.Value
                                 };
                                 ListDiscountBindProp.Add(discount);
                                 TotalPriceBindProp -= discount.Value;
@@ -318,24 +351,17 @@ namespace CSM.Xam.ViewModels
                         }
                         else
                         {
-                            if (ListItemInBillBindProp.Any(h => h.Id == item.Id))
+                            IsVisibleFrameItemBindProp = true;
+                            SelectedItem = new VisualItemMenuModel
                             {
-                                var billItem =  ListItemInBillBindProp.First(h => h.Id == item.Id);
-                                billItem.Quantity++;
-                            }
-                            else
-                            {
-                                var billItem = new VisualItemMenuModel
-                                {
-                                    Id = item.Id,
-                                    Name = item.Name,
-                                    Value = item.Value,
-                                    Quantity = 1
-                                };
-                                ListItemInBillBindProp.Add(billItem);
-                            }
-                            ItemCountBindProp++;
-                            TotalPriceBindProp += item.Value;
+                                Id = item.Id,
+                                Name = item.Name,
+                                Value = item.Value,
+                                Quantity = 0
+                            };
+
+                            var listDiscount = ListItem.Where(h => h.IsDiscount == true).ToList();
+                            ListAllDiscountBindProp = new ObservableCollection<VisualItemMenuModel>(listDiscount);
                         }
                     }
                     else
@@ -839,12 +865,24 @@ namespace CSM.Xam.ViewModels
                             IsVisiblePopupBindProp = true;
                             break;
                         case "hoadon":
-                            IsVisibleFrameBillBindProp = false;
-                            IsVisibleFrameThuVienBindProp = false;
-                            IsVisibleFrameThucDonBindProp = false;
+                            if (ListDiscountBindProp.Count > 0 || ListItemInBillBindProp != null)
+                            {
+                                var canNavigate = await PageDialogService.DisplayAlertAsync("Cảnh báo!", "Hóa đơn sẽ bị hủy, bạn có muốn tiếp tục?", "Đồng ý", "Hủy");
+                                if (canNavigate)
+                                {
+                                    IsVisibleFrameBillBindProp = false;
+                                    IsVisibleFrameThuVienBindProp = false;
+                                    IsVisibleFrameThucDonBindProp = false;
 
-                            IsVisibleFrameHoaDonKhuVucBindProp = true;
-                            IsVisibleFrameHoaDonBindProp = true;
+                                    IsVisibleFrameHoaDonKhuVucBindProp = true;
+                                    IsVisibleFrameHoaDonBindProp = true;
+
+                                    ListDiscountBindProp.Clear();
+                                    ListItemInBillBindProp = null;
+                                    TotalPriceBindProp = 0;
+                                    ItemCountBindProp = 0;
+                                }
+                            }
                             break;
                         case "thuvien":
                             if (IsNotEditting)
@@ -869,6 +907,9 @@ namespace CSM.Xam.ViewModels
                         case "chinhsua":
                             IsEditing = true;
                             IsVisibleFrameBillBindProp = false;
+                            break;
+                        case "back":
+                            IsVisibleFrameItemBindProp = false;
                             break;
                     }
                 }
@@ -1041,6 +1082,136 @@ namespace CSM.Xam.ViewModels
         {
             AddItemToMenuCommand = new DelegateCommand<object>(OnAddItemToMenu);
             AddItemToMenuCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        // Frame mat hang
+
+        #region SaveCommand
+
+        public DelegateCommand<object> SaveCommand { get; private set; }
+        private async void OnSave(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                //Them don gia
+                SelectedItem.ListSubItem.Add(new VisualItemMenuModel
+                {
+                    Name = "Đơn giá",
+                    Value = SelectedItem.Value
+                });
+                //Tinh tong tien
+                SelectedItem.Value = SelectedItem.Value * SelectedItem.Quantity;
+                //Them giam gia
+                foreach (var discount in ListAllDiscountBindProp)
+                {
+                    if (discount.IsSelected)
+                    {
+                        //Tinh tien sau giam gia
+                        if (discount.IsInPercent)
+                        {
+                            var newDiscount = new VisualItemMenuModel
+                            {
+                                Id = discount.Id,
+                                Name = discount.Name,
+                                IsInPercent = discount.IsInPercent,
+                                Value = discount.Value * SelectedItem.Value / 100
+                            };
+                            SelectedItem.ListSubItem.Add(newDiscount);
+                            SelectedItem.Value -= newDiscount.Value;
+                        }
+                        else
+                        {
+                            SelectedItem.ListSubItem.Add(discount);
+                            SelectedItem.Value -= discount.Value;
+                        }
+
+                        discount.IsSelected = false;
+                    }
+                }
+                ListItemInBillBindProp.Add(SelectedItem);
+                _totalPrice += SelectedItem.Value;
+                TotalPriceBindProp = _totalPrice;
+                foreach (var discount in ListDiscountBindProp)
+                {
+                    if (discount.IsInPercent)
+                    {
+                        discount.Value = discount.Quantity * _totalPrice / 100;
+                    }
+                    TotalPriceBindProp -= discount.Value;
+                }
+                ItemCountBindProp += SelectedItem.Quantity;
+                SelectedItem = null;
+                IsVisibleFrameItemBindProp = false;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSaveCommand()
+        {
+            SaveCommand = new DelegateCommand<object>(OnSave);
+            SaveCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region SelectDiscountCommand
+
+        public DelegateCommand<object> SelectDiscountCommand { get; private set; }
+        private async void OnSelectDiscount(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var discount = obj as VisualItemMenuModel;
+                if (discount.IsSelected)
+                {
+                    discount.IsSelected = false;
+                }
+                else
+                {
+                    discount.IsSelected = true;
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectDiscountCommand()
+        {
+            SelectDiscountCommand = new DelegateCommand<object>(OnSelectDiscount);
+            SelectDiscountCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
