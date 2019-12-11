@@ -27,7 +27,6 @@ namespace CSM.Xam.ViewModels
         private double _totalPrice = 0;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
-            MessagingCenter.Subscribe<Invoice>(this, Messages.INVOICE_MESSAGE, ReceiveInvoiceMessageHandler);
             MessagingCenter.Subscribe<ObservableCollection<VisualTableModel>>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
             MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
             MessagingCenter.Subscribe<VisualCategoryModel>(this, Messages.CATEGORY_MESSAGE, ReceiveCategoryMessageHandler);
@@ -126,6 +125,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsVisibleBillModeBindProp
+        private bool _IsVisibleBillModeBindProp = false;
+        public bool IsVisibleBillModeBindProp
+        {
+            get { return _IsVisibleBillModeBindProp; }
+            set { SetProperty(ref _IsVisibleBillModeBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         //Menu duoi
@@ -166,8 +174,8 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region ListInvoiceBindProp
-        private ObservableCollection<Invoice> _ListInvoiceBindProp = null;
-        public ObservableCollection<Invoice> ListInvoiceBindProp
+        private ObservableCollection<VisualInvoiceModel> _ListInvoiceBindProp = null;
+        public ObservableCollection<VisualInvoiceModel> ListInvoiceBindProp
         {
             get { return _ListInvoiceBindProp; }
             set { SetProperty(ref _ListInvoiceBindProp, value); }
@@ -258,6 +266,21 @@ namespace CSM.Xam.ViewModels
             set { SetProperty(ref _TableBindProp, value); }
         }
         #endregion
+
+        #region IsTakeAway
+        private bool _IsTakeAway = false;
+        public bool IsTakeAway
+        {
+            get { return _IsTakeAway; }
+            set 
+            { 
+                SetProperty(ref _IsTakeAway, value);
+                RaisePropertyChanged(nameof(IsInPlace));
+            }
+        }
+        public bool IsInPlace { get { return !_IsTakeAway; } }
+        #endregion
+
 
         // Frame menu
 
@@ -592,12 +615,47 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region SelectInvoiceCommand
+
+        public DelegateCommand<object> SelectInvoiceCommand { get; private set; }
+        private async void OnSelectInvoice(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectInvoiceCommand()
+        {
+            SelectInvoiceCommand = new DelegateCommand<object>(OnSelectInvoice);
+            SelectInvoiceCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         //Frame bill
 
-        #region LuuHoaDonCommand
+        #region SaveInvoiceCommand
 
-        public DelegateCommand<object> LuuHoaDonCommand { get; private set; }
-        private bool CanExecuteLuuHoaDon(object obj)
+        public DelegateCommand<object> SaveInvoiceCommand { get; private set; }
+        private bool CanExecuteSaveInvoice(object obj)
         {
             if (IsBusy)
             {
@@ -609,10 +667,8 @@ namespace CSM.Xam.ViewModels
             }
             return true;
         }
-        private async void OnLuuHoaDon(object obj)
+        private async void OnSaveInvoice(object obj)
         {
-
-
             IsBusy = true;
 
             try
@@ -647,7 +703,7 @@ namespace CSM.Xam.ViewModels
                     {
                         FkInvoice = invoice.Id,
                         FkItem = item.Id,
-                        Quantity = 1
+                        Quantity = item.Quantity,
                     }, false);
                 }
                 await _dbContext.SaveChangesAsync();
@@ -663,8 +719,6 @@ namespace CSM.Xam.ViewModels
                 TotalPriceBindProp = 0;
                 ItemCountBindProp = 0;
                 _oldTable = null;
-
-                MessagingCenter.Send(invoice, Messages.INVOICE_MESSAGE);
             }
             catch (Exception e)
             {
@@ -679,17 +733,17 @@ namespace CSM.Xam.ViewModels
         [Initialize]
         private void InitLuuHoaDonCommand()
         {
-            LuuHoaDonCommand = new DelegateCommand<object>(OnLuuHoaDon, CanExecuteLuuHoaDon);
-            LuuHoaDonCommand.ObservesProperty(() => IsNotBusy);
-            LuuHoaDonCommand.ObservesProperty(() => ListItemInBillBindProp);
+            SaveInvoiceCommand = new DelegateCommand<object>(OnSaveInvoice, CanExecuteSaveInvoice);
+            SaveInvoiceCommand.ObservesProperty(() => IsNotBusy);
+            SaveInvoiceCommand.ObservesProperty(() => ListItemInBillBindProp);
         }
 
         #endregion
 
-        #region ThanhToanCommand
+        #region PayCommand
 
-        public DelegateCommand<object> ThanhToanCommand { get; private set; }
-        private bool CanExecuteThanhToan(object obj)
+        public DelegateCommand<object> PayCommand { get; private set; }
+        private bool CanExecutePay(object obj)
         {
             if (IsBusy)
             {
@@ -701,7 +755,7 @@ namespace CSM.Xam.ViewModels
             }
             return true;
         }
-        private async void OnThanhToan(object obj)
+        private async void OnPay(object obj)
         {
             IsBusy = true;
 
@@ -729,9 +783,9 @@ namespace CSM.Xam.ViewModels
         [Initialize]
         private void InitThanhToanCommand()
         {
-            ThanhToanCommand = new DelegateCommand<object>(OnThanhToan, CanExecuteThanhToan);
-            ThanhToanCommand.ObservesProperty(() => IsNotBusy);
-            ThanhToanCommand.ObservesProperty(() => ListItemInBillBindProp);
+            PayCommand = new DelegateCommand<object>(OnPay, CanExecutePay);
+            PayCommand.ObservesProperty(() => IsNotBusy);
+            PayCommand.ObservesProperty(() => ListItemInBillBindProp);
         }
 
         #endregion
@@ -861,6 +915,17 @@ namespace CSM.Xam.ViewModels
                 {
                     switch (menu)
                     {
+                        case "billmode":
+                            IsVisibleBillModeBindProp = true;
+                            break;
+                        case "inplace":
+                            IsTakeAway = false;
+                            IsVisibleBillModeBindProp = false;
+                            break;
+                        case "togo":
+                            IsTakeAway = true;
+                            IsVisibleBillModeBindProp = false;
+                            break;
                         case "hamburger":
                             IsVisiblePopupBindProp = true;
                             break;
@@ -1091,15 +1156,19 @@ namespace CSM.Xam.ViewModels
         #region SaveCommand
 
         public DelegateCommand<object> SaveCommand { get; private set; }
+
         private async void OnSave(object obj)
         {
             if (IsBusy)
             {
                 return;
             }
-
-            IsBusy = true;
-
+            if (SelectedItem.Quantity == 0)
+            {
+                await PageDialogService.DisplayAlertAsync("", "Bạn chưa chọn số lượng!", "OK");
+                return;
+            }
+            IsBusy = true;           
             try
             {
                 // Thuc hien cong viec tai day
@@ -1224,8 +1293,8 @@ namespace CSM.Xam.ViewModels
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
             var listInvoice = await invoiceLogic.GetAllAsync();
-
-            ListInvoiceBindProp = new ObservableCollection<Invoice>(listInvoice);
+            var listVisualInvoice = Mapper.Map<List<VisualInvoiceModel>>(listInvoice);
+            ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);
         }
 
         private async void GetAllZone()
@@ -1309,10 +1378,6 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region MessageHandler
-        private void ReceiveInvoiceMessageHandler(Invoice invoice)
-        {
-            ListInvoiceBindProp.Add(invoice);
-        }
         private void ReceiveTableMessageHandler(ObservableCollection<VisualTableModel> tableCollection)
         {
             var zoneDb = ListSectionBindProp.FirstOrDefault(h => h.Id == tableCollection[0].FkZone);

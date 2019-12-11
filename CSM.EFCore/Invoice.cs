@@ -6,7 +6,7 @@ namespace CSM.EFCore
     public partial class Invoice
     {
         public string Id { get; set; }
-        public double InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
         public string CreationDate { get; set; }
         public string Creator { get; set; }
         public long IsDeleted { get; set; }

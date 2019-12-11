@@ -188,7 +188,7 @@ namespace CSM.Xam.ViewModels
                         CustomerCount = 1,
                         Tip = TipBindProp,
                         PaymentMethod = 0,
-                        InvoiceNumber = 001,
+                        InvoiceNumber = "001",
                         IsTakeAway = 0,
                     };
 

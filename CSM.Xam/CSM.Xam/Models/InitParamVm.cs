@@ -20,6 +20,7 @@ namespace CSM.Xam.Models
                 cfg.CreateMap<Employee, VisualEmployeeModel>();
                 cfg.CreateMap<Menu, VisualMenuModel>();
                 cfg.CreateMap<Table, VisualTableModel>();
+                cfg.CreateMap<Invoice, VisualInvoiceModel>();
                 cfg.CreateMap<Zone, VisualZoneModel>();
 
                 cfg.CreateMap<Item, VisualItemMenuModel>()

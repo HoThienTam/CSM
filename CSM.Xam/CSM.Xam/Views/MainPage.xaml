@@ -136,15 +136,18 @@
                                     <tlrInput:RadButton
                                         Grid.Row="2"
                                         Style="{StaticResource Invoice_Button}"
+                                        Command="{Binding PayCommand}"
                                         Text="Thanh toán" />
                                     <tlrInput:RadButton
                                         Grid.Row="2" Grid.Column="1"
                                         Style="{StaticResource Invoice_Button}"
+                                        Command="{Binding SelectInvoiceCommand}"
                                         Text="Xem hóa đơn" />
                                     <tlrInput:RadButton
                                         Grid.Row="2" Grid.ColumnSpan="2"
                                         BackgroundColor="OrangeRed"
                                         IsVisible="False"
+                                        Command="{Binding DeleteCommand}"
                                         Text="Xóa" />
                                 </mr:Grid>
                             </tlrPrimitives:RadBorder>
@@ -262,21 +265,72 @@
                     <!--So nguoi, ban-->
                     <Grid Style="{StaticResource CommonWrapper}">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <!--Title-->
-                        <mr:Label Style="{StaticResource Bill_Table}" 
-                                  Text="{Binding TableBindProp.Item1}" 
-                                  TappedCommand="{Binding SelectTableCommand}"/>
+                        <mr:StackLayout Orientation="Horizontal" 
+                                        Margin="{StaticResource CommonHorizontalThickness}" 
+                                        TappedCommand="{Binding SelectViewCommand}"
+                                        TappedCommandParameter="billmode">
+                            <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Coffee}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsTakeAway}" Value="True">
+                                        <Setter Property="Text" Value="{x:Static lcModels:FontAwesomeIcon.CoffeeTogo}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
+                            <tlrPrimitives:RadPopup.Popup>
+                                <tlrPrimitives:RadPopup
+                                    Placement="Top"
+                                    IsOpen="{Binding IsVisibleBillModeBindProp, Mode=TwoWay}"
+                                    IsModal="False">
+                                    <tlrPrimitives:RadBorder 
+                                    BackgroundColor="{StaticResource BackgroundColor}"
+                                    Style="{StaticResource CommonBorder}" 
+                                    Margin="{StaticResource CommonThickness}">
+                                        <StackLayout Padding="{StaticResource CommonThickness}">
+                                            <StackLayout.Resources>
+                                                <ResourceDictionary>
+                                                    <x:Double x:Key="Width">25</x:Double>
+                                                </ResourceDictionary>
+                                            </StackLayout.Resources>
+                                            <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="inplace">
+                                                <Label WidthRequest="{StaticResource Width}" FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Coffee}" />
+                                                <Label Text="Dùng tại bàn" />
+                                            </mr:StackLayout>
+                                            <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding SelectViewCommand}" TappedCommandParameter="togo">
+                                                <Label WidthRequest="{StaticResource Width}" FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CoffeeTogo}" />
+                                                <Label Text="Mang đi" />
+                                            </mr:StackLayout>
+                                        </StackLayout>
+                                    </tlrPrimitives:RadBorder>
+                                </tlrPrimitives:RadPopup>
+                            </tlrPrimitives:RadPopup.Popup>
+                        </mr:StackLayout>
 
-                        <!--Seperate line-->
                         <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
+                        
+                        <!--Title-->
+                        <mr:Label Grid.Column="2" Style="{StaticResource Bill_Table}" 
+                                  Text="{Binding TableBindProp.Item1}" 
+                                  TappedCommand="{Binding SelectTableCommand}"
+                                  IsVisible="{Binding IsInPlace}"/>
+                        <tlrInput:RadEntry Grid.Column="2"  
+                                   Style="{StaticResource CommonLeftEntry}"
+                                   Padding="0"
+                                   IsVisible="{Binding IsTakeAway}"
+                                   Text="{Binding TableBindProp.Item2}"
+                                   WatermarkText="Tên đơn hàng"/>
+                        <!--Seperate line-->
+                        <BoxView IsVisible="{Binding IsInPlace}" Grid.Column="3" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
                         <!--Right icon-->
 
-                        <StackLayout Grid.Column="2" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
+                        <StackLayout IsVisible="{Binding IsInPlace}" Grid.Column="4" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}"/>
                             <Label VerticalOptions="Center" Text="01"/>
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
@@ -375,9 +429,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Lưu" Style="{StaticResource Invoice_Button}" Command="{Binding LuuHoaDonCommand, Mode=OneWay}"/>
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Lưu" Style="{StaticResource Invoice_Button}" Command="{Binding SaveInvoiceCommand, Mode=OneWay}"/>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Grid.Column="1" Text="Thanh toán" Style="{StaticResource Invoice_Button}" Command="{Binding ThanhToanCommand, Mode=OneWay}"/>
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Grid.Column="1" Text="Thanh toán" Style="{StaticResource Invoice_Button}" Command="{Binding PayCommand, Mode=OneWay}"/>
                     </Grid>
                 </Grid>
             </tlrPrimitives:RadBorder>
@@ -585,6 +639,11 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <x:Double x:Key="Width">30</x:Double>
+                        </ResourceDictionary>
+                    </Grid.Resources>
                     <Label Style="{StaticResource BottomMenu_Icon}" Text="{x:Static lcModels:FontAwesomeIcon.Ellipsis}" />
                     <tlrPrimitives:RadPopup.Popup>
                         <tlrPrimitives:RadPopup
@@ -596,27 +655,27 @@
                                     Margin="{StaticResource CommonThickness}">
                                 <StackLayout Padding="{StaticResource CommonThickness}">
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hoatdong">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.BallotCheck}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.BallotCheck}" />
                                         <Label Text="Hoạt động" />
                                     </mr:StackLayout>
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="thongke">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ChartBar}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ChartBar}" />
                                         <Label Text="Thống kê" />
                                     </mr:StackLayout>
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hanghoa">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Boxes}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Boxes}" />
                                         <Label Text="Hàng hóa" />
                                     </mr:StackLayout>
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="nhanvien">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Users}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Users}" />
                                         <Label Text="Nhân viên" />
                                     </mr:StackLayout>
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="caidat">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Cogs}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Cogs}" />
                                         <Label Text="Cài đặt" />
                                     </mr:StackLayout>
                                     <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="phienlamviec">
-                                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CashRegister}" />
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CashRegister}" />
                                         <Label Text="Phiên làm việc" />
                                     </mr:StackLayout>
                                 </StackLayout>

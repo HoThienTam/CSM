@@ -115,6 +115,8 @@ namespace CSM.EFCore
                 entity.Property(e => e.FkTable)
                     .IsRequired()
                     .HasColumnName("fk_Table");
+
+                entity.Property(e => e.InvoiceNumber).IsRequired();
             });
 
             modelBuilder.Entity<InvoiceItem>(entity =>
