@@ -71,7 +71,7 @@ namespace CSM.Logic
                 InvoiceNumber = obj.InvoiceNumber,
                 IsDeleted = (int)IsDelete.Normal,
                 IsTakeAway = obj.IsTakeAway,
-                PaymentMethod = obj.PaymentMethod
+                PaymentMethod = 0
             };
 
             _DbContext.Invoice.Add(item);

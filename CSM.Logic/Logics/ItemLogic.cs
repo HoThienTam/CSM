@@ -36,6 +36,7 @@ namespace CSM.Logic
 
             return query.ToListAsync();
         }
+
         public Task<Item> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
             IQueryable<Item> query = _DbContext.Item;

@@ -13,7 +13,7 @@ namespace CSM.Xam.Models
         /// Icon Ellipsis Horizontal
         /// </summary>
         public const string Ellipsis = "\uf141";
-
+        
         /// <summary>
         /// Icon Receipt
         /// </summary>
@@ -229,5 +229,9 @@ namespace CSM.Xam.Models
         /// </summary>
         public const string InfoCircle = "\uf05a";
 
+        /// <summary>
+        /// map-marker-check
+        /// </summary>
+        public const string MapMakerCheck = "\uf606";
     }
 }

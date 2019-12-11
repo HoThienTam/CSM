@@ -20,9 +20,9 @@ namespace CSM.EFCore
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<ImportExportHistory> ImportExportHistory { get; set; }
         public virtual DbSet<Invoice> Invoice { get; set; }
-        public virtual DbSet<InvoiceItem> InvoiceItem { get; set; }
+        public virtual DbSet<InvoiceItemOrDiscount> InvoiceItemOrDiscount { get; set; }
         public virtual DbSet<Item> Item { get; set; }
-        public virtual DbSet<ItemItemOption> ItemItemOption { get; set; }
+        public virtual DbSet<ItemItemOptionOrDiscount> ItemItemOptionOrDiscount { get; set; }
         public virtual DbSet<ItemMaterial> ItemMaterial { get; set; }
         public virtual DbSet<ItemOption> ItemOption { get; set; }
         public virtual DbSet<Material> Material { get; set; }
@@ -119,15 +119,15 @@ namespace CSM.EFCore
                 entity.Property(e => e.InvoiceNumber).IsRequired();
             });
 
-            modelBuilder.Entity<InvoiceItem>(entity =>
+            modelBuilder.Entity<InvoiceItemOrDiscount>(entity =>
             {
-                entity.HasKey(e => new { e.FkInvoice, e.FkItem });
+                entity.HasKey(e => new { e.FkInvoice, e.FkItemOrDiscount });
 
-                entity.ToTable("Invoice_Item");
+                entity.ToTable("Invoice_ItemOrDiscount");
 
                 entity.Property(e => e.FkInvoice).HasColumnName("fk_Invoice");
 
-                entity.Property(e => e.FkItem).HasColumnName("fk_Item");
+                entity.Property(e => e.FkItemOrDiscount).HasColumnName("fk_ItemOrDiscount");
 
                 entity.Property(e => e.CreationDate).IsRequired();
 
@@ -155,15 +155,15 @@ namespace CSM.EFCore
                 entity.Property(e => e.ItemName).IsRequired();
             });
 
-            modelBuilder.Entity<ItemItemOption>(entity =>
+            modelBuilder.Entity<ItemItemOptionOrDiscount>(entity =>
             {
-                entity.HasKey(e => new { e.FkItem, e.FkItemOption });
+                entity.HasKey(e => new { e.FkItem, e.FkItemOptionOrDiscount });
 
-                entity.ToTable("Item_ItemOption");
+                entity.ToTable("Item_ItemOptionOrDiscount");
 
                 entity.Property(e => e.FkItem).HasColumnName("fk_Item");
 
-                entity.Property(e => e.FkItemOption).HasColumnName("fk_ItemOption");
+                entity.Property(e => e.FkItemOptionOrDiscount).HasColumnName("fk_ItemOptionOrDiscount");
 
                 entity.Property(e => e.CreationDate).IsRequired();
 

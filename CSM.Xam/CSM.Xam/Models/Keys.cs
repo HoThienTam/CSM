@@ -12,11 +12,6 @@ namespace CSM.Xam.Models
         public const string BILL = "BILL";
 
         /// <summary>
-        /// Truyen tong gia tien cua bill
-        /// </summary>
-        public const string TOTAL_PRICE = "TOTAL_PRICE";
-
-        /// <summary>
         /// Chuyen trang voi che do chinh sua
         /// </summary>
         public const string IS_EDITING = "IS_EDITING";

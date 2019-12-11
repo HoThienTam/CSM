@@ -12,6 +12,7 @@
         <!-- Application resource dictionary -->
         <cvt:LongToTableTypeConverter x:Key="LongToTableTypeConverter"/>
         <cvt:LongToRoleConverter x:Key="LongToRoleConverter"/>
+        <cvt:LongToBoolConverter x:Key="LongToBoolConverter"/>
 
         <!-- Icon -->
         <OnPlatform x:Key="FontAwesomeBrands" x:TypeArguments="x:String">

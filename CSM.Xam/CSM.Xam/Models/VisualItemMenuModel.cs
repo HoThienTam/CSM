@@ -99,8 +99,8 @@ namespace CSM.Xam.Models
         #endregion
 
         #region Quantity
-        private int _Quantity;
-        public int Quantity
+        private long _Quantity;
+        public long Quantity
         {
             get { return _Quantity; }
             set { SetProperty(ref _Quantity, value); }

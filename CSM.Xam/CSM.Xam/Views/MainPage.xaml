@@ -72,9 +72,10 @@
                     </ScrollView>
 
                     <!--DELETE BILL-->
-                    <mr:Grid
-                            Grid.Column="3"
-                            Padding="{StaticResource CommonThickness}">
+                    <mr:Grid TappedCommand="{Binding DeleteCommand}"
+                             TappedCommandParameter="delete"
+                             Grid.Column="3"
+                             Padding="{StaticResource CommonThickness}">
                         <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Trash}" TextColor="Red" />
                     </mr:Grid>
 
@@ -93,7 +94,7 @@
                     Margin="{StaticResource SmallThickness}"
                     ItemsSource="{Binding ListInvoiceBindProp, Mode=OneWay}">
                     <dataControls:RadListView.LayoutDefinition>
-                        <listView:ListViewGridLayout SpanCount="3" HorizontalItemSpacing="{StaticResource CommonThickness}" VerticalItemSpacing="{StaticResource CommonThickness}"/>
+                        <listView:ListViewGridLayout SpanCount="4" HorizontalItemSpacing="{StaticResource CommonThickness}" VerticalItemSpacing="{StaticResource CommonThickness}"/>
                     </dataControls:RadListView.LayoutDefinition>
                     <dataControls:RadListView.ItemTemplate>
                         <DataTemplate>
@@ -118,16 +119,24 @@
                                     <!--Thoi gian-->
                                     <Grid
                                         Grid.Row="1" Grid.ColumnSpan="2"
-                                        Margin="{StaticResource CommonThickness}">
+                                        Margin="{StaticResource CommonHorizontalThickness}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
                                         <StackLayout Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.UsdCircle}" />
-                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding TotalPrice}" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding TotalPrice, StringFormat='{0:C}'}" />
                                         </StackLayout>
                                         <StackLayout Grid.Column="1" Orientation="Horizontal">
+                                            <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.MapMakerCheck}" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="Dùng tại bàn" />
+                                        </StackLayout>
+                                        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" />
                                             <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding CreationDate}" />
                                         </StackLayout>
@@ -136,18 +145,19 @@
                                     <tlrInput:RadButton
                                         Grid.Row="2"
                                         Style="{StaticResource Invoice_Button}"
-                                        Command="{Binding PayCommand}"
+                                        Command="{Binding BindingContext.PayCommand, Source={x:Reference mainPage}}"
                                         Text="Thanh toán" />
                                     <tlrInput:RadButton
                                         Grid.Row="2" Grid.Column="1"
                                         Style="{StaticResource Invoice_Button}"
-                                        Command="{Binding SelectInvoiceCommand}"
+                                        Command="{Binding BindingContext.SelectInvoiceCommand, Source={x:Reference mainPage}}"
+                                        CommandParameter="{Binding}"
                                         Text="Xem hóa đơn" />
                                     <tlrInput:RadButton
                                         Grid.Row="2" Grid.ColumnSpan="2"
                                         BackgroundColor="OrangeRed"
                                         IsVisible="False"
-                                        Command="{Binding DeleteCommand}"
+                                        Command="{Binding BindingContext.DeleteCommand, Source={x:Reference mainPage}}"
                                         Text="Xóa" />
                                 </mr:Grid>
                             </tlrPrimitives:RadBorder>
@@ -283,7 +293,14 @@
                                     </DataTrigger>
                                 </Label.Triggers>
                             </Label>
-                            <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
+
+                            <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsVisibleBillModeBindProp}" Value="True">
+                                        <Setter Property="Text" Value="{x:Static lcModels:FontAwesomeIcon.AngleUp}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                             <tlrPrimitives:RadPopup.Popup>
                                 <tlrPrimitives:RadPopup
                                     Placement="Top"
@@ -314,17 +331,17 @@
                         </mr:StackLayout>
 
                         <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
-                        
+
                         <!--Title-->
                         <mr:Label Grid.Column="2" Style="{StaticResource Bill_Table}" 
-                                  Text="{Binding TableBindProp.Item1}" 
+                                  Text="{Binding CurrentBillBindProp.TableName}" 
                                   TappedCommand="{Binding SelectTableCommand}"
                                   IsVisible="{Binding IsInPlace}"/>
                         <tlrInput:RadEntry Grid.Column="2"  
                                    Style="{StaticResource CommonLeftEntry}"
                                    Padding="0"
                                    IsVisible="{Binding IsTakeAway}"
-                                   Text="{Binding TableBindProp.Item2}"
+                                   Text="{Binding CurrentBillBindProp.FkTable}"
                                    WatermarkText="Tên đơn hàng"/>
                         <!--Seperate line-->
                         <BoxView IsVisible="{Binding IsInPlace}" Grid.Column="3" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
@@ -332,7 +349,7 @@
 
                         <StackLayout IsVisible="{Binding IsInPlace}" Grid.Column="4" Orientation="Horizontal" Margin="{StaticResource CommonHorizontalThickness}">
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}"/>
-                            <Label VerticalOptions="Center" Text="01"/>
+                            <Label VerticalOptions="Center" Text="{Binding CurrentBillBindProp.CustomerCount}"/>
                             <Label FontSize="Medium" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"/>
                         </StackLayout>
                     </Grid>
@@ -343,7 +360,7 @@
                     <!--Danh sach item tren bill-->
                     <ScrollView Grid.Row="2" BackgroundColor="{StaticResource BackgroundColor}">
                         <StackLayout Spacing="0">
-                            <StackLayout BindableLayout.ItemsSource="{Binding ListItemInBillBindProp, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
+                            <StackLayout BindableLayout.ItemsSource="{Binding CurrentBillBindProp.ListItemInBill, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <mr:Grid Margin="{StaticResource SmallVerticalThickness}" TappedCommand="{Binding}" TappedCommandParameter="{Binding}">
@@ -388,7 +405,7 @@
 
                             <Grid>
                                 <Grid.Triggers>
-                                    <DataTrigger TargetType="Grid" Binding="{Binding ListDiscountBindProp.Count}" Value="0">
+                                    <DataTrigger TargetType="Grid" Binding="{Binding CurrentBillBindProp.ListDiscount.Count}" Value="0">
                                         <Setter Property="IsVisible" Value="False"/>
                                     </DataTrigger>
                                 </Grid.Triggers>
@@ -396,7 +413,7 @@
                                 <Label Style="{StaticResource CommonTitle}" Text="Giảm giá" FontSize="Small" FontAttributes="None"/>
                             </Grid>
 
-                            <StackLayout BindableLayout.ItemsSource="{Binding ListDiscountBindProp, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
+                            <StackLayout BindableLayout.ItemsSource="{Binding CurrentBillBindProp.ListDiscount, Mode=OneWay}" Spacing="0" Margin="{StaticResource CommonThickness}">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="{StaticResource SmallVerticalThickness}">
@@ -416,10 +433,10 @@
 
                     <!--Tong tien-->
                     <StackLayout Margin="{StaticResource CommonLeftThickness}" Grid.Row="3" HorizontalOptions="StartAndExpand" VerticalOptions="End">
-                        <Label Text="{Binding ItemCountBindProp, StringFormat='Tổng ({0} mặt hàng)'}"/>
+                        <Label Text="{Binding CurrentBillBindProp.ItemCount, StringFormat='Tổng ({0} mặt hàng)'}"/>
                         <Label
                             FontAttributes="Bold"
-                            Text="{Binding TotalPriceBindProp, StringFormat='{0:C}'}"/>
+                            Text="{Binding CurrentBillBindProp.TotalPrice, StringFormat='{0:C}'}"/>
                     </StackLayout>
 
                     <!--Button luu, thanh toan-->
@@ -429,9 +446,15 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Text="Lưu" Style="{StaticResource Invoice_Button}" Command="{Binding SaveInvoiceCommand, Mode=OneWay}"/>
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" 
+                                            Text="Lưu" 
+                                            Style="{StaticResource Invoice_Button}" 
+                                            Command="{Binding SaveInvoiceCommand}"/>
 
-                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}" Grid.Column="1" Text="Thanh toán" Style="{StaticResource Invoice_Button}" Command="{Binding PayCommand, Mode=OneWay}"/>
+                        <tlrInput:RadButton Margin="{StaticResource CommonThickness}"
+                                            Grid.Column="1" Text="Thanh toán" 
+                                            Style="{StaticResource Invoice_Button}" 
+                                            Command="{Binding PayCommand}"/>
                     </Grid>
                 </Grid>
             </tlrPrimitives:RadBorder>
@@ -806,7 +829,7 @@
                                     <Label Style="{StaticResource CommonTitle}" Text="Giảm giá" />
                                 </Grid>
                                 <FlexLayout
-                                    BindableLayout.ItemsSource="{Binding ListAllDiscountBindProp, Mode=OneWay}"
+                                    BindableLayout.ItemsSource="{Binding ListDiscountBindProp, Mode=OneWay}"
                                     JustifyContent="Start" Wrap="Wrap">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>

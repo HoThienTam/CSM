@@ -195,11 +195,12 @@ namespace CSM.Xam.ViewModels
                     await invoiceLogic.CreateAsync(invoice, false);
                     foreach (var item in ListItemInBillBindProp)
                     {
-                        await invoiceItemLogic.CreateAsync(new InvoiceItem
+                        await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
                         {
                             FkInvoice = invoice.Id,
-                            FkItem = item.Id,
-                            Quantity = 1
+                            FkItemOrDiscount = item.Id,
+                            Quantity = 1,
+                            IsDiscount = 0
                         }, false);
                     }
                     await _dbContext.SaveChangesAsync();
@@ -274,7 +275,6 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    TotalMoneyBindProp = (double) (parameters[Keys.TOTAL_PRICE] as double?);
                     ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<Item>;
                     break;
                 case NavigationMode.Forward:

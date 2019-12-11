@@ -18,8 +18,8 @@ namespace CSM.Xam.Models
         #endregion
 
         #region IsTakeAway
-        private int _IsTakeAway;
-        public int IsTakeAway
+        private long _IsTakeAway;
+        public long IsTakeAway
         {
             get { return _IsTakeAway; }
             set { SetProperty(ref _IsTakeAway, value); }
@@ -27,8 +27,8 @@ namespace CSM.Xam.Models
         #endregion
 
         #region CustomerCount
-        private int _CustomerCount;
-        public int CustomerCount
+        private long _CustomerCount;
+        public long CustomerCount
         {
             get { return _CustomerCount; }
             set { SetProperty(ref _CustomerCount, value); }
@@ -82,5 +82,30 @@ namespace CSM.Xam.Models
         }
         #endregion
 
+        #region ItemCount
+        private long _ItemCount;
+        public long ItemCount
+        {
+            get { return _ItemCount; }
+            set { SetProperty(ref _ItemCount, value); }
+        }
+        #endregion
+
+        #region TableName
+        private string _TableName;
+        public string TableName
+        {
+            get { return _TableName; }
+            set { SetProperty(ref _TableName, value); }
+        }
+        #endregion
+
+        public VisualInvoiceModel()
+        {
+            this.TableName = "CHỌN BÀN";
+            this.CustomerCount = 1;
+            this.ListItemInBill = new ObservableCollection<VisualItemMenuModel>();
+            this.ListDiscount = new ObservableCollection<VisualItemMenuModel>();
+        }
     }
 }
