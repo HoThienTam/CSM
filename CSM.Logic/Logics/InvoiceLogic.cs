@@ -33,6 +33,23 @@ namespace CSM.Logic
             return query.ToListAsync();
         }
 
+        public Task<List<Invoice>> GetAllAsync(InvoiceStatus invStatus, IsDelete status = IsDelete.Normal,  bool tracking = false)
+        {
+            IQueryable<Invoice> query = _DbContext.Invoice;
+            if (tracking)
+            {
+
+            }
+            else
+            {
+                query = query.AsNoTracking();
+            }
+
+            query = query.Where(h => h.IsDeleted == (int)status && h.Status == (int)invStatus).OrderBy(h => h.CreationDate);
+
+            return query.ToListAsync();
+        }
+
         public Task<Invoice> GetAsync(string id, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
             IQueryable<Invoice> query = _DbContext.Invoice;

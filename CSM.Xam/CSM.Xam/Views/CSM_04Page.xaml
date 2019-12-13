@@ -64,10 +64,10 @@
                     <!--  Danh sách hoạt dộng  -->
                     <dataControls:RadListView
                             Grid.Row="1"
-                            ItemsSource="{Binding Command, Mode=OneWay}">
+                            ItemsSource="{Binding ListInvoiceBindProp, Mode=OneWay}">
 
                         <dataControls:RadListView.GroupDescriptors>
-                            <listView:PropertyGroupDescriptor PropertyName="NgaytaoBindProp" SortOrder="Descending" />
+                            <listView:PropertyGroupDescriptor PropertyName="CreationDate" SortOrder="Descending" />
                         </dataControls:RadListView.GroupDescriptors>
 
                         <dataControls:RadListView.ItemTemplate>
@@ -88,12 +88,12 @@
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
 
-                                            <Label Text="{Binding Command, StringFormat='\{0:C}', Mode=OneWay}"/>
+                                            <Label Text="{Binding TotalPrice, StringFormat='{0:C}', Mode=OneWay}"/>
 
                                             <Label Grid.Row="1" Text="{Binding Command, Mode=OneWay}"/>
                                         </Grid>
 
-                                        <Label Grid.Column="2"  Text="{Binding Command, Mode=OneWay}"/>
+                                        <Label Grid.Column="2"  Text="{Binding CreationDate, Mode=OneWay}"/>
                                     </mr:Grid>
                                 </listView:ListViewTemplateCell>
                             </DataTemplate>

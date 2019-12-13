@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using CSM.EFCore;
 using CSM.Logic.Enums;
+using System.Threading.Tasks;
 
 namespace CSM.Xam.ViewModels
 {
@@ -25,15 +26,6 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ChangeMoneyBindProp; }
             set { SetProperty(ref _ChangeMoneyBindProp, value); }
-        }
-        #endregion
-
-        #region TotalMoneyBindProp
-        private double _TotalMoneyBindProp = 0;
-        public double TotalMoneyBindProp
-        {
-            get { return _TotalMoneyBindProp; }
-            set { SetProperty(ref _TotalMoneyBindProp, value); }
         }
         #endregion
 
@@ -64,12 +56,12 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region ListItemInBillBindProp
-        private ObservableCollection<Item> _ListItemInBillBindProp = null;
-        public ObservableCollection<Item> ListItemInBillBindProp
+        #region BillBindProp
+        private VisualInvoiceModel _BillBindProp = null;
+        public VisualInvoiceModel BillBindProp
         {
-            get { return _ListItemInBillBindProp; }
-            set { SetProperty(ref _ListItemInBillBindProp, value); }
+            get { return _BillBindProp; }
+            set { SetProperty(ref _BillBindProp, value); }
         }
         #endregion
 
@@ -128,9 +120,9 @@ namespace CSM.Xam.ViewModels
                             break;
                     }
                 }
-                if (ReceivedMoneyBindProp > TotalMoneyBindProp)
+                if (ReceivedMoneyBindProp > BillBindProp.TotalPrice)
                 {
-                    ChangeMoneyBindProp = ReceivedMoneyBindProp - TotalMoneyBindProp;
+                    ChangeMoneyBindProp = ReceivedMoneyBindProp - BillBindProp.TotalPrice;
                 }
                 else
                 {
@@ -178,31 +170,66 @@ namespace CSM.Xam.ViewModels
                 {
                     var invoiceLogic = new InvoiceLogic(_dbContext);
                     var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+                    var tableLogic = new TableLogic(_dbContext);
+                    var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
 
                     var invoice = new Invoice
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        TotalPrice = TotalMoneyBindProp,
+                        Id = BillBindProp.Id,
+                        TotalPrice = BillBindProp.TotalPrice,
                         Status = (int)InvoiceStatus.Paid,
                         PaidAmount = ReceivedMoneyBindProp,
-                        CustomerCount = 1,
                         Tip = TipBindProp,
-                        PaymentMethod = 0,
-                        InvoiceNumber = "001",
-                        IsTakeAway = 0,
+                        InvoiceNumber = await GenerateInvoiceNumber(),
+                        IsTakeAway = BillBindProp.IsTakeAway,
+                        FkTable = BillBindProp.FkTable,
+                        CustomerCount = BillBindProp.CustomerCount
                     };
 
-                    await invoiceLogic.CreateAsync(invoice, false);
-                    foreach (var item in ListItemInBillBindProp)
+                    await tableLogic.ChangeStatusAsync(new Table
+                    {
+                        Id = BillBindProp.FkTable,
+                        IsSelected = 0
+                    }, false);
+
+                    var inv = await invoiceLogic.CreateAsync(invoice, false);
+
+                    foreach (var item in BillBindProp.ListItemInBill)
                     {
                         await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
                         {
                             FkInvoice = invoice.Id,
                             FkItemOrDiscount = item.Id,
-                            Quantity = 1,
-                            IsDiscount = 0
+                            Quantity = item.Quantity,
+                            IsDiscount = 0,
+                            Value = item.Value
+                        }, false);
+
+                        for (int i = 1; i < item.ListSubItem.Count; i++)
+                        {
+                            await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                            {
+                                FkItem = item.Id,
+                                FkItemOptionOrDiscount = item.ListSubItem[i].Id,
+                                IsDiscount = 1,
+                                Quantity = item.ListSubItem[i].Quantity,
+                                Value = item.ListSubItem[i].Value
+                            }, false);
+                        }
+                    }
+
+                    foreach (var item in BillBindProp.ListDiscount)
+                    {
+                        await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
+                        {
+                            FkInvoice = invoice.Id,
+                            FkItemOrDiscount = item.Id,
+                            Quantity = item.Quantity,
+                            IsDiscount = 1,
+                            Value = item.Value
                         }, false);
                     }
+
                     await _dbContext.SaveChangesAsync();
                     await NavigationService.NavigateAsync(nameof(MainPage));
                 }
@@ -265,6 +292,13 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        private async Task<string> GenerateInvoiceNumber()
+        {
+            var invoiceLogic = new InvoiceLogic(_dbContext);
+
+            var listInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Paid);
+            return $"CP{listInvoice.Count}";
+        }
         #region Navigate
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -275,7 +309,7 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.Back:
                     break;
                 case NavigationMode.New:
-                    ListItemInBillBindProp = parameters[Keys.BILL] as ObservableCollection<Item>;
+                    BillBindProp = parameters[Keys.BILL] as VisualInvoiceModel;
                     break;
                 case NavigationMode.Forward:
                     break;

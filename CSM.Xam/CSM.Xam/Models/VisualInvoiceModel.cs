@@ -102,10 +102,25 @@ namespace CSM.Xam.Models
 
         public VisualInvoiceModel()
         {
+            this.Id = Guid.NewGuid().ToString();
             this.TableName = "CHỌN BÀN";
             this.CustomerCount = 1;
             this.ListItemInBill = new ObservableCollection<VisualItemMenuModel>();
             this.ListDiscount = new ObservableCollection<VisualItemMenuModel>();
+        }
+        public VisualInvoiceModel(VisualInvoiceModel obj)
+        {
+            this.Id = obj.Id;
+            this.IsTakeAway = obj.IsTakeAway;
+            this.CustomerCount = obj.CustomerCount;
+            this.FkTable = obj.FkTable;
+            this.TotalPrice = obj.TotalPrice;
+            this.CreationDate = obj.CreationDate;
+            this.OriginalPrice = obj.OriginalPrice;
+            this.ListItemInBill = obj.ListItemInBill;
+            this.ListDiscount = obj.ListDiscount;
+            this.ItemCount = obj.ItemCount;
+            this.TableName = obj.TableName;
         }
     }
 }

@@ -1,24 +1,24 @@
-﻿using CSM.EFCore;
-using CSM.Logic.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CSM.EFCore;
+using CSM.Logic.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace CSM.Logic
-{
-    public class InvoiceItemLogic : BaseLogic
+{ 
+    public class ItemItemOptionOrDiscountLogic : BaseLogic
     {
-        public InvoiceItemLogic(dataContext dbContext) : base(dbContext)
+        public ItemItemOptionOrDiscountLogic(dataContext dbContext) : base(dbContext)
         {
 
         }
 
-        public Task<List<InvoiceItemOrDiscount>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<ItemItemOptionOrDiscount>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<InvoiceItemOrDiscount> query = _DbContext.InvoiceItemOrDiscount;
+            IQueryable<ItemItemOptionOrDiscount> query = _DbContext.ItemItemOptionOrDiscount;
             if (tracking)
             {
 
@@ -33,9 +33,9 @@ namespace CSM.Logic
             return query.ToListAsync();
         }
 
-        public Task<List<InvoiceItemOrDiscount>> GetAsync(string invoiceId, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<List<ItemItemOptionOrDiscount>> GetAsync(string itemId, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<InvoiceItemOrDiscount> query = _DbContext.InvoiceItemOrDiscount;
+            IQueryable<ItemItemOptionOrDiscount> query = _DbContext.ItemItemOptionOrDiscount;
             if (tracking)
             {
 
@@ -47,27 +47,27 @@ namespace CSM.Logic
 
             query = query.Where(h => h.IsDeleted == (int)status);
 
-            var item = query.Where(h => h.FkInvoice == invoiceId);
+            var item = query.Where(h => h.FkItem == itemId);
 
             return item.ToListAsync();
         }
 
-        public async Task<InvoiceItemOrDiscount> CreateAsync(InvoiceItemOrDiscount obj, bool saveChange = true)
+        public async Task<ItemItemOptionOrDiscount> CreateAsync(ItemItemOptionOrDiscount obj, bool saveChange = true)
         {
-            var item = new InvoiceItemOrDiscount
+            var item = new ItemItemOptionOrDiscount
             {
-              Id = Guid.NewGuid().ToString(),
-              CreationDate = DateTime.Now.ToString(),
-              Creator = "Tam",
-              FkInvoice = obj.FkInvoice,
-              FkItemOrDiscount = obj.FkItemOrDiscount,
-              IsDeleted = (int)IsDelete.Normal,
-              Quantity = obj.Quantity,
-              IsDiscount = obj.IsDiscount,
-              Value = obj.Value
+                Id = Guid.NewGuid().ToString(),
+                CreationDate = DateTime.Now.ToString(),
+                Creator = "Tam",
+                FkItem = obj.FkItem,
+                FkItemOptionOrDiscount = obj.FkItemOptionOrDiscount,
+                IsDeleted = (int)IsDelete.Normal,
+                IsDiscount = obj.IsDiscount,
+                Quantity = obj.Quantity,
+                Value = obj.Value
             };
 
-            _DbContext.InvoiceItemOrDiscount.Add(item);
+            _DbContext.ItemItemOptionOrDiscount.Add(item);
 
             try
             {
@@ -84,9 +84,9 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<InvoiceItemOrDiscount> UpdateAsync(InvoiceItemOrDiscount obj, bool saveChange = true)
+        public async Task<ItemItemOptionOrDiscount> UpdateAsync(ItemItemOptionOrDiscount obj, bool saveChange = true)
         {
-            var item = await _DbContext.InvoiceItemOrDiscount.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.ItemItemOptionOrDiscount.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {
@@ -105,7 +105,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.InvoiceItemOrDiscount.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.ItemItemOptionOrDiscount.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;

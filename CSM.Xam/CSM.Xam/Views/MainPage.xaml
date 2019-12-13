@@ -111,9 +111,9 @@
                                     </Grid.ColumnDefinitions>
                                     <!--Khu vuc-->
                                     <StackLayout Style="{StaticResource Invoice_HeaderWrapper}" Grid.ColumnSpan="2">
-                                        <Label Style="{StaticResource Invoice_HeaderText}" HorizontalOptions="StartAndExpand" Text="Tầng 1 - Bàn 1"/>
+                                        <Label Style="{StaticResource Invoice_HeaderText}" HorizontalOptions="StartAndExpand" Text="{Binding TableName}"/>
                                         <Label Style="{StaticResource Invoice_HeaderIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}" />
-                                        <Label Style="{StaticResource Invoice_HeaderText}" HorizontalOptions="End" Text="2" />
+                                        <Label Style="{StaticResource Invoice_HeaderText}" HorizontalOptions="End" Text="{Binding CustomerCount}" />
                                     </StackLayout>
 
                                     <!--Thoi gian-->
@@ -138,7 +138,7 @@
                                         </StackLayout>
                                         <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" />
-                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding CreationDate}" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="{Binding CreationDate, StringFormat='{0:HH:mm:ss}'}" />
                                         </StackLayout>
                                     </Grid>
 
@@ -146,6 +146,7 @@
                                         Grid.Row="2"
                                         Style="{StaticResource Invoice_Button}"
                                         Command="{Binding BindingContext.PayCommand, Source={x:Reference mainPage}}"
+                                        CommandParameter="{Binding}"
                                         Text="Thanh toán" />
                                     <tlrInput:RadButton
                                         Grid.Row="2" Grid.Column="1"
@@ -454,7 +455,7 @@
                         <tlrInput:RadButton Margin="{StaticResource CommonThickness}"
                                             Grid.Column="1" Text="Thanh toán" 
                                             Style="{StaticResource Invoice_Button}" 
-                                            Command="{Binding PayCommand}"/>
+                                            Command="{Binding InstantPayCommand}"/>
                     </Grid>
                 </Grid>
             </tlrPrimitives:RadBorder>

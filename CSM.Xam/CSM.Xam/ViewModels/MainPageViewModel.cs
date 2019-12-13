@@ -349,10 +349,7 @@ namespace CSM.Xam.ViewModels
                                 Name = item.Name,
                                 Value = item.Value,
                                 Quantity = 0
-                            };
-
-                            var listDiscount = ListItem.Where(h => h.IsDiscount == true).ToList();
-                            ListDiscountBindProp = new ObservableCollection<VisualItemMenuModel>(listDiscount);
+                            };                     
                         }
                     }
                     else
@@ -419,8 +416,7 @@ namespace CSM.Xam.ViewModels
                     {
                         case "discount":
                             _selectedCategory = "discount";
-                            var listDiscount = ListItem.Where(h => h.IsDiscount == true).ToList();
-                            ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listDiscount);
+                            ListItemBindProp = ListDiscountBindProp;
                             Title = "Giảm giá";
                             break;
                         case "allitem":
@@ -583,45 +579,7 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        #region SelectInvoiceCommand
-
-        public DelegateCommand<object> SelectInvoiceCommand { get; private set; }
-        private async void OnSelectInvoice(object obj)
-        {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                // Thuc hien cong viec tai day
-                var bill = obj as VisualInvoiceModel;
-                CurrentBillBindProp = bill;
-            }
-            catch (Exception e)
-            {
-                await ShowError(e);
-            }
-            finally
-            {
-                IsBusy = false;
-                OnSelectView("thuvien");
-            }
-
-        }
-        [Initialize]
-        private void InitSelectInvoiceCommand()
-        {
-            SelectInvoiceCommand = new DelegateCommand<object>(OnSelectInvoice);
-            SelectInvoiceCommand.ObservesCanExecute(() => IsNotBusy);
-        }
-
-        #endregion
-
-        //Frame bill
+         //Frame bill
 
         #region SaveInvoiceCommand
 
@@ -641,12 +599,13 @@ namespace CSM.Xam.ViewModels
         private async void OnSaveInvoice(object obj)
         {
             IsBusy = true;
-
+            
             try
             {
                 // Thuc hien cong viec tai day
                 var invoiceLogic = new InvoiceLogic(_dbContext);
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+                var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
 
                 if (IsEditingBill)
@@ -665,7 +624,7 @@ namespace CSM.Xam.ViewModels
                     }
                     var invoice = new Invoice
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = CurrentBillBindProp.Id,
                         TotalPrice = CurrentBillBindProp.TotalPrice,
                         Status = (int)InvoiceStatus.Normal,
                         PaidAmount = 0,
@@ -682,7 +641,8 @@ namespace CSM.Xam.ViewModels
                         IsSelected = 1
                     }, false);
 
-                    await invoiceLogic.CreateAsync(invoice, false);
+                    var inv = await invoiceLogic.CreateAsync(invoice, false);
+
                     foreach (var item in CurrentBillBindProp.ListItemInBill)
                     {
                         await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
@@ -690,10 +650,38 @@ namespace CSM.Xam.ViewModels
                             FkInvoice = invoice.Id,
                             FkItemOrDiscount = item.Id,
                             Quantity = item.Quantity,
-                            IsDiscount = 0
+                            IsDiscount = 0,
+                            Value = item.Value
+                        }, false);
+                        for (int i = 1; i < item.ListSubItem.Count; i++)
+                        {
+                            await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                            {
+                                FkItem = item.Id,
+                                FkItemOptionOrDiscount = item.ListSubItem[i].Id,
+                                IsDiscount = 1,
+                                Quantity = item.ListSubItem[i].Quantity,
+                                Value = item.ListSubItem[i].Value
+                            }, false);
+                        }
+                    }
+
+                    foreach (var item in CurrentBillBindProp.ListDiscount)
+                    {
+                        await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
+                        {
+                            FkInvoice = invoice.Id,
+                            FkItemOrDiscount = item.Id,
+                            Quantity = item.Quantity,
+                            IsDiscount = 1,
+                            Value = item.Value
                         }, false);
                     }
+
                     await _dbContext.SaveChangesAsync();
+
+                    CurrentBillBindProp.CreationDate = inv.CreationDate;
+                    ListInvoiceBindProp.Add(new VisualInvoiceModel(CurrentBillBindProp));
 
                     IsVisibleFrameHoaDonKhuVucBindProp = true;
                     IsVisibleFrameHoaDonBindProp = true;
@@ -727,10 +715,10 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        #region PayCommand
+        #region InstantPayCommand
 
-        public DelegateCommand<object> PayCommand { get; private set; }
-        private bool CanExecutePay(object obj)
+        public DelegateCommand<object> InstantPayCommand { get; private set; }
+        private bool CanExecuteInstantPay(object obj)
         {
             if (IsBusy)
             {
@@ -742,7 +730,7 @@ namespace CSM.Xam.ViewModels
             }
             return true;
         }
-        private async void OnPay(object obj)
+        private async void OnInstantPay(object obj)
         {
             IsBusy = true;
 
@@ -751,6 +739,14 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
 
                 // Tao param de pass data sang trang khac
+                if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable))
+                {
+                    if (CurrentBillBindProp.IsTakeAway == 0)
+                    {
+                        await PageDialogService.DisplayAlertAsync("", "Bạn chưa chọn bàn!", "OK");
+                        return;
+                    }
+                }
                 var param = new NavigationParameters();
                 param.Add(Keys.BILL, CurrentBillBindProp);
 
@@ -767,11 +763,10 @@ namespace CSM.Xam.ViewModels
 
         }
         [Initialize]
-        private void InitThanhToanCommand()
+        private void InitInstantPayCommand()
         {
-            PayCommand = new DelegateCommand<object>(OnPay, CanExecutePay);
-            PayCommand.ObservesProperty(() => IsNotBusy);
-            PayCommand.ObservesProperty(() => CurrentBillBindProp.ListItemInBill);
+            InstantPayCommand = new DelegateCommand<object>(OnInstantPay, CanExecuteInstantPay);
+            InstantPayCommand.ObservesProperty(() => IsNotBusy);
         }
 
         #endregion
@@ -1097,6 +1092,86 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region SelectInvoiceCommand
+
+        public DelegateCommand<object> SelectInvoiceCommand { get; private set; }
+        private async void OnSelectInvoice(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var bill = obj as VisualInvoiceModel;
+                CurrentBillBindProp = bill;
+                IsEditingBill = true;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+                OnSelectView("thuvien");
+            }
+
+        }
+        [Initialize]
+        private void InitSelectInvoiceCommand()
+        {
+            SelectInvoiceCommand = new DelegateCommand<object>(OnSelectInvoice);
+            SelectInvoiceCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region PayCommand
+
+        public DelegateCommand<object> PayCommand { get; private set; }
+        private async void OnPay(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var bill = obj as VisualInvoiceModel;
+
+                var param = new NavigationParameters();
+                param.Add(Keys.BILL, bill);
+
+                await NavigationService.NavigateAsync(nameof(CSM_10Page), param);
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitPayCommand()
+        {
+            PayCommand = new DelegateCommand<object>(OnPay);
+            PayCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         // Frame menu
 
         #region AddItemToMenuCommand
@@ -1280,30 +1355,67 @@ namespace CSM.Xam.ViewModels
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
             var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+            var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+            var tableLogic = new TableLogic(_dbContext);
+            var zoneLogic = new ZoneLogic(_dbContext);
 
+            var listTable = await tableLogic.GetAllAsync();
             var listInvoice = await invoiceLogic.GetAllAsync();
             var listVisualInvoice = Mapper.Map<List<VisualInvoiceModel>>(listInvoice);
+            var listZone = await zoneLogic.GetAllAsync();
             foreach (var invoice in listVisualInvoice)
             {
                 var listInvoiceItem = await invoiceItemLogic.GetAsync(invoice.Id);
                 foreach (var invoiceItem in listInvoiceItem)
                 {
-                    var item = ListItem.First(h => h.Id == invoiceItem.FkItemOrDiscount);
-                    var visualItem = new VisualItemMenuModel
+                    if (invoiceItem.IsDiscount == 1)
                     {
-                        Id = item.Id,
-                        Quantity = invoiceItem.Quantity,
-                        Name = item.Name,
-                        Value = item.Value * invoiceItem.Quantity,
-                    };
-                    visualItem.ListSubItem.Add(new VisualItemMenuModel
+                        var item = ListDiscountBindProp.First(h => h.Id == invoiceItem.FkItemOrDiscount);
+                        var visualItem = new VisualItemMenuModel
+                        {
+                            Id = item.Id,
+                            Quantity = invoiceItem.Quantity,
+                            Name = item.Name,
+                            Value = invoiceItem.Value,
+                        };
+                        invoice.ListDiscount.Add(visualItem);
+                    }
+                    else
                     {
-                        Name = "Đơn giá",
-                        Value = item.Value
-                    });
-                    invoice.ListItemInBill.Add(visualItem);
+                        var item = ListItem.First(h => h.Id == invoiceItem.FkItemOrDiscount);
+                        var listSubItem = await subItemLogic.GetAsync(item.Id);
 
-                    invoice.ItemCount += invoiceItem.Quantity;
+                        var visualItem = new VisualItemMenuModel
+                        {
+                            Id = item.Id,
+                            Quantity = invoiceItem.Quantity,
+                            Name = item.Name,
+                            Value = invoiceItem.Value,
+                        };
+                        visualItem.ListSubItem.Add(new VisualItemMenuModel
+                        {
+                            Name = "Đơn giá",
+                            Value = item.Value
+                        });
+
+                        foreach (var subItem in listSubItem)
+                        {
+                            var visualSubItem = ListDiscountBindProp.FirstOrDefault(h => h.Id == subItem.FkItemOptionOrDiscount);
+                            visualItem.ListSubItem.Add(new VisualItemMenuModel
+                            {
+                                Id = visualSubItem.Id,
+                                Name = visualSubItem.Name,
+                                Value = subItem.Value,
+                                Quantity = subItem.Quantity
+                            });
+                        }
+
+                        invoice.ListItemInBill.Add(visualItem);
+                        invoice.ItemCount += invoiceItem.Quantity;
+                    }
+                    var table = listTable.First(h => h.Id == invoice.FkTable);
+                    var zone = listZone.First(h => h.Id == table.FkZone);
+                    invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
                 }
             }
             ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);
@@ -1342,10 +1454,9 @@ namespace CSM.Xam.ViewModels
             // Mapping data
             var listVisualItem = Mapper.Map<List<VisualItemMenuModel>>(listItem);
             var listVisualDiscount = Mapper.Map<List<VisualItemMenuModel>>(listDiscount);
-            //Gop 2 list
-            listVisualItem.AddRange(listVisualDiscount);
 
             ListItem = new List<VisualItemMenuModel>(listVisualItem);
+            ListDiscountBindProp = new ObservableCollection<VisualItemMenuModel>(listVisualDiscount);
             ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listVisualItem);
 
             var listVisualCategory = Mapper.Map<List<VisualCategoryModel>>(listCategory);
@@ -1487,11 +1598,11 @@ namespace CSM.Xam.ViewModels
                         if (discount.IsDeleted)
                         {
                             var deletedItem = ListItem.Find(h => h.Id == discount.Id);
-                            ListItem.Remove(deletedItem);
+                            ListDiscountBindProp.Remove(deletedItem);
                         }
                         else
                         {
-                            ListItem.Add(discount);
+                            ListDiscountBindProp.Add(discount);
                         }
                         IsVisibleListCategoryBindProp = true;
                     }
@@ -1499,8 +1610,8 @@ namespace CSM.Xam.ViewModels
                 case NavigationMode.New:
                     Title = "Thư viện";
                     GetAllMenuItem();
-                    GetAllInvoice();
                     GetAllZone();
+                    GetAllInvoice();
                     break;
                 case NavigationMode.Forward:
                     break;

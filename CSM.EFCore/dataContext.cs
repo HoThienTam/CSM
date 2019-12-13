@@ -121,17 +121,19 @@ namespace CSM.EFCore
 
             modelBuilder.Entity<InvoiceItemOrDiscount>(entity =>
             {
-                entity.HasKey(e => new { e.FkInvoice, e.FkItemOrDiscount });
-
                 entity.ToTable("Invoice_ItemOrDiscount");
-
-                entity.Property(e => e.FkInvoice).HasColumnName("fk_Invoice");
-
-                entity.Property(e => e.FkItemOrDiscount).HasColumnName("fk_ItemOrDiscount");
 
                 entity.Property(e => e.CreationDate).IsRequired();
 
                 entity.Property(e => e.Creator).IsRequired();
+
+                entity.Property(e => e.FkInvoice)
+                    .IsRequired()
+                    .HasColumnName("fk_Invoice");
+
+                entity.Property(e => e.FkItemOrDiscount)
+                    .IsRequired()
+                    .HasColumnName("fk_ItemOrDiscount");
             });
 
             modelBuilder.Entity<Item>(entity =>
@@ -157,17 +159,19 @@ namespace CSM.EFCore
 
             modelBuilder.Entity<ItemItemOptionOrDiscount>(entity =>
             {
-                entity.HasKey(e => new { e.FkItem, e.FkItemOptionOrDiscount });
-
                 entity.ToTable("Item_ItemOptionOrDiscount");
-
-                entity.Property(e => e.FkItem).HasColumnName("fk_Item");
-
-                entity.Property(e => e.FkItemOptionOrDiscount).HasColumnName("fk_ItemOptionOrDiscount");
 
                 entity.Property(e => e.CreationDate).IsRequired();
 
                 entity.Property(e => e.Creator).IsRequired();
+
+                entity.Property(e => e.FkItem)
+                    .IsRequired()
+                    .HasColumnName("fk_Item");
+
+                entity.Property(e => e.FkItemOptionOrDiscount)
+                    .IsRequired()
+                    .HasColumnName("fk_ItemOptionOrDiscount");
             });
 
             modelBuilder.Entity<ItemMaterial>(entity =>

@@ -86,7 +86,7 @@
                                             FontAttributes="Bold"
                                             FontSize="Large"
                                             HorizontalOptions="EndAndExpand"
-                                            Text="{Binding TotalMoneyBindProp, StringFormat='{0:C}'}" />
+                                            Text="{Binding BillBindProp.TotalPrice, StringFormat='{0:C}'}" />
                                     </StackLayout>
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
