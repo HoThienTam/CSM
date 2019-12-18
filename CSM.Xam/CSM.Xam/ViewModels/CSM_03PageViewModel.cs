@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSM.EFCore;
 using CSM.Logic;
+using CSM.Logic.Enums;
 using CSM.Xam.Models;
 using CSM.Xam.Views;
 using Prism.Commands;
@@ -121,7 +122,7 @@ namespace CSM.Xam.ViewModels
                     var discountLogic = new DiscountLogic(_dbContext);
                     await discountLogic.DeleteAsync(DiscountBindProp.Id);
 
-                    DiscountBindProp.IsDeleted = true;
+                    DiscountBindProp.Status = Status.Deleted;
                     var param = new NavigationParameters();
                     param.Add(Keys.DISCOUNT, DiscountBindProp);
                     await NavigationService.GoBackAsync(param);

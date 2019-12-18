@@ -324,6 +324,7 @@ namespace CSM.Xam.ViewModels
                                     Name = item.Name,
                                     Value = item.Value * CurrentBillBindProp.TotalPrice / 100,
                                     IsInPercent = item.IsInPercent,
+                                    Status = Status.New,
                                     //Giu gia tri % lai
                                     Quantity = (int)item.Value
                                 };
@@ -332,8 +333,17 @@ namespace CSM.Xam.ViewModels
                             }
                             else
                             {
-                                CurrentBillBindProp.ListDiscount.Add(item);
-                                CurrentBillBindProp.TotalPrice -= item.Value;
+                                var discount = new VisualItemMenuModel
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Value = item.Value,
+                                    IsInPercent = item.IsInPercent,
+                                    Status = Status.New,
+                                    Quantity = 1
+                                };
+                                CurrentBillBindProp.ListDiscount.Add(discount);
+                                CurrentBillBindProp.TotalPrice -= discount.Value;
                             }
                             if (CurrentBillBindProp.TotalPrice < 0)
                             {
@@ -349,7 +359,7 @@ namespace CSM.Xam.ViewModels
                                 Name = item.Name,
                                 Value = item.Value,
                                 Quantity = 0
-                            };                     
+                            };
                         }
                     }
                     else
@@ -579,7 +589,7 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-         //Frame bill
+        //Frame bill
 
         #region SaveInvoiceCommand
 
@@ -599,7 +609,7 @@ namespace CSM.Xam.ViewModels
         private async void OnSaveInvoice(object obj)
         {
             IsBusy = true;
-            
+
             try
             {
                 // Thuc hien cong viec tai day
@@ -607,10 +617,16 @@ namespace CSM.Xam.ViewModels
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
                 var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
-
+                var invoice = new Invoice();
+                Invoice inv;               
                 if (IsEditingBill)
                 {
+                    invoice.Id = CurrentBillBindProp.Id;
+                    invoice.TotalPrice = CurrentBillBindProp.TotalPrice;
+                    invoice.FkTable = CurrentBillBindProp.FkTable;
+                    invoice.CustomerCount = 1;
 
+                    inv = await invoiceLogic.UpdateAsync(invoice, false);
                 }
                 else
                 {
@@ -622,28 +638,30 @@ namespace CSM.Xam.ViewModels
                             return;
                         }
                     }
-                    var invoice = new Invoice
-                    {
-                        Id = CurrentBillBindProp.Id,
-                        TotalPrice = CurrentBillBindProp.TotalPrice,
-                        Status = (int)InvoiceStatus.Normal,
-                        PaidAmount = 0,
-                        Tip = 0,
-                        InvoiceNumber = "",
-                        IsTakeAway = IsTakeAway == true ? 1 : 0,
-                        FkTable = CurrentBillBindProp.FkTable,
-                        CustomerCount = 1
-                    };
 
-                    await tableLogic.ChangeStatusAsync(new Table
-                    {
-                        Id = CurrentBillBindProp.FkTable,
-                        IsSelected = 1
-                    }, false);
+                    invoice.Id = CurrentBillBindProp.Id;
+                    invoice.TotalPrice = CurrentBillBindProp.TotalPrice;
+                    invoice.Status = (int)InvoiceStatus.Normal;
+                    invoice.PaidAmount = 0;
+                    invoice.Tip = 0;
+                    invoice.InvoiceNumber = "";
+                    invoice.IsTakeAway = IsTakeAway == true ? 1 : 0;
+                    invoice.FkTable = CurrentBillBindProp.FkTable;
+                    invoice.CustomerCount = 1;
 
-                    var inv = await invoiceLogic.CreateAsync(invoice, false);
+                    inv = await invoiceLogic.CreateAsync(invoice, false);
+                }
 
-                    foreach (var item in CurrentBillBindProp.ListItemInBill)
+                await tableLogic.ChangeStatusAsync(new Table
+                {
+                    Id = CurrentBillBindProp.FkTable,
+                    IsSelected = 1
+                }, false);
+
+
+                foreach (var item in CurrentBillBindProp.ListItemInBill)
+                {
+                    if (item.Status == Status.New)
                     {
                         await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
                         {
@@ -653,6 +671,9 @@ namespace CSM.Xam.ViewModels
                             IsDiscount = 0,
                             Value = item.Value
                         }, false);
+
+                        item.Status = Status.Normal;
+
                         for (int i = 1; i < item.ListSubItem.Count; i++)
                         {
                             await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
@@ -663,37 +684,49 @@ namespace CSM.Xam.ViewModels
                                 Quantity = item.ListSubItem[i].Quantity,
                                 Value = item.ListSubItem[i].Value
                             }, false);
-                        }
-                    }
 
-                    foreach (var item in CurrentBillBindProp.ListDiscount)
+                            item.ListSubItem[i].Status = Status.Normal;
+                        }
+
+                    }
+                }
+
+
+                foreach (var discount in CurrentBillBindProp.ListDiscount)
+                {
+                    if (discount.Status == Status.New)
                     {
                         await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
                         {
                             FkInvoice = invoice.Id,
-                            FkItemOrDiscount = item.Id,
-                            Quantity = item.Quantity,
+                            FkItemOrDiscount = discount.Id,
+                            Quantity = discount.Quantity,
                             IsDiscount = 1,
-                            Value = item.Value
+                            Value = discount.Value
                         }, false);
+
+                        discount.Status = Status.Normal;
                     }
-
-                    await _dbContext.SaveChangesAsync();
-
-                    CurrentBillBindProp.CreationDate = inv.CreationDate;
-                    ListInvoiceBindProp.Add(new VisualInvoiceModel(CurrentBillBindProp));
-
-                    IsVisibleFrameHoaDonKhuVucBindProp = true;
-                    IsVisibleFrameHoaDonBindProp = true;
-
-                    IsVisibleFrameThuVienBindProp = false;
-                    IsVisibleFrameThucDonBindProp = false;
-                    IsVisibleFrameBillBindProp = false;
-
-                    //reset bill
-                    CurrentBillBindProp = new VisualInvoiceModel();
-                    _oldTable = null;
                 }
+
+                await _dbContext.SaveChangesAsync();
+
+                CurrentBillBindProp.CreationDate = inv.CreationDate;
+                if (!IsEditingBill)
+                {
+                    ListInvoiceBindProp.Add(new VisualInvoiceModel(CurrentBillBindProp));
+                }
+
+                IsVisibleFrameHoaDonKhuVucBindProp = true;
+                IsVisibleFrameHoaDonBindProp = true;
+
+                IsVisibleFrameThuVienBindProp = false;
+                IsVisibleFrameThucDonBindProp = false;
+                IsVisibleFrameBillBindProp = false;
+
+                //reset bill
+                CurrentBillBindProp = new VisualInvoiceModel();
+                _oldTable = null;
             }
             catch (Exception e)
             {
@@ -1109,6 +1142,15 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var bill = obj as VisualInvoiceModel;
                 CurrentBillBindProp = bill;
+
+                foreach (var zone in _tableInZone)
+                {
+                    var listTable = zone.Value;
+                    if (listTable.Any(h => h.Id == CurrentBillBindProp.FkTable))
+                    {
+                        _oldTable = listTable.FirstOrDefault(h => h.Id == CurrentBillBindProp.FkTable);
+                    }
+                }
                 IsEditingBill = true;
             }
             catch (Exception e)
@@ -1242,6 +1284,7 @@ namespace CSM.Xam.ViewModels
                 });
                 //Tinh tong tien
                 SelectedItem.Value = SelectedItem.Value * SelectedItem.Quantity;
+                SelectedItem.Status = Status.New;
                 //Them giam gia
                 foreach (var discount in ListDiscountBindProp)
                 {
@@ -1255,6 +1298,7 @@ namespace CSM.Xam.ViewModels
                                 Id = discount.Id,
                                 Name = discount.Name,
                                 IsInPercent = discount.IsInPercent,
+                                Status = Status.New,
                                 Value = discount.Value * SelectedItem.Value / 100
                             };
                             SelectedItem.ListSubItem.Add(newDiscount);
@@ -1262,8 +1306,16 @@ namespace CSM.Xam.ViewModels
                         }
                         else
                         {
-                            SelectedItem.ListSubItem.Add(discount);
-                            SelectedItem.Value -= discount.Value;
+                            var newDiscount = new VisualItemMenuModel
+                            {
+                                Id = discount.Id,
+                                Name = discount.Name,
+                                IsInPercent = discount.IsInPercent,
+                                Status = Status.New,
+                                Value = discount.Value
+                            };
+                            SelectedItem.ListSubItem.Add(newDiscount);
+                            SelectedItem.Value -= newDiscount.Value;
                         }
 
                         discount.IsSelected = false;
@@ -1360,7 +1412,7 @@ namespace CSM.Xam.ViewModels
             var zoneLogic = new ZoneLogic(_dbContext);
 
             var listTable = await tableLogic.GetAllAsync();
-            var listInvoice = await invoiceLogic.GetAllAsync();
+            var listInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Normal);
             var listVisualInvoice = Mapper.Map<List<VisualInvoiceModel>>(listInvoice);
             var listZone = await zoneLogic.GetAllAsync();
             foreach (var invoice in listVisualInvoice)
@@ -1376,6 +1428,7 @@ namespace CSM.Xam.ViewModels
                             Id = item.Id,
                             Quantity = invoiceItem.Quantity,
                             Name = item.Name,
+                            Status = Status.Normal,
                             Value = invoiceItem.Value,
                         };
                         invoice.ListDiscount.Add(visualItem);
@@ -1390,12 +1443,13 @@ namespace CSM.Xam.ViewModels
                             Id = item.Id,
                             Quantity = invoiceItem.Quantity,
                             Name = item.Name,
+                            Status = Status.Normal,
                             Value = invoiceItem.Value,
                         };
                         visualItem.ListSubItem.Add(new VisualItemMenuModel
                         {
                             Name = "Đơn giá",
-                            Value = item.Value
+                            Value = item.Value,
                         });
 
                         foreach (var subItem in listSubItem)
@@ -1406,12 +1460,14 @@ namespace CSM.Xam.ViewModels
                                 Id = visualSubItem.Id,
                                 Name = visualSubItem.Name,
                                 Value = subItem.Value,
-                                Quantity = subItem.Quantity
+                                Quantity = subItem.Quantity,
+                                Status = Status.Normal,
                             });
                         }
 
                         invoice.ListItemInBill.Add(visualItem);
                         invoice.ItemCount += invoiceItem.Quantity;
+                        invoice.OriginalPrice += invoiceItem.Value;
                     }
                     var table = listTable.First(h => h.Id == invoice.FkTable);
                     var zone = listZone.First(h => h.Id == table.FkZone);
@@ -1560,7 +1616,7 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.ITEM))
                     {
                         var item = parameters[Keys.ITEM] as VisualItemMenuModel;
-                        if (item.IsDeleted)
+                        if (item.Status == Status.Deleted)
                         {
                             var deletedItem = ListItem.Find(h => h.Id == item.Id);
                             ListItem.Remove(deletedItem);
@@ -1595,9 +1651,9 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.DISCOUNT))
                     {
                         var discount = parameters[Keys.DISCOUNT] as VisualItemMenuModel;
-                        if (discount.IsDeleted)
+                        if (discount.Status == Status.Deleted)
                         {
-                            var deletedItem = ListItem.Find(h => h.Id == discount.Id);
+                            var deletedItem = ListDiscountBindProp.First(h => h.Id == discount.Id);
                             ListDiscountBindProp.Remove(deletedItem);
                         }
                         else
@@ -1605,6 +1661,11 @@ namespace CSM.Xam.ViewModels
                             ListDiscountBindProp.Add(discount);
                         }
                         IsVisibleListCategoryBindProp = true;
+                    }
+                    //Back ve tu CSM 10
+                    if (parameters.ContainsKey(Keys.BILL))
+                    {
+                        CurrentBillBindProp = new VisualInvoiceModel();
                     }
                     break;
                 case NavigationMode.New:

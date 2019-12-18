@@ -157,6 +157,11 @@ namespace CSM.Xam.ViewModels
                 return;
             }
 
+            if (ReceivedMoneyBindProp < BillBindProp.TotalPrice)
+            {
+                return;
+            }
+
             IsBusy = true;
 
             try
@@ -231,7 +236,10 @@ namespace CSM.Xam.ViewModels
                     }
 
                     await _dbContext.SaveChangesAsync();
-                    await NavigationService.NavigateAsync(nameof(MainPage));
+
+                    var param = new NavigationParameters();
+                    param.Add(Keys.BILL, Keys.BILL);
+                    await NavigationService.GoBackAsync(param);
                 }
                
             }

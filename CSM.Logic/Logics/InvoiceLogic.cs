@@ -112,6 +112,9 @@ namespace CSM.Logic
         {
             var item = await _DbContext.Invoice.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
+            item.TotalPrice = obj.TotalPrice;
+            item.FkTable = obj.FkTable;
+            item.CustomerCount = obj.CustomerCount;
             try
             {
                 if (saveChange)

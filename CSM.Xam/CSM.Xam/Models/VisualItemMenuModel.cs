@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using CSM.Logic.Enums;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -89,12 +90,12 @@ namespace CSM.Xam.Models
         }
         #endregion
 
-        #region IsDeleted
-        private bool _IsDeleted;
-        public bool IsDeleted
+        #region Status
+        private Status _Status;
+        public Status Status
         {
-            get { return _IsDeleted; }
-            set { SetProperty(ref _IsDeleted, value); }
+            get { return _Status; }
+            set { SetProperty(ref _Status, value); }
         }
         #endregion
 

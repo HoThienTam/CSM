@@ -7,6 +7,7 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              xmlns:tlrChart="clr-namespace:Telerik.XamarinForms.Chart;assembly=Telerik.XamarinForms.Chart"
+             xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              x:Class="CSM.Xam.Views.CSM_05Page">
@@ -75,7 +76,7 @@
                     <Label Style="{StaticResource CommonHeaderLeftIcon}" Text="" />
 
                     <!--Right text-->
-                    <Label Text="" Style="{StaticResource CommonHeaderRightText}"/>
+                    <mr:Label TappedCommand="{Binding OpenDatePickerCommand}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" Style="{StaticResource CommonHeaderRightIcon}"/>
                 </Grid>
 
                 <!--Seperate line-->
@@ -84,7 +85,7 @@
                 <ScrollView Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
                     <!--  Detail  -->
                     <StackLayout Spacing="{StaticResource CommonThickness}">
-                        <Label Text="2019/21/11"></Label>
+                        <Label Text="{Binding SelectedDateBindProp}"></Label>
 
                         <!-- Tong tien -->
                         <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
@@ -102,18 +103,18 @@
                                         FontSize="Large"
                                         FontAttributes="Bold"
                                         HorizontalOptions="StartAndExpand" 
-                                        Text="{Binding TongTienThuDuocBindProp, StringFormat='{0:C}'}" />
+                                        Text="{Binding TotalMoneyBindProp, StringFormat='{0:C}'}" />
                                     <Label
                                        FontSize="Large"
                                         FontAttributes="Bold"
                                         HorizontalOptions="End" 
-                                        Text="{Binding TongGiaoDichBindProp}"/>
+                                        Text="{Binding TotalTransactionBindProp}"/>
                                 </StackLayout>
                             </Grid>
                         </tlrPrimitives:RadBorder>
 
                         <!--Doanh thu theo gio-->
-                        <tlrPrimitives:RadBorder  Style="{StaticResource CommonBorder}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding RevenuePerHourBindProp}" Style="{StaticResource CommonBorder}">
                             <StackLayout Orientation="Vertical">
                                 <Label
                                         FontAttributes="Bold"
@@ -137,7 +138,7 @@
                         </tlrPrimitives:RadBorder>
 
                         <!--Doanh thu theo ngay -->
-                        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+                        <tlrPrimitives:RadBorder IsVisible="{Binding RevenuePerDayBindProp}" Style="{StaticResource CommonBorder}">
                             <StackLayout Orientation="Vertical">
                                 <StackLayout Orientation="Horizontal">
                                     <Label
@@ -177,10 +178,10 @@
                                     <Label
                                         FontSize="Large"
                                         FontAttributes="Bold"
-                                        HorizontalOptions="StartAndExpand" Text="{Binding TongTienThuDuocBindProp, StringFormat='{0:C}'}"/>
+                                        HorizontalOptions="StartAndExpand" Text="{Binding TotalMoneyBindProp, StringFormat='{0:C}'}"/>
                                 </StackLayout>
 
-                                <BoxView  HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
+                                <BoxView HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
 
                                 <StackLayout Orientation="Horizontal" Spacing="0">
                                     <Label
@@ -193,11 +194,11 @@
                                     <Label
                                         FontSize="Large"
                                         FontAttributes="Bold"
-                                        HorizontalOptions="StartAndExpand" Text="{Binding TongGiaoDichBindProp}" />
+                                        HorizontalOptions="StartAndExpand" Text="{Binding TotalTransactionBindProp}" />
                                     <Label
                                          FontSize="Large"
                                         FontAttributes="Bold"
-                                        HorizontalOptions="End" Text="{Binding SoTienTrungBinhBindProp, StringFormat='{0:C}'}"/>
+                                        HorizontalOptions="End" Text="{Binding AverageMoneyBindProp, StringFormat='{0:C}'}"/>
                                 </StackLayout>
 
                                 <BoxView  HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
@@ -244,6 +245,101 @@
                 </ScrollView>
             </Grid>
         </Grid>
+
         <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
+
+        <tlrPrimitives:RadPopup.Popup>
+            <tlrPrimitives:RadPopup IsOpen="{Binding PopupVisibleBindProp}"
+                                IsModal="True"
+                                OutsideBackgroundColor="#6F000000"
+                                Placement="Center">
+                <Grid Style="{StaticResource CommonWrapper}" BackgroundColor="White">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Style="{StaticResource CommonWrapper}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <!--  Title  -->
+                        <Label Style="{StaticResource CommonHeaderText}" Text="Tùy chỉnh Báo cáo" />
+                        <!--  Back icon  -->
+                        <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.AngleLeft}" />
+                        <!--  Luu  -->
+                        <mr:Label TappedCommand="{Binding CloseDatePickerCommand}" Style="{StaticResource CommonHeaderRightText}" Text="Áp dụng" />
+                    </Grid>
+
+                    <!--  Seperate header bottom line  -->
+                    <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}" />
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <tlrInput:RadCalendar
+                          ViewMode="Month"
+                          SelectedRange="{Binding DateRangeBindProp, Mode=TwoWay}"
+                          SelectionMode="Range" />
+
+                        <StackLayout Grid.Column="1" Margin="10,20">
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton 
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="today"
+                                    Text="Hôm nay"/>
+                            </tlrPrimitives:RadBorder>
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton 
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="yesterday"
+                                    Text="Hôm qua"/>
+                            </tlrPrimitives:RadBorder>
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton 
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="thisweek"
+                                    Text="Tuần này"/>
+                            </tlrPrimitives:RadBorder>
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton 
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="lastweek"
+                                    Text="Tuần trước"/>
+                            </tlrPrimitives:RadBorder>
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="thismonth"
+                                    Text="Tháng này"/>
+                            </tlrPrimitives:RadBorder>
+                            <tlrPrimitives:RadBorder 
+                                HorizontalOptions="FillAndExpand"
+                                Style="{StaticResource CommonButtonBorder}">
+                                <tlrInput:RadButton
+                                    Command="{Binding TapDateButtonCommand}"
+                                    CommandParameter="lastmonth"
+                                    Text="Tháng trước"/>
+                            </tlrPrimitives:RadBorder>
+                        </StackLayout>
+                    </Grid>
+
+                </Grid>
+            </tlrPrimitives:RadPopup>
+        </tlrPrimitives:RadPopup.Popup>
     </Grid>
 </ContentPage>

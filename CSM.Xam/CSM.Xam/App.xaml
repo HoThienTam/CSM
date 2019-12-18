@@ -160,6 +160,7 @@
                 BasedOn="{StaticResource CommonLabelIcon}">
             <Setter Property="Margin"
                     Value="{StaticResource CommonRightThickness}" />
+            <Setter Property="Grid.Column" Value="2" />
             <Setter Property="HorizontalOptions" Value="End" />
             <Setter Property="FontSize" Value="Title" />
         </Style>

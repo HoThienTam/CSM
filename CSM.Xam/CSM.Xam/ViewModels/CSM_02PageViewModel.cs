@@ -178,9 +178,9 @@ namespace CSM.Xam.ViewModels
                 {
                     var itemLogic = new ItemLogic(_dbContext);
                     await itemLogic.DeleteAsync(ItemBindProp.Id);
-                    ItemBindProp.IsDeleted = true;
+                    ItemBindProp.Status = Status.Deleted;
                     var param = new NavigationParameters();
-                    param.Add(Keys.DISCOUNT, ItemBindProp);
+                    param.Add(Keys.ITEM, ItemBindProp);
                     await NavigationService.GoBackAsync(param);
                 }
             }
@@ -206,7 +206,7 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region Navigate
-        public async override void OnNavigatedTo(INavigationParameters parameters)
+        public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
