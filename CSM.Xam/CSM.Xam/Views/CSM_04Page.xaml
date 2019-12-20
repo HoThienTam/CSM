@@ -90,7 +90,7 @@
 
                                             <Label Text="{Binding TotalPrice, StringFormat='{0:C}', Mode=OneWay}"/>
 
-                                            <Label Grid.Row="1" Text="{Binding Command, Mode=OneWay}"/>
+                                            <Label Grid.Row="1" Text="{Binding InvoiceNumber, Mode=OneWay}"/>
                                         </Grid>
 
                                         <Label Grid.Column="2"  Text="{Binding CreationDate, Mode=OneWay}"/>
@@ -147,7 +147,7 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.IsTakeAway, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
@@ -159,7 +159,7 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.Creator, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
@@ -172,7 +172,7 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.CreationDate, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
@@ -185,11 +185,9 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.CloseDate, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
-
-                        <BoxView Margin="0,0,0,30" BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
 
                         <!--  Thanh toán  -->
                         <Grid>
@@ -204,7 +202,7 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.InvoiceNumber, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
@@ -217,14 +215,14 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.ListSubItem, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
                         <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                         <!--  Đanh sách mặt hàng  -->
-                        <StackLayout BindableLayout.ItemsSource="{Binding Command, Mode=OneWay}">
+                        <StackLayout BindableLayout.ItemsSource="{Binding CurrentBillBindProp.ListSubItem, Mode=OneWay}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -241,45 +239,7 @@
 
                                         <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Quantity}" />
 
-                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding TotalPrice}" />
-
-                                    </Grid>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </StackLayout>
-
-                        <!--  Chi tiết  -->
-                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
-                            <Label
-                                    HorizontalOptions="FillAndExpand" Text="Chi tiết"
-                                    VerticalOptions="Center" />
-                            <Label
-                                    HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
-                                    VerticalOptions="Center" />
-                        </StackLayout>
-
-                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
-
-                        <!--  Danh sách chi tiết  -->
-                        <StackLayout BindableLayout.ItemsSource="{Binding Command, Mode=OneWay}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <Label FontSize="5" Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
-
-                                        <Label Style="{StaticResource Bill_ItemName}" Text="{Binding MainText}" />
-
-                                        <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Percent}" />
-
-                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding TotalPrice}" />
+                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding Value}" />
 
                                     </Grid>
                                 </DataTemplate>
@@ -293,11 +253,9 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.ReceivedMoney, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
-
-                        <BoxView Margin="0,0,0,30" BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
 
                         <!--  TỔNG  -->
                         <Grid>
@@ -312,37 +270,9 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.TotalPrice, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
-
-                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
-
-                        <!--  Hoàn tiền  -->
-                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
-                            <Label
-                                    HorizontalOptions="FillAndExpand" Text="Hoàn tiền"
-                                    VerticalOptions="Center" />
-                            <Label
-                                    HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
-                                    VerticalOptions="Center" />
-                        </StackLayout>
-
-                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
-
-                        <!--  Tổng thu  -->
-                        <StackLayout Margin="{StaticResource CommonThickness}" Orientation="Horizontal" Spacing="0">
-                            <Label
-                                    HorizontalOptions="FillAndExpand" Text="Tổng thu"
-                                    VerticalOptions="Center" />
-                            <Label
-                                    HorizontalOptions="End"
-                                    Text="{Binding Command, Mode=OneWay}"
-                                    VerticalOptions="Center" />
-                        </StackLayout>
-
-                        <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"  />
 
                     </StackLayout>
                 </ScrollView>

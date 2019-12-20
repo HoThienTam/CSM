@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using CSM.EFCore;
 using CSM.Logic;
@@ -15,7 +16,9 @@ namespace CSM.Xam.ViewModels
         public CSM_04PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             GetAllInvoice();
+            CurrentBillBindProp = ListInvoiceBindProp.First();
         }
+
         #region ListInvoiceBindProp
         private ObservableCollection<VisualInvoiceModel> _ListInvoiceBindProp = null;
         public ObservableCollection<VisualInvoiceModel> ListInvoiceBindProp
@@ -25,68 +28,123 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region ListItem
+        private List<VisualItemMenuModel> _ListItem = null;
+        public List<VisualItemMenuModel> ListItem
+        {
+            get { return _ListItem; }
+            set { SetProperty(ref _ListItem, value); }
+        }
+        #endregion
+
+        #region ListDiscount
+        private List<VisualItemMenuModel> _ListDiscount = null;
+        public List<VisualItemMenuModel> ListDiscount
+        {
+            get { return _ListDiscount; }
+            set { SetProperty(ref _ListDiscount, value); }
+        }
+        #endregion
+
+        #region CurrentBillBindProp
+        private VisualInvoiceModel _CurrentBillBindProp = null;
+        public VisualInvoiceModel CurrentBillBindProp
+        {
+            get { return _CurrentBillBindProp; }
+            set { SetProperty(ref _CurrentBillBindProp, value); }
+        }
+        #endregion
+
         private async void GetAllInvoice()
         {
-            var invoiceLogic = new InvoiceLogic(_dbContext);
-            var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
-            var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+            try
+            {
+                var itemLogic = new ItemLogic(_dbContext);
+                var discountLogic = new DiscountLogic(_dbContext);
+                var invoiceLogic = new InvoiceLogic(_dbContext);
+                var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
+                var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+                var tableLogic = new TableLogic(_dbContext);
+                var zoneLogic = new ZoneLogic(_dbContext);
 
-            var listInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Paid);
-            var listVisualInvoice = Mapper.Map<List<VisualInvoiceModel>>(listInvoice);
+                var listTable = await tableLogic.GetAllAsync();
+                var listInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Paid);
+                var listVisualInvoice = Mapper.Map<List<VisualInvoiceModel>>(listInvoice);
+                var listZone = await zoneLogic.GetAllAsync();
+                var listItem = await itemLogic.GetAllAsync();
+                var listVisualItem = Mapper.Map<List<VisualItemMenuModel>>(listItem);
+                var listDiscount = await discountLogic.GetAllAsync();
+                var listVisualDiscount = Mapper.Map<List<VisualItemMenuModel>>(listDiscount);
 
-            //foreach (var invoice in listVisualInvoice)
-            //{
-            //    var listInvoiceItem = await invoiceItemLogic.GetAsync(invoice.Id);
-            //    foreach (var invoiceItem in listInvoiceItem)
-            //    {
-            //        if (invoiceItem.IsDiscount == 1)
-            //        {
-            //            var item = ListDiscountBindProp.First(h => h.Id == invoiceItem.FkItemOrDiscount);
-            //            var visualItem = new VisualItemMenuModel
-            //            {
-            //                Id = item.Id,
-            //                Quantity = invoiceItem.Quantity,
-            //                Name = item.Name,
-            //                Value = invoiceItem.Value,
-            //            };
-            //            invoice.ListDiscount.Add(visualItem);
-            //        }
-            //        else
-            //        {
-            //            var item = ListItem.First(h => h.Id == invoiceItem.FkItemOrDiscount);
-            //            var listSubItem = await subItemLogic.GetAsync(item.Id);
+                ListItem = new List<VisualItemMenuModel>(listVisualItem);
+                ListDiscount = new List<VisualItemMenuModel>(listVisualDiscount);
 
-            //            var visualItem = new VisualItemMenuModel
-            //            {
-            //                Id = item.Id,
-            //                Quantity = invoiceItem.Quantity,
-            //                Name = item.Name,
-            //                Value = invoiceItem.Value,
-            //            };
-            //            visualItem.ListSubItem.Add(new VisualItemMenuModel
-            //            {
-            //                Name = "Đơn giá",
-            //                Value = item.Value
-            //            });
+                foreach (var invoice in listVisualInvoice)
+                {
+                    var listInvoiceItem = await invoiceItemLogic.GetAsync(invoice.Id);
+                    foreach (var invoiceItem in listInvoiceItem)
+                    {
+                        if (invoiceItem.IsDiscount == 1)
+                        {
+                            var item = ListDiscount.First(h => h.Id == invoiceItem.FkItemOrDiscount);
+                            var visualItem = new VisualItemMenuModel
+                            {
+                                Id = item.Id,
+                                Quantity = invoiceItem.Quantity,
+                                Name = item.Name,
+                                Status = Status.Normal,
+                                Value = invoiceItem.Value,
+                            };
+                            invoice.ListDiscount.Add(visualItem);
+                        }
+                        else
+                        {
+                            var item = ListItem.First(h => h.Id == invoiceItem.FkItemOrDiscount);
+                            var listSubItem = await subItemLogic.GetAsync(item.Id);
 
-            //            foreach (var subItem in listSubItem)
-            //            {
-            //                var visualSubItem = ListDiscountBindProp.FirstOrDefault(h => h.Id == subItem.FkItemOptionOrDiscount);
-            //                visualItem.ListSubItem.Add(new VisualItemMenuModel
-            //                {
-            //                    Id = visualSubItem.Id,
-            //                    Name = visualSubItem.Name,
-            //                    Value = subItem.Value,
-            //                    Quantity = subItem.Quantity
-            //                });
-            //            }
+                            var visualItem = new VisualItemMenuModel
+                            {
+                                Id = item.Id,
+                                Quantity = invoiceItem.Quantity,
+                                Name = item.Name,
+                                Status = Status.Normal,
+                                Value = invoiceItem.Value,
+                            };
+                            visualItem.ListSubItem.Add(new VisualItemMenuModel
+                            {
+                                Name = "Đơn giá",
+                                Value = item.Value,
+                            });
 
-            //            invoice.ListItemInBill.Add(visualItem);
-            //            invoice.ItemCount += invoiceItem.Quantity;
-            //        }
-            //    }
-            //}
-            ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);
+                            foreach (var subItem in listSubItem)
+                            {
+                                var visualSubItem = ListDiscount.FirstOrDefault(h => h.Id == subItem.FkItemOptionOrDiscount);
+                                visualItem.ListSubItem.Add(new VisualItemMenuModel
+                                {
+                                    Id = visualSubItem.Id,
+                                    Name = visualSubItem.Name,
+                                    Value = subItem.Value,
+                                    Quantity = subItem.Quantity,
+                                    Status = Status.Normal,
+                                });
+                            }
+
+                            invoice.ListItemInBill.Add(visualItem);
+                            invoice.ItemCount += invoiceItem.Quantity;
+                            invoice.OriginalPrice += invoiceItem.Value;
+                        }
+                        var table = listTable.First(h => h.Id == invoice.FkTable);
+                        var zone = listZone.First(h => h.Id == table.FkZone);
+                        invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
+                    }
+                }
+                ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);
+
+            }
+            catch (Exception ex)
+            {
+                await ShowError(ex);
+            }
         }
     }
 }

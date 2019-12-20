@@ -8,6 +8,7 @@
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              xmlns:tlrChart="clr-namespace:Telerik.XamarinForms.Chart;assembly=Telerik.XamarinForms.Chart"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:tlrGrid="clr-namespace:Telerik.XamarinForms.DataGrid;assembly=Telerik.XamarinForms.DataGrid"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              x:Name="csm_05Page"
@@ -97,7 +98,7 @@
                     <!--Seperate line-->
                     <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
-                    <ScrollView Grid.Row="2" Padding="{StaticResource LargeFrameThickness}">
+                    <ScrollView Grid.Row="2" IsVisible="{Binding OverallVisibleBindProp}" Padding="{StaticResource LargeFrameThickness}">
                         <!--  Detail  -->
                         <StackLayout Spacing="{StaticResource CommonThickness}">
                             <Label Text="{Binding SelectedDateBindProp}"></Label>
@@ -205,15 +206,91 @@
                             </tlrPrimitives:RadBorder>
                         </StackLayout>
                     </ScrollView>
-                </Grid>
+
+                <!--  Mat hang ban chay  -->
+                <ScrollView Grid.Row="2" IsVisible="{Binding TopSellersVisibleBindProp}" Padding="{StaticResource LargeFrameThickness}">
+                    <!--  Detail  -->
+                    <StackLayout>
+                        <Label Text="{Binding SelectedDateBindProp}"></Label>
+
+                        <tlrGrid:RadDataGrid
+                            Margin="{StaticResource CommonVerticalThickness}"
+                            AutoGenerateColumns="False" HorizontalOptions="FillAndExpand"
+                            ItemsSource="{Binding TopSellersBindProp, Mode=OneWay}"
+                            UserEditMode="None" SelectionMode="None" 
+                            UserFilterMode="Disabled" UserSortMode="None">
+                            <tlrGrid:RadDataGrid.RowBackgroundStyle>
+                                <tlrGrid:DataGridBorderStyle 
+                                     BorderColor="{StaticResource SubColor}" 
+                                     BorderThickness="0,0,0,1"/>
+                            </tlrGrid:RadDataGrid.RowBackgroundStyle>
+                            <tlrGrid:RadDataGrid.Columns>
+                                <tlrGrid:DataGridTextColumn PropertyName="Name"
+                                HeaderText="Tên mặt hàng">
+                                    <tlrGrid:DataGridTextColumn.HeaderStyle>
+                                        <tlrGrid:DataGridColumnHeaderStyle
+                                            BackgroundColor="White" HorizontalTextAlignment="Start" 
+                                            OptionsButtonTextColor="Transparent"
+                                            TextMargin="0,20"
+                                            BorderThickness="0,1"
+                                            TextFontAttributes="Bold"/>
+                                    </tlrGrid:DataGridTextColumn.HeaderStyle>
+                                    <tlrGrid:DataGridTextColumn.CellContentStyle>
+                                        <tlrGrid:DataGridTextCellStyle TextMargin="0,20"/>
+                                    </tlrGrid:DataGridTextColumn.CellContentStyle>
+                                </tlrGrid:DataGridTextColumn>
+                                <tlrGrid:DataGridTextColumn PropertyName="TransactionCount"
+                                HeaderText="Số lượng đã bán">
+                                    <tlrGrid:DataGridTextColumn.HeaderStyle>
+                                        <tlrGrid:DataGridColumnHeaderStyle
+                                            BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                            BorderThickness="0,1"
+                                            TextMargin="0,20"
+                                            TextFontAttributes="Bold"/>
+                                    </tlrGrid:DataGridTextColumn.HeaderStyle>
+                                    <tlrGrid:DataGridTextColumn.CellContentStyle>
+                                        <tlrGrid:DataGridTextCellStyle TextMargin="0,20"/>
+                                    </tlrGrid:DataGridTextColumn.CellContentStyle>
+                                </tlrGrid:DataGridTextColumn>
+                                <tlrGrid:DataGridTextColumn PropertyName="Type"
+                                HeaderText="Phần trăm">
+                                    <tlrGrid:DataGridTextColumn.HeaderStyle>
+                                        <tlrGrid:DataGridColumnHeaderStyle
+                                            BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                            BorderThickness="0,1"
+                                            TextMargin="0,20"
+                                            TextFontAttributes="Bold"/>
+                                    </tlrGrid:DataGridTextColumn.HeaderStyle>
+                                    <tlrGrid:DataGridTextColumn.CellContentStyle>
+                                        <tlrGrid:DataGridTextCellStyle TextMargin="0,20"/>
+                                    </tlrGrid:DataGridTextColumn.CellContentStyle>
+                                </tlrGrid:DataGridTextColumn>
+                                <tlrGrid:DataGridTextColumn PropertyName="Revenue"
+                                HeaderText="Doanh thu">
+                                    <tlrGrid:DataGridTextColumn.HeaderStyle>
+                                        <tlrGrid:DataGridColumnHeaderStyle
+                                            BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                            BorderThickness="0,1"
+                                            TextMargin="0,20"
+                                            TextFontAttributes="Bold"/>
+                                    </tlrGrid:DataGridTextColumn.HeaderStyle>
+                                    <tlrGrid:DataGridTextColumn.CellContentStyle>
+                                        <tlrGrid:DataGridTextCellStyle TextMargin="0,20"/>
+                                    </tlrGrid:DataGridTextColumn.CellContentStyle>
+                                </tlrGrid:DataGridTextColumn>
+                            </tlrGrid:RadDataGrid.Columns>
+                        </tlrGrid:RadDataGrid>
+                        <Label Margin="{StaticResource CommonBottomThickness}" Text="Chỉ hiển thị 10 mặt hàng bán chạy nhất" FontSize="Small" HorizontalOptions="Center"/>
+                    </StackLayout>
+                </ScrollView>
+            </Grid>
             </Grid>
 
             <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}" />
         <tlrPrimitives:RadPopup.Popup>
             <tlrPrimitives:RadPopup IsOpen="{Binding PopupVisibleBindProp}"
                                 IsModal="True"
-                                OutsideBackgroundColor="#6F000000"
-                                Placement="Center">
+                                OutsideBackgroundColor="#6F000000">
                 <Grid Style="{StaticResource CommonWrapper}" BackgroundColor="White">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

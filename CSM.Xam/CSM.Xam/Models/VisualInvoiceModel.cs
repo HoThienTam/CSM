@@ -53,12 +53,48 @@ namespace CSM.Xam.Models
         }
         #endregion
 
+        #region Creator
+        private string _Creator;
+        public string Creator
+        {
+            get { return _Creator; }
+            set { SetProperty(ref _Creator, value); }
+        }
+        #endregion
+
         #region CreationDate
         private string _CreationDate;
         public string CreationDate
         {
             get { return _CreationDate; }
             set { SetProperty(ref _CreationDate, value); }
+        }
+        #endregion
+
+        #region CloseDate
+        private string _CloseDate;
+        public string CloseDate
+        {
+            get { return _CloseDate; }
+            set { SetProperty(ref _CloseDate, value); }
+        }
+        #endregion
+
+        #region InvoiceNumber
+        private string _InvoiceNumber;
+        public string InvoiceNumber
+        {
+            get { return _InvoiceNumber; }
+            set { SetProperty(ref _InvoiceNumber, value); }
+        }
+        #endregion
+
+        #region ReceivedMoney
+        private double _ReceivedMoney;
+        public double ReceivedMoney
+        {
+            get { return _ReceivedMoney; }
+            set { SetProperty(ref _ReceivedMoney, value); }
         }
         #endregion
 

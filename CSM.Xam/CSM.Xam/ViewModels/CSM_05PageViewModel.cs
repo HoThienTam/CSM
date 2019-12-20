@@ -10,6 +10,7 @@ using CSM.Xam.Models;
 using Prism.Commands;
 using Prism.Navigation;
 using Telerik.XamarinForms.Input.Calendar;
+using Item = CSM.EFCore.Item;
 
 namespace CSM.Xam.ViewModels
 {
@@ -26,6 +27,24 @@ namespace CSM.Xam.ViewModels
         }
 
         #region bindprop
+
+        #region OverallVisibleBindProp
+        private bool _OverallVisibleBindProp = true;
+        public bool OverallVisibleBindProp
+        {
+            get { return _OverallVisibleBindProp; }
+            set { SetProperty(ref _OverallVisibleBindProp, value); }
+        }
+        #endregion
+
+        #region TopSellersVisibleBindProp
+        private bool _TopSellersVisibleBindProp = false;
+        public bool TopSellersVisibleBindProp
+        {
+            get { return _TopSellersVisibleBindProp; }
+            set { SetProperty(ref _TopSellersVisibleBindProp, value); }
+        }
+        #endregion
 
         #region Doanh Thu Tong Quan
 
@@ -91,6 +110,24 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ListInvoice; }
             set { SetProperty(ref _ListInvoice, value); }
+        }
+        #endregion
+
+        #region ListItem
+        private List<Item> _ListItem = null;
+        public List<Item> ListItem
+        {
+            get { return _ListItem; }
+            set { SetProperty(ref _ListItem, value); }
+        }
+        #endregion
+
+        #region ListInvoiceItem
+        private List<InvoiceItemOrDiscount> _ListInvoiceItem = null;
+        public List<InvoiceItemOrDiscount> ListInvoiceItem
+        {
+            get { return _ListInvoiceItem; }
+            set { SetProperty(ref _ListInvoiceItem, value); }
         }
         #endregion
 
@@ -326,7 +363,19 @@ namespace CSM.Xam.ViewModels
                 {
                     bar.IsSelected = false;
                 }
-
+                switch (sidebar.Title)
+                {
+                    case "Doanh thu tổng quan":
+                        OverallVisibleBindProp = true;
+                        TopSellersVisibleBindProp = false;
+                        GetOverallData();
+                        break;
+                    case "Mặt hàng bán chạy":
+                        OverallVisibleBindProp = false;
+                        TopSellersVisibleBindProp = true;
+                        GetTopSeller();
+                        break;
+                }
                 sidebar.IsSelected = true;
             }
             catch (Exception e)
@@ -426,10 +475,54 @@ namespace CSM.Xam.ViewModels
         private void GetTopSeller()
         {
             TopSellersBindProp = new ObservableCollection<RevenueModel>();
+            var invoiceItemLogic = new InvoiceItemLogic(Helper.GetDataContext());
 
             var listTopSeller = ListInvoice.Where(h => Convert.ToDateTime(h.CloseDate).Date >= DateRangeBindProp.From
-        && Convert.ToDateTime(h.CloseDate).Date <= DateRangeBindProp.To);
+                && Convert.ToDateTime(h.CloseDate).Date <= DateRangeBindProp.To)
+                .Join(ListInvoiceItem,
+                i => i.Id,
+                e => e.FkInvoice,
+                (i, e) => new
+                {
+                    e.Quantity,
+                    e.Value,
+                    e.FkItemOrDiscount
+                }).Join(ListItem,
+                i => i.FkItemOrDiscount,
+                e => e.Id,
+                (i, e) => new 
+                { 
+                    e.ItemName,
+                    i.Quantity,
+                    i.Value,
+                    e.Id
+                }).GroupBy(h => h.Id).Select(h => new
+                {
+                    Name = h.FirstOrDefault().ItemName,
+                    Quantity = h.Sum(c => c.Quantity),
+                    Revenue = h.Sum(c => c.Value),
+                }).ToList().OrderByDescending(h => h.Quantity).Take(10);
 
+            var totalTransaction = (int)listTopSeller.Sum(c => c.Quantity);
+            var totalRevenue = listTopSeller.Sum(c => c.Revenue);
+            // Tinh doanh thu theo danh muc
+            foreach (var item in listTopSeller)
+            {
+                TopSellersBindProp.Add(new RevenueModel
+                {
+                    Name = item.Name,
+                    Type = $"{Math.Round(item.Quantity / (double)totalTransaction * 100, 2)}%",
+                    TransactionCount = (int)item.Quantity,
+                    Revenue = item.Revenue
+                });
+            }
+            //Tinh tong
+            TopSellersBindProp.Add(new RevenueModel
+            {
+                Name = "Tổng",
+                TransactionCount = totalTransaction,
+                Revenue = totalRevenue
+            });
         }
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -441,9 +534,13 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
+                    var itemLogic = new ItemLogic(Helper.GetDataContext());
+                    var invoiceItemLogic = new InvoiceItemLogic(Helper.GetDataContext());
 
                     DateRangeBindProp = new DateTimeRange(DateTime.Today.Date, DateTime.Today.Date);
                     ListInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Paid);
+                    ListItem = await itemLogic.GetAllAsync();
+                    ListInvoiceItem = await invoiceItemLogic.GetAllAsync();
                     GetOverallData();
                     break;
                 case NavigationMode.Forward:
