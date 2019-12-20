@@ -115,6 +115,10 @@ namespace CSM.Logic
             item.TotalPrice = obj.TotalPrice;
             item.FkTable = obj.FkTable;
             item.CustomerCount = obj.CustomerCount;
+            item.Status = obj.Status;
+            item.PaidAmount = obj.PaidAmount;
+            item.Tip = obj.Tip;
+            item.InvoiceNumber = obj.InvoiceNumber;
             try
             {
                 if (saveChange)

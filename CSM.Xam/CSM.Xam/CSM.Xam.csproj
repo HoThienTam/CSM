@@ -32,25 +32,25 @@
       <HintPath>..\..\..\..\ATSolution\at-pos\Libs\Portable\MR.Gestures.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Chart">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Chart.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.Chart.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Common">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.DataControls">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.DataGrid">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.DataGrid.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.DataGrid.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Input">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Input.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.Input.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Primitives">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.Primitives.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.SkiaSharp">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R3 2019\Binaries\Portable\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2019\Binaries\Portable\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 

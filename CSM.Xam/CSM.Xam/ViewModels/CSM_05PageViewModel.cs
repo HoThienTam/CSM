@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using CSM.EFCore;
+using CSM.Logic;
+using CSM.Logic.Enums;
 using CSM.Xam.Models;
 using Prism.Commands;
+using Prism.Navigation;
 using Telerik.XamarinForms.Input.Calendar;
 
 namespace CSM.Xam.ViewModels
@@ -12,7 +18,14 @@ namespace CSM.Xam.ViewModels
         public CSM_05PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             Title = "Doanh thu tổng quan";
+            SideBarBindProp = new ObservableCollection<SideBarModel>
+            {
+                new SideBarModel {Title = "Doanh thu tổng quan", IsSelected = true },
+                new SideBarModel {Title = "Mặt hàng bán chạy", IsSelected = false },
+            };
         }
+
+        #region bindprop
 
         #region Doanh Thu Tong Quan
 
@@ -43,24 +56,42 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
-        #region RevenuePerDayBindProp
-        private bool _RevenuePerDayBindProp = false;
-        public bool RevenuePerDayBindProp
+        #region RevenuePerDayVisibleBindProp
+        private bool _RevenuePerDayVisibleBindProp = false;
+        public bool RevenuePerDayVisibleBindProp
         {
-            get { return _RevenuePerDayBindProp; }
-            set { SetProperty(ref _RevenuePerDayBindProp, value); }
+            get { return _RevenuePerDayVisibleBindProp; }
+            set { SetProperty(ref _RevenuePerDayVisibleBindProp, value); }
         }
         #endregion
 
-        #region RevenuePerHourBindProp
-        private bool _RevenuePerHourBindProp = false;
-        public bool RevenuePerHourBindProp
+        #region RevenuePerHourVisibleBindProp
+        private bool _RevenuePerHourVisibleBindProp = false;
+        public bool RevenuePerHourVisibleBindProp
         {
-            get { return _RevenuePerHourBindProp; }
-            set { SetProperty(ref _RevenuePerHourBindProp, value); }
+            get { return _RevenuePerHourVisibleBindProp; }
+            set { SetProperty(ref _RevenuePerHourVisibleBindProp, value); }
         }
         #endregion
 
+        #endregion
+
+        #region TopSellersBindProp
+        private ObservableCollection<RevenueModel> _TopSellersBindProp = null;
+        public ObservableCollection<RevenueModel> TopSellersBindProp
+        {
+            get { return _TopSellersBindProp; }
+            set { SetProperty(ref _TopSellersBindProp, value); }
+        }
+        #endregion
+
+        #region ListInvoice
+        private List<Invoice> _ListInvoice = null;
+        public List<Invoice> ListInvoice
+        {
+            get { return _ListInvoice; }
+            set { SetProperty(ref _ListInvoice, value); }
+        }
         #endregion
 
         #region DateRangeBindProp
@@ -88,6 +119,44 @@ namespace CSM.Xam.ViewModels
             get { return _PopupVisibleBindProp; }
             set { SetProperty(ref _PopupVisibleBindProp, value); }
         }
+        #endregion
+
+        #region Data
+        private ObservableCollection<CategoricalData> _Data = null;
+        public ObservableCollection<CategoricalData> Data
+        {
+            get { return _Data; }
+            set { SetProperty(ref _Data, value); }
+        }
+        #endregion
+
+        #region AverageData
+        private ObservableCollection<DateTimeContinuousData> _AverageData = null;
+        public ObservableCollection<DateTimeContinuousData> AverageData
+        {
+            get { return _AverageData; }
+            set { SetProperty(ref _AverageData, value); }
+        }
+        #endregion
+
+        #region Interval
+        private double _Interval = 1;
+        public double Interval
+        {
+            get { return _Interval; }
+            set { SetProperty(ref _Interval, value); }
+        }
+        #endregion
+
+        #region SideBarBindProp
+        private ObservableCollection<SideBarModel> _SideBarBindProp = null;
+        public ObservableCollection<SideBarModel> SideBarBindProp
+        {
+            get { return _SideBarBindProp; }
+            set { SetProperty(ref _SideBarBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         #region OpenDatePickerCommand
@@ -145,13 +214,14 @@ namespace CSM.Xam.ViewModels
                 if (DateRangeBindProp.From == DateRangeBindProp.To)
                 {
                     SelectedDateBindProp = DateRangeBindProp.From.ToShortDateString();
-                    RevenuePerDayBindProp = false;
+                    RevenuePerDayVisibleBindProp = false;
                 }
                 else
                 {
                     SelectedDateBindProp = $"{DateRangeBindProp.From.ToShortDateString()} - {DateRangeBindProp.To.Date.ToShortDateString()}";
-                    RevenuePerDayBindProp = true;
+                    RevenuePerDayVisibleBindProp = true;
                 }
+                GetOverallData();
             }
             catch (Exception e)
             {
@@ -235,5 +305,178 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region TapSideBarCommand
+
+        public DelegateCommand<object> TapSideBarCommand { get; private set; }
+        private async void OnTapSideBar(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var sidebar = obj as SideBarModel;
+
+                foreach (var bar in SideBarBindProp)
+                {
+                    bar.IsSelected = false;
+                }
+
+                sidebar.IsSelected = true;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitTapSideBarCommand()
+        {
+            TapSideBarCommand = new DelegateCommand<object>(OnTapSideBar);
+            TapSideBarCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        private async void GetOverallData()
+        {
+            try
+            {
+
+                TotalMoneyBindProp = 0;
+                TotalTransactionBindProp = 0;
+                //Doanh thu theo gio
+                var data = new ObservableCollection<CategoricalData>();
+                var value = new double[24];
+                //Doanh thu theo ngay
+                var averageData = new ObservableCollection<DateTimeContinuousData>();
+                double days = 1;
+
+                //Khoi tao list
+                for (int i = 0; i < 24; i++)
+                {
+                    data.Add(new CategoricalData { Category = i, Value = 0 });
+                    value[i] = 0;
+                }
+                days = (DateRangeBindProp.To - DateRangeBindProp.From).TotalDays + 1;
+                for (int i = 0; i < days; i++)
+                {
+                    averageData.Add(new DateTimeContinuousData { DateTime = DateRangeBindProp.From.AddDays(i).ToString("dd/MM"), Value = 0 });
+                }
+                //Doanh thu tong quan
+                foreach (var invoice in ListInvoice)
+                {
+                    if (Convert.ToDateTime(invoice.CloseDate).Date == DateRangeBindProp.From && DateRangeBindProp.From == DateRangeBindProp.To)
+                    {
+                        TotalMoneyBindProp += invoice.TotalPrice;
+                        TotalTransactionBindProp++;
+                        //Tinh tong value gio
+                        var gio = Convert.ToDateTime(invoice.CloseDate).Hour;
+                        value[gio] += invoice.TotalPrice;
+                        //Tinh trung binh gio
+                        data[gio].Value = value[gio] / days;
+                    }
+                    //Chon date range
+                    else if (Convert.ToDateTime(invoice.CloseDate).Date >= DateRangeBindProp.From && Convert.ToDateTime(invoice.CloseDate).Date <= DateRangeBindProp.To)
+                    {
+                        TotalMoneyBindProp += invoice.TotalPrice;
+                        TotalTransactionBindProp++;
+                        var gio = Convert.ToDateTime(invoice.CloseDate).Hour;
+                        var ngay = (Convert.ToDateTime(invoice.CloseDate).Date - DateRangeBindProp.From).Days;
+                        value[gio] += invoice.TotalPrice;
+                        data[gio].Value = value[gio] / days;
+                        //Tinh value theo ngay
+                        averageData[ngay].Value += invoice.TotalPrice;
+                    }
+                }
+
+                //Nếu có giá trị mới hiện chart
+                if (TotalMoneyBindProp > 0)
+                {
+                    AverageMoneyBindProp = TotalMoneyBindProp / TotalTransactionBindProp;
+                    RevenuePerHourVisibleBindProp = true;
+                }
+                else
+                {
+                    AverageMoneyBindProp = 0;
+                    RevenuePerHourVisibleBindProp = false;
+                    RevenuePerDayVisibleBindProp = false;
+                }
+                // round to 8 ticks
+                Interval = Math.Max(1, days / 8);
+                Data = new ObservableCollection<CategoricalData>(data);
+                AverageData = new ObservableCollection<DateTimeContinuousData>(averageData);
+            }
+            catch (Exception ex)
+            {
+                await ShowError(ex);
+            }
+        }
+
+        private void GetTopSeller()
+        {
+            TopSellersBindProp = new ObservableCollection<RevenueModel>();
+
+            var listTopSeller = ListInvoice.Where(h => Convert.ToDateTime(h.CloseDate).Date >= DateRangeBindProp.From
+        && Convert.ToDateTime(h.CloseDate).Date <= DateRangeBindProp.To);
+
+        }
+        public async override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            switch (parameters.GetNavigationMode())
+            {
+                case NavigationMode.Back:
+                    break;
+                case NavigationMode.New:
+                    var invoiceLogic = new InvoiceLogic(Helper.GetDataContext());
+
+                    DateRangeBindProp = new DateTimeRange(DateTime.Today.Date, DateTime.Today.Date);
+                    ListInvoice = await invoiceLogic.GetAllAsync(InvoiceStatus.Paid);
+                    GetOverallData();
+                    break;
+                case NavigationMode.Forward:
+                    break;
+                case NavigationMode.Refresh:
+                    break;
+            }
+        }
     }
 }
+
+namespace CSM.Xam.Models
+{
+    public class CategoricalData
+    {
+        public int Category { get; set; }
+
+        public double Value { get; set; }
+    }
+
+    public class DateTimeContinuousData
+    {
+        public string DateTime { get; set; }
+
+        public double Value { get; set; }
+    }
+
+    public class RevenueModel
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public int TransactionCount { get; set; }
+        public double Revenue { get; set; }
+    }
+}
+

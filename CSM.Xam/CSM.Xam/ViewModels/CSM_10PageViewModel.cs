@@ -65,6 +65,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsEditing
+        private bool _IsEditing = false;
+        public bool IsEditing
+        {
+            get { return _IsEditing; }
+            set { SetProperty(ref _IsEditing, value); }
+        }
+        #endregion
+
         #endregion 
 
         #region Command
@@ -173,23 +182,32 @@ namespace CSM.Xam.ViewModels
                 }
                 else
                 {
+
                     var invoiceLogic = new InvoiceLogic(_dbContext);
                     var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
                     var tableLogic = new TableLogic(_dbContext);
                     var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
-
-                    var invoice = new Invoice
+                    var invoice = new Invoice 
                     {
                         Id = BillBindProp.Id,
-                        TotalPrice = BillBindProp.TotalPrice,
                         Status = (int)InvoiceStatus.Paid,
                         PaidAmount = ReceivedMoneyBindProp,
                         Tip = TipBindProp,
-                        InvoiceNumber = await GenerateInvoiceNumber(),
+                        TotalPrice = BillBindProp.TotalPrice,
                         IsTakeAway = BillBindProp.IsTakeAway,
                         FkTable = BillBindProp.FkTable,
-                        CustomerCount = BillBindProp.CustomerCount
+                        CustomerCount = BillBindProp.CustomerCount,
+                        InvoiceNumber = await GenerateInvoiceNumber()
                     };
+
+                    if (IsEditing)
+                    {
+                        await invoiceLogic.UpdateAsync(invoice, false);
+                    }
+                    else
+                    {
+                        await invoiceLogic.CreateAsync(invoice, false);
+                    }
 
                     await tableLogic.ChangeStatusAsync(new Table
                     {
@@ -197,48 +215,52 @@ namespace CSM.Xam.ViewModels
                         IsSelected = 0
                     }, false);
 
-                    var inv = await invoiceLogic.CreateAsync(invoice, false);
-
                     foreach (var item in BillBindProp.ListItemInBill)
                     {
-                        await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
+                        if (item.Status == Status.New)
                         {
-                            FkInvoice = invoice.Id,
-                            FkItemOrDiscount = item.Id,
-                            Quantity = item.Quantity,
-                            IsDiscount = 0,
-                            Value = item.Value
-                        }, false);
-
-                        for (int i = 1; i < item.ListSubItem.Count; i++)
-                        {
-                            await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                            await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
                             {
-                                FkItem = item.Id,
-                                FkItemOptionOrDiscount = item.ListSubItem[i].Id,
-                                IsDiscount = 1,
-                                Quantity = item.ListSubItem[i].Quantity,
-                                Value = item.ListSubItem[i].Value
+                                FkInvoice = invoice.Id,
+                                FkItemOrDiscount = item.Id,
+                                Quantity = item.Quantity,
+                                IsDiscount = 0,
+                                Value = item.Value
                             }, false);
+
+                            for (int i = 1; i < item.ListSubItem.Count; i++)
+                            {
+                                await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                                {
+                                    FkItem = item.Id,
+                                    FkItemOptionOrDiscount = item.ListSubItem[i].Id,
+                                    IsDiscount = 1,
+                                    Quantity = item.ListSubItem[i].Quantity,
+                                    Value = item.ListSubItem[i].Value
+                                }, false);
+                            }
                         }
                     }
 
                     foreach (var item in BillBindProp.ListDiscount)
                     {
-                        await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
+                        if (item.Status == Status.New)
                         {
-                            FkInvoice = invoice.Id,
-                            FkItemOrDiscount = item.Id,
-                            Quantity = item.Quantity,
-                            IsDiscount = 1,
-                            Value = item.Value
-                        }, false);
+                            await invoiceItemLogic.CreateAsync(new InvoiceItemOrDiscount
+                            {
+                                FkInvoice = invoice.Id,
+                                FkItemOrDiscount = item.Id,
+                                Quantity = item.Quantity,
+                                IsDiscount = 1,
+                                Value = item.Value
+                            }, false);
+                        }
                     }
 
                     await _dbContext.SaveChangesAsync();
 
                     var param = new NavigationParameters();
-                    param.Add(Keys.BILL, Keys.BILL);
+                    param.Add(Keys.BILL, BillBindProp.Id);
                     await NavigationService.GoBackAsync(param);
                 }
                
@@ -318,6 +340,10 @@ namespace CSM.Xam.ViewModels
                     break;
                 case NavigationMode.New:
                     BillBindProp = parameters[Keys.BILL] as VisualInvoiceModel;
+                    if (parameters.ContainsKey(Keys.IS_EDITING))
+                    {
+                        IsEditing = true;
+                    }
                     break;
                 case NavigationMode.Forward:
                     break;

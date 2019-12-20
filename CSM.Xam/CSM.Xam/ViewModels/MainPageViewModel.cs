@@ -617,38 +617,36 @@ namespace CSM.Xam.ViewModels
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
                 var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
-                var invoice = new Invoice();
-                Invoice inv;               
+
+                if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable))
+                {
+                    if (CurrentBillBindProp.IsTakeAway == 0)
+                    {
+                        await PageDialogService.DisplayAlertAsync("", "Bạn chưa chọn bàn!", "OK");
+                        return;
+                    }
+                }
+
+                var invoice = new Invoice
+                {
+                    Id = CurrentBillBindProp.Id,
+                    TotalPrice = CurrentBillBindProp.TotalPrice,
+                    Status = (int)InvoiceStatus.Normal,
+                    PaidAmount = 0,
+                    Tip = 0,
+                    InvoiceNumber = "",
+                    IsTakeAway = IsTakeAway == true ? 1 : 0,
+                    FkTable = CurrentBillBindProp.FkTable,
+                    CustomerCount = 1
+                };
+
+                Invoice inv;
                 if (IsEditingBill)
                 {
-                    invoice.Id = CurrentBillBindProp.Id;
-                    invoice.TotalPrice = CurrentBillBindProp.TotalPrice;
-                    invoice.FkTable = CurrentBillBindProp.FkTable;
-                    invoice.CustomerCount = 1;
-
                     inv = await invoiceLogic.UpdateAsync(invoice, false);
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable))
-                    {
-                        if (CurrentBillBindProp.IsTakeAway == 0)
-                        {
-                            await PageDialogService.DisplayAlertAsync("", "Bạn chưa chọn bàn!", "OK");
-                            return;
-                        }
-                    }
-
-                    invoice.Id = CurrentBillBindProp.Id;
-                    invoice.TotalPrice = CurrentBillBindProp.TotalPrice;
-                    invoice.Status = (int)InvoiceStatus.Normal;
-                    invoice.PaidAmount = 0;
-                    invoice.Tip = 0;
-                    invoice.InvoiceNumber = "";
-                    invoice.IsTakeAway = IsTakeAway == true ? 1 : 0;
-                    invoice.FkTable = CurrentBillBindProp.FkTable;
-                    invoice.CustomerCount = 1;
-
                     inv = await invoiceLogic.CreateAsync(invoice, false);
                 }
 
@@ -727,6 +725,7 @@ namespace CSM.Xam.ViewModels
                 //reset bill
                 CurrentBillBindProp = new VisualInvoiceModel();
                 _oldTable = null;
+                IsEditingBill = false;
             }
             catch (Exception e)
             {
@@ -782,7 +781,10 @@ namespace CSM.Xam.ViewModels
                 }
                 var param = new NavigationParameters();
                 param.Add(Keys.BILL, CurrentBillBindProp);
-
+                if (IsEditingBill)
+                {
+                    param.Add(Keys.IS_EDITING, true);
+                }
                 await NavigationService.NavigateAsync(nameof(CSM_10Page), param);
             }
             catch (Exception e)
@@ -1192,7 +1194,7 @@ namespace CSM.Xam.ViewModels
 
                 var param = new NavigationParameters();
                 param.Add(Keys.BILL, bill);
-
+                param.Add(Keys.IS_EDITING, true);
                 await NavigationService.NavigateAsync(nameof(CSM_10Page), param);
             }
             catch (Exception e)
@@ -1666,6 +1668,13 @@ namespace CSM.Xam.ViewModels
                     if (parameters.ContainsKey(Keys.BILL))
                     {
                         CurrentBillBindProp = new VisualInvoiceModel();
+                        var billId = parameters[Keys.BILL] as string;
+
+                        var invoice = ListInvoiceBindProp.FirstOrDefault(h => h.Id == billId);
+                        if (invoice != null)
+                        {
+                            ListInvoiceBindProp.Remove(invoice);
+                        }
                     }
                     break;
                 case NavigationMode.New:
