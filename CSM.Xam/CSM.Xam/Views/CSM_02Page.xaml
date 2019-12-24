@@ -99,6 +99,7 @@
 
                                         <tlrInput:RadEntry
                                             InputTransparent="True"
+                                            IsTabStop="False"
                                             Text="{Binding CategoryBindProp.CategoryName, Mode=TwoWay}"
                                             Style="{StaticResource CommonRightEntry}"
                                             WatermarkText="Chọn danh mục" />
@@ -128,179 +129,50 @@
                                         Value="{Binding ItemBindProp.Value, Mode=TwoWay}" />
                                 </StackLayout>
                                 </tlrPrimitives:RadBorder>
-                            <StackLayout Spacing="0">
-                                <!--  Tinh theo trong luong  -->
-                                <tlrPrimitives:RadBorder
-                                        HeightRequest="{StaticResource CommonHeight}"
-                                        CornerRadius="5,5,0,0"
-                                        Style="{StaticResource CommonBorder}">
-                                    <StackLayout Orientation="Horizontal"
-                                            Spacing="0">
-                                        <Label Style="{StaticResource CommonLeftText}"
-                                               Text="Tính tiền theo trọng lượng"/>
-                                        <Switch HorizontalOptions="EndAndExpand" />
-
-                                    </StackLayout>
-                                </tlrPrimitives:RadBorder>
-                                <!--  Don vi  -->
-                            <tlrPrimitives:RadBorder Margin="0"
-                                    HeightRequest="{StaticResource CommonHeight}"
-                                    CornerRadius="0,0,5,5"
-                                    BorderThickness="1,0,1,1"
-                                    Style="{StaticResource CommonBorder}">
-                                <StackLayout Orientation="Horizontal"
-                                        Spacing="0">
-
-                                    <Label Style="{StaticResource CommonLeftText}"
-                                           Text="Đơn vị" />
-                                    <Label
-                                            Style="{StaticResource CommonRightText}"
-                                            Text="kg" />
-                                    <Label HorizontalOptions="End"
-                                           Margin="{StaticResource CommonHorizontalThickness}"
-                                           Style="{StaticResource CommonLabelIcon}"
-                                           Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}" />
-                                </StackLayout>
-                            </tlrPrimitives:RadBorder>
-                            </StackLayout>
-                            <!--<StackLayout
-                                    Padding="{StaticResource CommonThicknessAll}"
-                                    Spacing="0">
-
-                                -->
-                            <!--  Mat hang tuy chinh  -->
-                            <!--
-
-                                <tlrPrimitives:RadBorder Margin="0"
-                                        BorderThickness="1"
-                                        CornerRadius="{StaticResource CommonCornerRadiusTopLeftTopRight}"
-                                        Style="{StaticResource StlRadBorderAccent}">
-                                    <mr:StackLayout Orientation="Horizontal"
-                                            Spacing="0"
-                                            TappedCommand="{Binding TransferItemOptionCommand, Mode=OneWay}">
-
-                                        <Label
-                                                FontSize="{StaticResource FontSizeNormal}"
-                                                HorizontalOptions="FillAndExpand"
-                                                Text="Mặt hàng tùy chỉnh"
-                                                TextColor="{StaticResource BasicFontColor}"
-                                                VerticalOptions="Center" />
-
-                                        <Label HorizontalOptions="End"
-                                                Style="{StaticResource CommonLabelIcon}"
-                                                Text="{x:Static lcModels:FontAwesomePro5Solid.CommonListItem_Next}" />
-                                    </mr:StackLayout>
-                                </tlrPrimitives:RadBorder>
-
-                                -->
-                            <!--danh sach bo tuy chinh-->
-                            <!--
-
-                                <tlrPrimitives:RadBorder Margin="0" Padding="0"
-                                        BorderThickness="1,0,1,1"
-                                        CornerRadius="{StaticResource CommonCornerRadiusBottomLeftBottomRight}"
-                                        Style="{StaticResource StlRadBorderAccent}">
-                                    <StackLayout
-                                            BackgroundColor="{StaticResource CommonListItem_ColorSeperater}"
-                                            BindableLayout.ItemsSource="{Binding ListItemOptionOriginBindProp, Mode=OneWay}"
-                                            Spacing="1">
-                                        <BindableLayout.ItemTemplate>
-                                            <DataTemplate>
-                                                <mr:Grid
-                                                        Style="{StaticResource ListThuVienTraiItem}"
-                                                        TappedCommand="{Binding BindingContext.SelectItemOptionCommand, Mode=OneWay, Source={x:Reference POS_04_02}}"
-                                                        TappedCommandParameter="{Binding}">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition
-                                                                Width="Auto" />
-                                                        <ColumnDefinition
-                                                                Width="*" />
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <Grid.Triggers>
-                                                        <DataTrigger
-                                                                Binding="{Binding IsCheckedBackup, Mode=OneWay}"
-                                                                TargetType="Grid"
-                                                                Value="True">
-                                                            <Setter
-                                                                    Property="BackgroundColor"
-                                                                    Value="{Binding ColorBindable, Source={StaticResource ColorBinableResource_MenuBottom_BackgroundSelected}, Mode=OneWay}" />
-                                                        </DataTrigger>
-                                                    </Grid.Triggers>
-
-                                                    <BoxView
-                                                            Style="{StaticResource ListThuVienTraiItem_LeftBoxview}" />
-                                                    <Label
-                                                            Style="{StaticResource ListThuVienTraiItem_LeftText}"
-                                                            Text="{Binding LeftText, Mode=OneWay}" />
-                                                    <Label
-                                                            Style="{StaticResource ListThuVienTraiItem_MainText}"
-                                                            Text="{Binding MainTextNew, Mode=OneWay}" />
-                                                </mr:Grid>
-                                            </DataTemplate>
-                                        </BindableLayout.ItemTemplate>
-                                    </StackLayout>
-                                </tlrPrimitives:RadBorder>
-                            </StackLayout>-->
-
+                            
                             <!--Tab hang ton-->
 
                             <StackLayout Spacing="0">
-                                <!--  Quan ly nguyen lieu  -->
-                                <tlrPrimitives:RadBorder
-                                        HeightRequest="{StaticResource CommonHeight}"
-                                        Style="{StaticResource CommonUpperBorder}">
-                                    <StackLayout Orientation="Horizontal" Spacing="0">
-
-                                        <Label Style="{StaticResource CommonLeftText}" 
-                                                Text="Quản lý nguyên liệu"
-                                                VerticalOptions="Center" />
-
-                                        <Label HorizontalOptions="EndAndExpand"
-                                               Margin="{StaticResource CommonHorizontalThickness}"
-                                               Style="{StaticResource CommonLabelIcon}"
-                                               Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}" />
-                                    </StackLayout>
-                                </tlrPrimitives:RadBorder>
-
                                 <!--  theo doi hang ton  -->
                                 <tlrPrimitives:RadBorder
-                                        Style="{StaticResource CommonLowerBorder}"
+                                        Style="{StaticResource CommonBorder}"
                                         HeightRequest="{StaticResource CommonHeight}">
+                                    <tlrPrimitives:RadBorder.Triggers>
+                                        <DataTrigger TargetType="tlrPrimitives:RadBorder" Binding="{Binding IsManaged}" Value="True">
+                                            <Setter Property="Style" Value="{StaticResource CommonUpperBorder}"/>
+                                        </DataTrigger>
+                                    </tlrPrimitives:RadBorder.Triggers>
                                     <StackLayout Orientation="Horizontal"
                                             Spacing="0">
 
                                         <Label  Style="{StaticResource CommonLeftText}"
                                                 Text="Theo dõi hàng tồn"/>
 
-                                        <Switch HorizontalOptions="EndAndExpand" />
+                                        <Switch HorizontalOptions="EndAndExpand" IsToggled="{Binding IsManaged, Mode=TwoWay}" />
+                                    </StackLayout>
+                                </tlrPrimitives:RadBorder>
+                                                              
+                                <tlrPrimitives:RadBorder
+                                    IsVisible="{Binding IsManaged}"
+                                    Style="{StaticResource CommonLowerBorder}"
+                                    HeightRequest="{StaticResource CommonHeight}">
+                                    <StackLayout Orientation="Horizontal"
+                                            Spacing="0">
+
+                                        <Label  Style="{StaticResource CommonLeftText}"
+                                                Text="Số lượng tối thiểu"/>
+
+                                        <tlrInput:RadNumericInput
+                                            ControlTemplate="{StaticResource CustomRadNumericInput_ControlTemplate}" 
+                                            Value="{Binding MinQuantityBindProp, Mode=TwoWay}"
+                                            Maximum="999999"
+                                            Minimum="0"
+                                            HorizontalOptions="EndAndExpand" />
                                     </StackLayout>
                                 </tlrPrimitives:RadBorder>
 
-                                <!--  danh sach gia  -->
-                                <!--<tlrPrimitives:RadBorder
-                                                        Margin="0" Padding="0"
-                                                        BorderThickness="1,0,1,1"
-                                                        Style="{StaticResource CommonBorder}">
-                                                            <StackLayout BindableLayout.ItemsSource="{Binding ListItemOptionNewBindProp, Mode=OneWay}" Spacing="1">
-                                                                <BindableLayout.ItemTemplate>
-                                                                    <DataTemplate>
-
-                                                                        <mr:Grid Style="{StaticResource ListThuVienTraiItem}">
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="Auto" />
-                                                                                <ColumnDefinition Width="*" />
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <BoxView Style="{StaticResource ListThuVienTraiItem_LeftBoxview}" />
-                                                                            <Label Style="{StaticResource ListThuVienTraiItem_LeftText}" Text="{Binding Index, Mode=OneWay}" />
-                                                                            <Label Style="{StaticResource ListThuVienTraiItem_MainText}" Text="{Binding MainText, Mode=OneWay}" />
-                                                                        </mr:Grid>
-                                                                    </DataTemplate>
-                                                                </BindableLayout.ItemTemplate>
-                                                            </StackLayout>
-                                                        </tlrPrimitives:RadBorder>-->
-
                                 <Label
+                                    FontSize="Small"
                                         Text="Bằng cách liên kết sản phẩm này với Hàng tồn kho, bạn có thể theo dõi hàng tồn kho của mình theo thời gian thực "
                                         VerticalTextAlignment="Center" />
                             </StackLayout>

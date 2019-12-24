@@ -90,6 +90,11 @@ namespace CSM.Xam.Models
         public const string PlusCircle = "\uf055";
 
         /// <summary>
+        /// Icon Minus Circle
+        /// </summary>
+        public const string MinusCircle = "\uf056";
+        
+        /// <summary>
         /// Icon Ballot Check
         /// </summary>
         public const string BallotCheck = "\uf733";

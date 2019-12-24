@@ -63,7 +63,7 @@ namespace CSM.Xam.ViewModels
                 var discountLogic = new DiscountLogic(_dbContext);
                 var invoiceLogic = new InvoiceLogic(_dbContext);
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
-                var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+                var subItemLogic = new ItemDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
                 var zoneLogic = new ZoneLogic(_dbContext);
 
@@ -118,13 +118,12 @@ namespace CSM.Xam.ViewModels
 
                             foreach (var subItem in listSubItem)
                             {
-                                var visualSubItem = ListDiscount.FirstOrDefault(h => h.Id == subItem.FkItemOptionOrDiscount);
+                                var visualSubItem = ListDiscount.FirstOrDefault(h => h.Id == subItem.FkDiscount);
                                 visualItem.ListSubItem.Add(new VisualItemMenuModel
                                 {
                                     Id = visualSubItem.Id,
                                     Name = visualSubItem.Name,
                                     Value = subItem.Value,
-                                    Quantity = subItem.Quantity,
                                     Status = Status.Normal,
                                 });
                             }

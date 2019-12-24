@@ -72,18 +72,22 @@
                     </ScrollView>
 
                     <!--DELETE BILL-->
-                    <mr:Grid TappedCommand="{Binding DeleteCommand}"
-                             TappedCommandParameter="delete"
-                             Grid.Column="3"
-                             Padding="{StaticResource CommonThickness}">
-                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Trash}" TextColor="Red" />
+                    <mr:Grid 
+                        TappedCommand="{Binding DeleteCommand}"
+                        TappedCommandParameter="delete"
+                        Grid.Column="3"
+                        IsVisible="{Binding IsNotDeleting}"
+                        Padding="{StaticResource CommonThickness}">
+                        <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Trash}" TextColor="Red"/>
                     </mr:Grid>
 
                     <mr:Grid
-                            Grid.Column="3"
-                            IsVisible="False"
-                            Padding="{StaticResource CommonThickness}">
-                        <Label FontSize="Large" Text="Hoàn tất" TextColor="LightGreen"/>
+                        TappedCommand="{Binding DeleteCommand}"
+                        TappedCommandParameter="finish"
+                        Grid.Column="3"
+                        Padding="{StaticResource SmallThickness}"
+                        IsVisible="{Binding IsDeleting}">
+                        <Label FontSize="Large" Text="Hoàn tất" TextColor="#2ecc71"/>
                     </mr:Grid>
                 </Grid>
                 <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" VerticalOptions="End"/>
@@ -143,22 +147,28 @@
                                     </Grid>
 
                                     <tlrInput:RadButton
+                                        IsVisible="{Binding IsNotDeleting}"
                                         Grid.Row="2"
                                         Style="{StaticResource Invoice_Button}"
                                         Command="{Binding BindingContext.PayCommand, Source={x:Reference mainPage}}"
                                         CommandParameter="{Binding}"
                                         Text="Thanh toán" />
                                     <tlrInput:RadButton
+                                        IsVisible="{Binding IsNotDeleting}"
                                         Grid.Row="2" Grid.Column="1"
                                         Style="{StaticResource Invoice_Button}"
                                         Command="{Binding BindingContext.SelectInvoiceCommand, Source={x:Reference mainPage}}"
                                         CommandParameter="{Binding}"
                                         Text="Xem hóa đơn" />
                                     <tlrInput:RadButton
+                                        IsVisible="{Binding BindingContext.IsDeleting, Source={x:Reference mainPage}}"
                                         Grid.Row="2" Grid.ColumnSpan="2"
-                                        BackgroundColor="OrangeRed"
-                                        IsVisible="False"
+                                        BackgroundColor="White"
+                                        TextColor="Red"
+                                        BorderColor="{StaticResource SubColor}"
+                                        BorderThickness="0,2,0,0"
                                         Command="{Binding BindingContext.DeleteCommand, Source={x:Reference mainPage}}"
+                                        CommandParameter="{Binding}"
                                         Text="Xóa" />
                                 </mr:Grid>
                             </tlrPrimitives:RadBorder>
@@ -247,7 +257,7 @@
                         <DataTemplate>
                             <listView:ListViewTemplateCell>
                                 <listView:ListViewTemplateCell.View>
-                                    <mr:Grid TappedCommand="{Binding BindingContext.SelectItemCommand, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
+                                    <mr:Grid TappedCommand="{Binding BindingContext.SelectItemInMenuCommand, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
                                         <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}" Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}" />
                                         <Label Text="{Binding Name}" HorizontalOptions="Center" VerticalOptions="End" />
                                     </mr:Grid>
@@ -698,10 +708,10 @@
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Cogs}" />
                                         <Label Text="Cài đặt" />
                                     </mr:StackLayout>
-                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="phienlamviec">
+                                    <!--<mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="phienlamviec">
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CashRegister}" />
                                         <Label Text="Phiên làm việc" />
-                                    </mr:StackLayout>
+                                    </mr:StackLayout>-->
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
                         </tlrPrimitives:RadPopup>
@@ -723,8 +733,7 @@
                 </mr:Grid>
 
                 <!--List thuc don-->
-                <BoxView Grid.Column="2" />
-                <ScrollView Grid.Column="2" >
+                <ScrollView Grid.Column="2" Orientation="Horizontal">
                     <StackLayout BindableLayout.ItemsSource="{Binding ListMenuBindProp, Mode=OneWay}" Orientation="Horizontal">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>

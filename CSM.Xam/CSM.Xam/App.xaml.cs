@@ -49,8 +49,14 @@ namespace CSM.Xam
                     File.WriteAllBytes(dbPath, reader.GetBuffer());
                 }
             }
-
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            if (Application.Current.Properties.ContainsKey("Employee"))
+            {
+                await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            }
+            else
+            {
+                await NavigationService.NavigateAsync("NavigationPage/CSM_01Page");
+            }
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -65,7 +71,9 @@ namespace CSM.Xam
             containerRegistry.RegisterForNavigation<CSM_03Page, CSM_03PageViewModel>(); // Trang tao giam gia
             containerRegistry.RegisterForNavigation<CSM_04Page, CSM_04PageViewModel>(); // Trang hoat dong
             containerRegistry.RegisterForNavigation<CSM_05Page, CSM_05PageViewModel>(); // Trang thong ke
-            containerRegistry.RegisterForNavigation<CSM_06Page>(); // Trang hang hoa
+            containerRegistry.RegisterForNavigation<CSM_06Page, CSM_06PageViewModel>(); // Trang hang hoa
+            containerRegistry.RegisterForNavigation<CSM_06_01Page, CSM_06_01PageViewModel>(); // Trang xuat hang
+            containerRegistry.RegisterForNavigation<CSM_06_02Page, CSM_06_02PageViewModel>(); // Trang nhap hang
             containerRegistry.RegisterForNavigation<CSM_07Page, CSM_07PageViewModel>(); // Trang nhan vien
             containerRegistry.RegisterForNavigation<CSM_07_01Page, CSM_07_01PageViewModel>(); // Trang tao nhan vien
             containerRegistry.RegisterForNavigation<CSM_08Page, CSM_08PageViewModel>(); // Trang cai dat

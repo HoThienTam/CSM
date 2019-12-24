@@ -114,6 +114,7 @@ namespace CSM.Logic
 
             item.TotalPrice = obj.TotalPrice;
             item.FkTable = obj.FkTable;
+            item.CloseDate = obj.CloseDate;
             item.CustomerCount = obj.CustomerCount;
             item.Status = obj.Status;
             item.PaidAmount = obj.PaidAmount;
@@ -145,6 +146,7 @@ namespace CSM.Logic
             // Remove cac bang lien quan
 
             // Remove bang chinh
+            item.IsDeleted = 1;
 
             try
             {

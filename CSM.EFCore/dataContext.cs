@@ -22,15 +22,10 @@ namespace CSM.EFCore
         public virtual DbSet<Invoice> Invoice { get; set; }
         public virtual DbSet<InvoiceItemOrDiscount> InvoiceItemOrDiscount { get; set; }
         public virtual DbSet<Item> Item { get; set; }
-        public virtual DbSet<ItemItemOptionOrDiscount> ItemItemOptionOrDiscount { get; set; }
-        public virtual DbSet<ItemMaterial> ItemMaterial { get; set; }
-        public virtual DbSet<ItemOption> ItemOption { get; set; }
-        public virtual DbSet<Material> Material { get; set; }
+        public virtual DbSet<ItemDiscount> ItemDiscount { get; set; }
         public virtual DbSet<Menu> Menu { get; set; }
         public virtual DbSet<MenuItem> MenuItem { get; set; }
-        public virtual DbSet<SystemSetting> SystemSetting { get; set; }
         public virtual DbSet<Table> Table { get; set; }
-        public virtual DbSet<WeightUnit> WeightUnit { get; set; }
         public virtual DbSet<Zone> Zone { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -150,73 +145,26 @@ namespace CSM.EFCore
                     .IsRequired()
                     .HasColumnName("fk_Store");
 
-                entity.Property(e => e.FkWeightUnit).HasColumnName("fk_WeightUnit");
-
                 entity.Property(e => e.ItemImage).IsRequired();
 
                 entity.Property(e => e.ItemName).IsRequired();
             });
 
-            modelBuilder.Entity<ItemItemOptionOrDiscount>(entity =>
+            modelBuilder.Entity<ItemDiscount>(entity =>
             {
-                entity.ToTable("Item_ItemOptionOrDiscount");
+                entity.ToTable("Item_Discount");
 
                 entity.Property(e => e.CreationDate).IsRequired();
 
                 entity.Property(e => e.Creator).IsRequired();
+
+                entity.Property(e => e.FkDiscount)
+                    .IsRequired()
+                    .HasColumnName("fk_Discount");
 
                 entity.Property(e => e.FkItem)
                     .IsRequired()
                     .HasColumnName("fk_Item");
-
-                entity.Property(e => e.FkItemOptionOrDiscount)
-                    .IsRequired()
-                    .HasColumnName("fk_ItemOptionOrDiscount");
-            });
-
-            modelBuilder.Entity<ItemMaterial>(entity =>
-            {
-                entity.HasKey(e => new { e.FkItem, e.FkMaterial });
-
-                entity.ToTable("Item_Material");
-
-                entity.Property(e => e.FkItem).HasColumnName("fk_Item");
-
-                entity.Property(e => e.FkMaterial).HasColumnName("fk_Material");
-
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-            });
-
-            modelBuilder.Entity<ItemOption>(entity =>
-            {
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkStore)
-                    .IsRequired()
-                    .HasColumnName("fk_Store");
-
-                entity.Property(e => e.OptionName).IsRequired();
-            });
-
-            modelBuilder.Entity<Material>(entity =>
-            {
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkStore)
-                    .IsRequired()
-                    .HasColumnName("fk_Store");
-
-                entity.Property(e => e.FkWeightUnit)
-                    .IsRequired()
-                    .HasColumnName("fk_WeightUnit");
-
-                entity.Property(e => e.MaterialName).IsRequired();
             });
 
             modelBuilder.Entity<Menu>(entity =>
@@ -249,21 +197,6 @@ namespace CSM.EFCore
                 entity.Property(e => e.Creator).IsRequired();
             });
 
-            modelBuilder.Entity<SystemSetting>(entity =>
-            {
-                entity.HasKey(e => e.KeySetting);
-
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkStore)
-                    .IsRequired()
-                    .HasColumnName("fk_Store");
-
-                entity.Property(e => e.SettingValue).IsRequired();
-            });
-
             modelBuilder.Entity<Table>(entity =>
             {
                 entity.Property(e => e.CreationDate).IsRequired();
@@ -279,21 +212,6 @@ namespace CSM.EFCore
                     .HasColumnName("fk_Zone");
 
                 entity.Property(e => e.TableName).IsRequired();
-            });
-
-            modelBuilder.Entity<WeightUnit>(entity =>
-            {
-                entity.Property(e => e.CreationDate).IsRequired();
-
-                entity.Property(e => e.Creator).IsRequired();
-
-                entity.Property(e => e.FkStore)
-                    .IsRequired()
-                    .HasColumnName("fk_Store");
-
-                entity.Property(e => e.IsDeleted).IsRequired();
-
-                entity.Property(e => e.UnitName).IsRequired();
             });
 
             modelBuilder.Entity<Zone>(entity =>

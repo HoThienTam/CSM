@@ -10,7 +10,6 @@
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
              x:Name="csm_11Page"
-             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              x:Class="CSM.Xam.Views.CSM_11Page"
              NavigationPage.HasNavigationBar="False"
              Padding="{StaticResource LargeThickness}">
@@ -57,7 +56,12 @@
                                      Spacing="2">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
-                                <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.SelectItemCommand, Mode=OneWay, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
+                                <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.TapItemCommand, Mode=OneWay, Source={x:Reference csm_11Page}}" TappedCommandParameter="{Binding}">
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
                                     <!--Anh mat hang-->
                                     <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
                                     <!--Ten mat hang-->
@@ -108,6 +112,9 @@
                     <dataControls:RadListView.LayoutDefinition>
                         <listView:ListViewLinearLayout VerticalItemSpacing="1" />
                     </dataControls:RadListView.LayoutDefinition>
+                    <dataControls:RadListView.SelectedItemStyle>
+                        <listView:ListViewItemStyle />
+                    </dataControls:RadListView.SelectedItemStyle>
                     <dataControls:RadListView.Commands>
                         <commands:ListViewUserCommand
                                             Command="{Binding TapCategoryCommand, Mode=OneWay}"

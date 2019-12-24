@@ -18,9 +18,7 @@
         <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}" BackgroundColor="{StaticResource BackgroundColor}">
         <StackLayout Spacing="{StaticResource LargeThickness}" Margin="{StaticResource LargeFrameThickness}">
             <Label Style="{StaticResource CommonLabelIcon}" FontFamily="{StaticResource FontAwesomeBrands}" FontSize="Header" Text="{x:Static lcModels:FontAwesomeIcon.Pagelines}"/>
-
-                <Label TextColor="Red" HorizontalOptions="CenterAndExpand" Text="{Binding ErrorBindProp}" />
-            
+           
                 <Label
                 FontAttributes="Bold" FontSize="Large" HorizontalOptions="CenterAndExpand" Text="ĐĂNG NHẬP" />
 
@@ -36,14 +34,13 @@
                         Text="{Binding PasswordBindProp, Mode=TwoWay}"
                         VerticalOptions="CenterAndExpand" WatermarkText="Mật khẩu" />
                 </tlrPrimitives:RadBorder>
-            <tlrPrimitives:RadBorder WidthRequest="200" Style="{StaticResource CommonButtonBorder}">
-            <tlrInput:RadButton
-                    TextColor="{StaticResource MainColor}"
-                    Command="{Binding LoginCommand, Mode=OneWay}"
-                    Text="Tiếp theo"/>
-            </tlrPrimitives:RadBorder>
+                <Button
+                        TextColor="White"
+                        BackgroundColor="{StaticResource MainColor}"
+                        Command="{Binding LoginCommand, Mode=OneWay}"
+                        Text="Đăng Nhập"/>
 
-        </StackLayout>
+            </StackLayout>
         </tlrPrimitives:RadBorder>
 
         <tlrPrimitives:RadBusyIndicator Style="{x:StaticResource LoadingIndicator}" />

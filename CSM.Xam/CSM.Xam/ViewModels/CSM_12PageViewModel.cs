@@ -170,7 +170,7 @@ namespace CSM.Xam.ViewModels
                 {
                     var menuLogic = new MenuLogic(_dbContext);
                     await menuLogic.DeleteAsync(Menu.Id);
-
+                    Menu.IsDeleted = 1;
                     var param = new NavigationParameters();
                     param.Add(Keys.MENU, Menu);
 

@@ -9,16 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CSM.Logic
 { 
-    public class ItemItemOptionOrDiscountLogic : BaseLogic
+    public class ItemDiscountLogic : BaseLogic
     {
-        public ItemItemOptionOrDiscountLogic(dataContext dbContext) : base(dbContext)
+        public ItemDiscountLogic(dataContext dbContext) : base(dbContext)
         {
 
         }
 
-        public Task<List<ItemItemOptionOrDiscount>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
+        public Task<List<ItemDiscount>> GetAllAsync(IsDelete status = IsDelete.Normal, bool tracking = false)
         {
-            IQueryable<ItemItemOptionOrDiscount> query = _DbContext.ItemItemOptionOrDiscount;
+            IQueryable<ItemDiscount> query = _DbContext.ItemDiscount;
             if (tracking)
             {
 
@@ -33,9 +33,9 @@ namespace CSM.Logic
             return query.ToListAsync();
         }
 
-        public Task<List<ItemItemOptionOrDiscount>> GetAsync(string itemId, IsDelete status = IsDelete.Normal, bool tracking = true)
+        public Task<List<ItemDiscount>> GetAsync(string itemId, IsDelete status = IsDelete.Normal, bool tracking = true)
         {
-            IQueryable<ItemItemOptionOrDiscount> query = _DbContext.ItemItemOptionOrDiscount;
+            IQueryable<ItemDiscount> query = _DbContext.ItemDiscount;
             if (tracking)
             {
 
@@ -52,22 +52,20 @@ namespace CSM.Logic
             return item.ToListAsync();
         }
 
-        public async Task<ItemItemOptionOrDiscount> CreateAsync(ItemItemOptionOrDiscount obj, bool saveChange = true)
+        public async Task<ItemDiscount> CreateAsync(ItemDiscount obj, bool saveChange = true)
         {
-            var item = new ItemItemOptionOrDiscount
+            var item = new ItemDiscount
             {
                 Id = Guid.NewGuid().ToString(),
                 CreationDate = DateTime.Now.ToString(),
                 Creator = "Tam",
                 FkItem = obj.FkItem,
-                FkItemOptionOrDiscount = obj.FkItemOptionOrDiscount,
+                FkDiscount = obj.FkDiscount,
                 IsDeleted = (int)IsDelete.Normal,
-                IsDiscount = obj.IsDiscount,
-                Quantity = obj.Quantity,
                 Value = obj.Value
             };
 
-            _DbContext.ItemItemOptionOrDiscount.Add(item);
+            _DbContext.ItemDiscount.Add(item);
 
             try
             {
@@ -84,9 +82,9 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<ItemItemOptionOrDiscount> UpdateAsync(ItemItemOptionOrDiscount obj, bool saveChange = true)
+        public async Task<ItemDiscount> UpdateAsync(ItemDiscount obj, bool saveChange = true)
         {
-            var item = await _DbContext.ItemItemOptionOrDiscount.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.ItemDiscount.FirstOrDefaultAsync(h => h.Id == obj.Id);
 
             try
             {
@@ -105,7 +103,7 @@ namespace CSM.Logic
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {
-            var item = await _DbContext.ItemItemOptionOrDiscount.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
+            var item = await _DbContext.ItemDiscount.FirstOrDefaultAsync(h => h.Id == id).ConfigureAwait(false);
             if (item == null)
             {
                 return false;

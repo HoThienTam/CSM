@@ -85,5 +85,30 @@ namespace CSM.Logic
 
             return listMenuItem;
         }
+
+        public async Task<bool> DeleteAsync(string menuId, string itemId, bool saveChange = true)
+        {
+            var item = _DbContext.MenuItem.FirstOrDefault(h => h.FkItem == itemId && h.FkMenu == menuId);
+            if (item == null)
+            {
+                return false;
+            }
+
+            _DbContext.MenuItem.Remove(item);
+            try
+            {
+                if (saveChange)
+                {
+                    await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return true;
+        }
     }
 }

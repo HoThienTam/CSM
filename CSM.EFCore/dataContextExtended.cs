@@ -7,7 +7,6 @@ namespace CSM.EFCore
 {
     public partial class dataContext
     {
-        private DbContextOptionsBuilder<dataContext> _optionBuilder;
         public dataContext(string connectionString) : base(
             SqliteDbContextOptionsBuilderExtensions
                 .UseSqlite(new DbContextOptionsBuilder(), connectionString)

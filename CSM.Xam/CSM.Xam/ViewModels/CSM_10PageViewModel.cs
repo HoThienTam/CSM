@@ -186,7 +186,7 @@ namespace CSM.Xam.ViewModels
                     var invoiceLogic = new InvoiceLogic(_dbContext);
                     var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
                     var tableLogic = new TableLogic(_dbContext);
-                    var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+                    var subItemLogic = new ItemDiscountLogic(_dbContext);
                     var invoice = new Invoice 
                     {
                         Id = BillBindProp.Id,
@@ -196,6 +196,7 @@ namespace CSM.Xam.ViewModels
                         TotalPrice = BillBindProp.TotalPrice,
                         IsTakeAway = BillBindProp.IsTakeAway,
                         FkTable = BillBindProp.FkTable,
+                        CloseDate = DateTime.Now.ToString(),
                         CustomerCount = BillBindProp.CustomerCount,
                         InvoiceNumber = await GenerateInvoiceNumber()
                     };
@@ -230,12 +231,10 @@ namespace CSM.Xam.ViewModels
 
                             for (int i = 1; i < item.ListSubItem.Count; i++)
                             {
-                                await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                                await subItemLogic.CreateAsync(new ItemDiscount
                                 {
                                     FkItem = item.Id,
-                                    FkItemOptionOrDiscount = item.ListSubItem[i].Id,
-                                    IsDiscount = 1,
-                                    Quantity = item.ListSubItem[i].Quantity,
+                                    FkDiscount = item.ListSubItem[i].Id,
                                     Value = item.ListSubItem[i].Value
                                 }, false);
                             }

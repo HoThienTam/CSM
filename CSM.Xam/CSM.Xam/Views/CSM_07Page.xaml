@@ -56,7 +56,7 @@
                                         <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
                                     </DataTrigger>
                                 </StackLayout.Triggers>
-                                <Grid Padding="{StaticResource SmallThickness}">
+                                <Grid Style="{StaticResource CommonWrapper}" Padding="{StaticResource CommonThickness}">
                                     <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -67,7 +67,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.User}">
+                                <Label Style="{StaticResource CommonLabelIcon}" Margin="{StaticResource CommonRightThickness}" Text="{x:Static lcModels:FontAwesomeIcon.User}">
                                 </Label>
 
                                 <Label
@@ -82,8 +82,8 @@
                                     Text="{Binding Role, Converter={StaticResource LongToRoleConverter}}"/>
 
                             </Grid>
-                                <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
 
+                                <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
                             </mr:StackLayout>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>

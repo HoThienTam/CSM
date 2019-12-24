@@ -13,10 +13,9 @@ namespace CSM.EFCore
         public string ItemName { get; set; }
         public string ItemImage { get; set; }
         public string FkCategory { get; set; }
-        public string FkWeightUnit { get; set; }
-        public long ManagementMethod { get; set; }
-        public long IsChargedByWeight { get; set; }
+        public long IsManaged { get; set; }
         public double Price { get; set; }
-        public long IsStaticPrice { get; set; }
+        public long MinQuantity { get; set; }
+        public long CurrentQuantity { get; set; }
     }
 }

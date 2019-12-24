@@ -12,7 +12,6 @@ using CSM.Logic.Enums;
 using Xamarin.Forms;
 using Menu = CSM.EFCore.Menu;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
-using Telerik.XamarinForms.DataControls.ListView;
 
 namespace CSM.Xam.ViewModels
 {
@@ -22,7 +21,7 @@ namespace CSM.Xam.ViewModels
         private Dictionary<string, List<VisualTableModel>> _tableInZone;
         private Dictionary<string, List<VisualItemMenuModel>> _itemInMenu;
         private string _menuId;
-        private string _selectedCategory;
+        private VisualCategoryModel _selectedCategory;
         private VisualTableModel _oldTable;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
@@ -191,6 +190,20 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsDeleting
+        private bool _IsDeleting = false;
+        public bool IsDeleting
+        {
+            get { return _IsDeleting; }
+            set 
+            { 
+                SetProperty(ref _IsDeleting, value);
+                RaisePropertyChanged(nameof(IsNotDeleting));
+            }
+        }
+        public bool IsNotDeleting { get { return !_IsDeleting; } }
+        #endregion
+
         // Frame thu vien
 
         #region ListCategoryBindProp
@@ -257,7 +270,7 @@ namespace CSM.Xam.ViewModels
         // Frame menu
 
         #region ListItemInMenuBindProp
-        private ObservableCollection<VisualItemMenuModel> _ListItemInMenuBindProp;
+        private ObservableCollection<VisualItemMenuModel> _ListItemInMenuBindProp = null;
         public ObservableCollection<VisualItemMenuModel> ListItemInMenuBindProp
         {
             get { return _ListItemInMenuBindProp; }
@@ -365,19 +378,10 @@ namespace CSM.Xam.ViewModels
                     else
                     {
                         var param = new NavigationParameters();
-                        if (item.IsDiscount)
-                        {
-                            param.Add(Keys.DISCOUNT, item);
-                            await NavigationService.NavigateAsync(nameof(CSM_03Page), param);
-                        }
-                        else
-                        {
-                            var category = ListCategoryBindProp.FirstOrDefault(h => h.Id == item.FkCategory);
-
-                            param.Add(Keys.CATEGORY, category);
-                            param.Add(Keys.ITEM, item);
-                            await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
-                        }
+                        param.Add(Keys.ITEM, item);
+                        param.Add(Keys.CATEGORY, _selectedCategory);
+                        await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
+                        IsVisibleListCategoryBindProp = true;
                     }
                 }
             }
@@ -417,7 +421,7 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 if (obj is ItemTapCommandContext itemTap)
                 {
-                    _selectedCategory = (itemTap.Item as VisualCategoryModel).Id;
+                    _selectedCategory = itemTap.Item as VisualCategoryModel;
                     Title = (itemTap.Item as VisualCategoryModel).CategoryName;
                 }
                 if (obj is string category)
@@ -425,12 +429,10 @@ namespace CSM.Xam.ViewModels
                     switch (category)
                     {
                         case "discount":
-                            _selectedCategory = "discount";
                             ListItemBindProp = ListDiscountBindProp;
                             Title = "Giảm giá";
                             break;
                         case "allitem":
-                            _selectedCategory = "allitem";
                             var listItem = ListItem.Where(h => h.IsDiscount == false).ToList();
                             ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
                             Title = "Tất cả mặt hàng";
@@ -439,7 +441,7 @@ namespace CSM.Xam.ViewModels
                 }
                 else
                 {
-                    var listItem = ListItem.Where(h => h.FkCategory == _selectedCategory).ToList();
+                    var listItem = ListItem.Where(h => h.FkCategory == _selectedCategory.Id).ToList();
                     ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
                 }
                 IsVisibleListCategoryBindProp = false;
@@ -537,11 +539,12 @@ namespace CSM.Xam.ViewModels
                             var menu = await menuLogic.CreateAsync(new Menu
                             {
                                 Id = Guid.NewGuid().ToString(),
-                                MenuName = "Menu01",
+                                MenuName = ListMenuBindProp.Count < 9 ? $"Menu0{ListMenuBindProp.Count + 1}" : $"Menu{ListMenuBindProp.Count + 1}",
                                 ImageIcon = "\uf0f4",
                             });
                             var visualMenu = Mapper.Map<VisualMenuModel>(menu);
                             ListMenuBindProp.Add(visualMenu);
+                            _itemInMenu.Add(visualMenu.Id, new List<VisualItemMenuModel>());
                             break;
                         case "hoantat":
                             IsEditing = false;
@@ -556,6 +559,8 @@ namespace CSM.Xam.ViewModels
                             await NavigationService.NavigateAsync(nameof(CSM_05Page));
                             break;
                         case "hanghoa":
+                            IsVisiblePopupBindProp = false;
+                            await NavigationService.NavigateAsync(nameof(CSM_06Page));
                             break;
                         case "nhanvien":
                             IsVisiblePopupBindProp = false;
@@ -615,7 +620,7 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var invoiceLogic = new InvoiceLogic(_dbContext);
                 var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
-                var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+                var subItemLogic = new ItemDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
 
                 if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable))
@@ -637,6 +642,7 @@ namespace CSM.Xam.ViewModels
                     InvoiceNumber = "",
                     IsTakeAway = IsTakeAway == true ? 1 : 0,
                     FkTable = CurrentBillBindProp.FkTable,
+                    CloseDate = DateTime.Now.ToString(),
                     CustomerCount = 1
                 };
 
@@ -674,12 +680,10 @@ namespace CSM.Xam.ViewModels
 
                         for (int i = 1; i < item.ListSubItem.Count; i++)
                         {
-                            await subItemLogic.CreateAsync(new ItemItemOptionOrDiscount
+                            await subItemLogic.CreateAsync(new ItemDiscount
                             {
                                 FkItem = item.Id,
-                                FkItemOptionOrDiscount = item.ListSubItem[i].Id,
-                                IsDiscount = 1,
-                                Quantity = item.ListSubItem[i].Quantity,
+                                FkDiscount = item.ListSubItem[i].Id,
                                 Value = item.ListSubItem[i].Value
                             }, false);
 
@@ -952,6 +956,7 @@ namespace CSM.Xam.ViewModels
                                 if (canNavigate)
                                 {
                                     CurrentBillBindProp = new VisualInvoiceModel();
+                                    IsEditingBill = false;
                                 }
                                 else
                                 {
@@ -1216,6 +1221,59 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region DeleteCommand
+
+        public DelegateCommand<object> DeleteCommand { get; private set; }
+        private async void OnDelete(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (IsNotDeleting)
+                {
+                    IsDeleting = true;
+                }
+                else
+                {
+                    var bill = obj as VisualInvoiceModel;
+                    if (bill != null)
+                    {
+                        var invoiceLogic = new InvoiceLogic(_dbContext);
+                        await invoiceLogic.DeleteAsync(bill.Id);
+                        ListInvoiceBindProp.Remove(bill);
+                    }
+                    else
+                    {
+                        IsDeleting = false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitDeleteCommand()
+        {
+            DeleteCommand = new DelegateCommand<object>(OnDelete);
+            DeleteCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
         // Frame menu
 
         #region AddItemToMenuCommand
@@ -1253,6 +1311,108 @@ namespace CSM.Xam.ViewModels
         {
             AddItemToMenuCommand = new DelegateCommand<object>(OnAddItemToMenu);
             AddItemToMenuCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region SelectItemInMenuCommand
+
+        public DelegateCommand<object> SelectItemInMenuCommand { get; private set; }
+        private async void OnSelectItemInMenu(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                if (obj is VisualItemMenuModel item)
+                {
+                    if (IsNotEditting)
+                    {
+                        if (item.IsDiscount)
+                        {
+                            if (CurrentBillBindProp.ListDiscount.Any(h => h.Id == item.Id))
+                            {
+                                return;
+                            }
+                            if (item.IsInPercent)
+                            {
+                                var discount = new VisualItemMenuModel
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Value = item.Value * CurrentBillBindProp.TotalPrice / 100,
+                                    IsInPercent = item.IsInPercent,
+                                    Status = Status.New,
+                                    //Giu gia tri % lai
+                                    Quantity = (int)item.Value
+                                };
+                                CurrentBillBindProp.ListDiscount.Add(discount);
+                                CurrentBillBindProp.TotalPrice -= discount.Value;
+                            }
+                            else
+                            {
+                                var discount = new VisualItemMenuModel
+                                {
+                                    Id = item.Id,
+                                    Name = item.Name,
+                                    Value = item.Value,
+                                    IsInPercent = item.IsInPercent,
+                                    Status = Status.New,
+                                    Quantity = 1
+                                };
+                                CurrentBillBindProp.ListDiscount.Add(discount);
+                                CurrentBillBindProp.TotalPrice -= discount.Value;
+                            }
+                            if (CurrentBillBindProp.TotalPrice < 0)
+                            {
+                                CurrentBillBindProp.TotalPrice = 0;
+                            }
+                        }
+                        else
+                        {
+                            IsVisibleFrameItemBindProp = true;
+                            SelectedItem = new VisualItemMenuModel
+                            {
+                                Id = item.Id,
+                                Name = item.Name,
+                                Value = item.Value,
+                                Quantity = 0
+                            };
+                        }
+                    }
+                    else
+                    {
+                        var canDelete = await DisplayDeleteAlertAsync();
+                        if (canDelete)
+                        {
+                            var menuItemLogic = new MenuItemLogic(_dbContext);
+                            await menuItemLogic.DeleteAsync(_menuId, item.Id);
+                            ListItemInMenuBindProp.Remove(item);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectItemInMenuCommand()
+        {
+            SelectItemInMenuCommand = new DelegateCommand<object>(OnSelectItemInMenu);
+            SelectItemInMenuCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion
@@ -1409,7 +1569,7 @@ namespace CSM.Xam.ViewModels
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
             var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
-            var subItemLogic = new ItemItemOptionOrDiscountLogic(_dbContext);
+            var subItemLogic = new ItemDiscountLogic(_dbContext);
             var tableLogic = new TableLogic(_dbContext);
             var zoneLogic = new ZoneLogic(_dbContext);
 
@@ -1456,13 +1616,12 @@ namespace CSM.Xam.ViewModels
 
                         foreach (var subItem in listSubItem)
                         {
-                            var visualSubItem = ListDiscountBindProp.FirstOrDefault(h => h.Id == subItem.FkItemOptionOrDiscount);
+                            var visualSubItem = ListDiscountBindProp.FirstOrDefault(h => h.Id == subItem.FkDiscount);
                             visualItem.ListSubItem.Add(new VisualItemMenuModel
                             {
                                 Id = visualSubItem.Id,
                                 Name = visualSubItem.Name,
                                 Value = subItem.Value,
-                                Quantity = subItem.Quantity,
                                 Status = Status.Normal,
                             });
                         }
@@ -1551,6 +1710,7 @@ namespace CSM.Xam.ViewModels
                 });
                 var visualMenu = Mapper.Map<VisualMenuModel>(menu);
                 listVisualMenu.Add(visualMenu);
+                _itemInMenu.Add(visualMenu.Id, new List<VisualItemMenuModel>());
             }
             ListMenuBindProp = new ObservableCollection<VisualMenuModel>(listVisualMenu);
 
@@ -1627,7 +1787,6 @@ namespace CSM.Xam.ViewModels
                         {
                             ListItem.Add(item);
                         }
-                        IsVisibleListCategoryBindProp = true;
                     }
                     //Back ve tu CSM 11
                     if (parameters.ContainsKey(Keys.LIST_ITEM))
@@ -1643,11 +1802,14 @@ namespace CSM.Xam.ViewModels
                             }
                         }
                     }
-                    //Back ve tu CSM 01
+                    //Back ve tu CSM 012
                     if (parameters.ContainsKey(Keys.MENU))
                     {
                         var menu = parameters[Keys.MENU] as VisualMenuModel;
-                        ListMenuBindProp.Remove(menu);
+                        if (menu.IsDeleted == 1)
+                        {
+                            ListMenuBindProp.Remove(menu);
+                        }
                     }
                     //Back ve tu CSM 03
                     if (parameters.ContainsKey(Keys.DISCOUNT))

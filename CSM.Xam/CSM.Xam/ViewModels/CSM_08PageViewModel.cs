@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Xamarin.Forms;
 
 namespace CSM.Xam.ViewModels
 {
@@ -72,6 +73,43 @@ namespace CSM.Xam.ViewModels
         {
             TapSectionCommand = new DelegateCommand<object>(OnTapSection);
             TapSectionCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+        #region LogOutCommand
+
+        public DelegateCommand<object> LogOutCommand { get; private set; }
+        private async void OnLogOut(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                Application.Current.Properties.Remove("Employee");
+                await NavigationService.NavigateAsync("Pos.Xam:///NavigationPage/CSM_01Page");
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitLogOutCommand()
+        {
+            LogOutCommand = new DelegateCommand<object>(OnLogOut);
+            LogOutCommand.ObservesCanExecute(() => IsNotBusy);
         }
 
         #endregion

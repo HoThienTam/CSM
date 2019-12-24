@@ -48,6 +48,24 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region IsManaged
+        private bool _IsManaged = false;
+        public bool IsManaged
+        {
+            get { return _IsManaged; }
+            set { SetProperty(ref _IsManaged, value); }
+        }
+        #endregion
+
+        #region MinQuantityBindProp
+        private long _MinQuantityBindProp = 0;
+        public long MinQuantityBindProp
+        {
+            get { return _MinQuantityBindProp; }
+            set { SetProperty(ref _MinQuantityBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Command
@@ -120,8 +138,11 @@ namespace CSM.Xam.ViewModels
                     Id = ItemBindProp.Id,
                     ItemName = ItemBindProp.Name,
                     FkCategory = CategoryBindProp.Id,
-                    Price = ItemBindProp.Value
+                    Price = ItemBindProp.Value,
+                    IsManaged = IsManaged == true ? 1 : 0,
+                    MinQuantity = MinQuantityBindProp,
                 };
+                ItemBindProp.FkCategory = CategoryBindProp.Id;
                 if (IsEditing)
                 {
                     await itemLogic.UpdateAsync(item);
@@ -131,7 +152,7 @@ namespace CSM.Xam.ViewModels
                 {
                     await itemLogic.CreateAsync(item);
 
-                    var param = new NavigationParameters();
+                    var param = new NavigationParameters();                   
                     param.Add(Keys.ITEM, ItemBindProp);
 
                     await NavigationService.GoBackAsync(param);
@@ -206,7 +227,7 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region Navigate
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public async override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
@@ -226,6 +247,11 @@ namespace CSM.Xam.ViewModels
                         var item = parameters[Keys.ITEM] as VisualItemMenuModel;
                         var category = parameters[Keys.CATEGORY] as VisualCategoryModel;
 
+                        var itemLogic = new ItemLogic(_dbContext);
+                        var dbItem = await itemLogic.GetAsync(item.Id);
+
+                        MinQuantityBindProp = dbItem.MinQuantity;
+                        IsManaged = dbItem.IsManaged == 1 ? true : false;
                         ItemBindProp = item;
                         CategoryBindProp = category;
                     }

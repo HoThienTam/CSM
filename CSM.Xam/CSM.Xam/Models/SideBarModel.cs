@@ -24,5 +24,14 @@ namespace CSM.Xam.Models
             set { SetProperty(ref _IsSelected, value); }
         }
         #endregion
+
+        #region Icon
+        private string _Icon;
+        public string Icon
+        {
+            get { return _Icon; }
+            set { SetProperty(ref _Icon, value); }
+        }
+        #endregion
     }
 }

@@ -34,5 +34,13 @@ namespace CSM.Xam.Models
         }
         #endregion
 
+        #region IsDeleted
+        private long _IsDeleted;
+        public long IsDeleted
+        {
+            get { return _IsDeleted; }
+            set { SetProperty(ref _IsDeleted, value); }
+        }
+        #endregion
     }
 }

@@ -226,7 +226,7 @@ namespace CSM.Xam.ViewModels
                     SelectedItems = new List<VisualItemMenuModel>();
                 }
 
-                var selectedItem = (obj as ItemTapCommandContext).Item as VisualItemMenuModel;
+                var selectedItem = obj as VisualItemMenuModel;
                 if (selectedItem.IsSelected)
                 {
                     selectedItem.IsSelected = false;

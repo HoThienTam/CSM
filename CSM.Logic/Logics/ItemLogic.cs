@@ -64,14 +64,13 @@ namespace CSM.Logic
                 Creator = "Tam",
                 FkStore = "fg",
                 FkCategory = obj.FkCategory,
-                IsStaticPrice = 1,
-                FkWeightUnit = "a",
-                IsChargedByWeight = 0,
                 IsDeleted = (int)IsDelete.Normal,
                 ItemImage = "a",
                 ItemName = obj.ItemName,
-                ManagementMethod = 0,
-                Price = obj.Price
+                IsManaged = obj.IsManaged,
+                Price = obj.Price,
+                MinQuantity = obj.MinQuantity,
+                CurrentQuantity = 0
             };
 
             _DbContext.Item.Add(item);
@@ -97,6 +96,7 @@ namespace CSM.Logic
             item.ItemName = obj.ItemName;
             item.FkCategory = obj.FkCategory;
             item.Price = obj.Price;
+            item.IsManaged = obj.IsManaged;
             try
             {
                 if (saveChange)

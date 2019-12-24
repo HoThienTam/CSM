@@ -6,6 +6,7 @@ using Prism.Commands;
 using Prism.Navigation;
 using System;
 using System.Collections.ObjectModel;
+using Xamarin.Forms;
 
 namespace CSM.Xam.ViewModels
 {
@@ -75,11 +76,15 @@ namespace CSM.Xam.ViewModels
                 var canLogin = await employeeLogic.LoginAsync(UsernameBindProp, PasswordBindProp);
                 if (canLogin)
                 {
+                    Application.Current.Properties["Employee"] = "Tam";
+                    await Application.Current.SavePropertiesAsync();
+
                     await NavigationService.NavigateAsync(nameof(MainPage));
                 }
                 else
                 {
-                    ErrorBindProp = "Sai tên tài khoản hoặc mật khẩu";
+                    await PageDialogService.DisplayAlertAsync("Lỗi", "Đăng nhập thất bại, vui lòng kiểm tra lại tên đăng nhập hoặc mật khẩu.", "Đóng");
+                    PasswordBindProp = "";
                 }
 
             }
@@ -98,6 +103,8 @@ namespace CSM.Xam.ViewModels
         {
             LoginCommand = new DelegateCommand<object>(OnLogin, CanExecuteLogin);
             LoginCommand.ObservesProperty(() => IsNotBusy);
+            LoginCommand.ObservesProperty(() => UsernameBindProp);
+            LoginCommand.ObservesProperty(() => PasswordBindProp);
         }
 
         #endregion
