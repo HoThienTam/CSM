@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using CSM.EFCore;
+using CSM.Logic;
 using CSM.Xam.Models;
 using Prism.Commands;
+using Prism.Navigation;
 
 namespace CSM.Xam.ViewModels
 {
     public class CSM_06_01PageViewModel : ViewModelBase
     {
+        private string _reason;
         public CSM_06_01PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             Title = "Thêm số lượng";
@@ -55,6 +59,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region Item
+        private VisualItemModel _Item = null;
+        public VisualItemModel Item
+        {
+            get { return _Item; }
+            set { SetProperty(ref _Item, value); }
+        }
+        #endregion
+
         #region SelectReasonCommand
 
         public DelegateCommand<object> SelectReasonCommand { get; private set; }
@@ -79,11 +92,13 @@ namespace CSM.Xam.ViewModels
                     var reason = obj as ReasonModel;
                     reason.IsSelected = true;
                     IsSelectingOtherReason = false;
+                    _reason = reason.Reason;
                 }
                 else
                 {
                     IsSelectingOtherReason = true;
                 }
+
             }
             catch (Exception e)
             {
@@ -119,6 +134,52 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
+                var dataContext = Helper.GetDataContext();
+                var itemLogic = new ItemLogic(dataContext);
+                var historyLogic = new ImportExportHistoryLogic(dataContext);
+
+                var param = new NavigationParameters();
+                //Update Số lượng Item và Material
+
+                if (QuantityBindProp > 0)
+                {
+                    var item = new Item
+                    {
+                        Id = Item.Id,
+                        CurrentQuantity = QuantityBindProp
+                    };
+
+                    await itemLogic.ModifyQuantityAsync(item, false);
+
+                    var history = new ImportExportHistory
+                    {
+                        FkItemOrMaterial = item.Id,
+                        IsImported = 1,
+                        Quantity = QuantityBindProp,
+                        Reason = IsSelectingOtherReason == true ? OtherReasonBindProp : _reason
+                    };
+
+                    var his = await historyLogic.CreateAsync(history, false);
+
+                    var visualHistory = new VisualHistoryModel
+                    {
+                        Quantity = history.Quantity,
+                        Reason = history.Reason,
+                        CreationDate = his.CreationDate,
+                        Item = Item.ItemName
+                    };
+                    await dataContext.SaveChangesAsync();
+
+                    Item.CurrentQuantity += QuantityBindProp;
+
+                    param.Add(Keys.HISTORY, visualHistory);
+                    await NavigationService.GoBackAsync(param);
+                }
+                else
+                {
+                    await PageDialogService.DisplayAlertAsync("Cảnh báo", "Bạn chưa nhập số lượng giảm!", "OK");
+                }
+
             }
             catch (Exception e)
             {
@@ -138,6 +199,22 @@ namespace CSM.Xam.ViewModels
         }
 
         #endregion
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
 
+            switch (parameters.GetNavigationMode())
+            {
+                case NavigationMode.Back:
+                    break;
+                case NavigationMode.New:
+                    Item = parameters[Keys.ITEM] as VisualItemModel;
+                    break;
+                case NavigationMode.Forward:
+                    break;
+                case NavigationMode.Refresh:
+                    break;
+            }
+        }
     }
 }

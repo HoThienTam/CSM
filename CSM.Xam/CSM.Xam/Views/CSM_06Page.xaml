@@ -99,14 +99,15 @@
                 <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{StaticResource SubColor}"/>
 
                 <!--  danh sach hang ton  -->
-                <StackLayout Grid.Row="2" Margin="{StaticResource LargeThickness}">
+                <StackLayout IsVisible="{Binding ItemVisibleBindProp}" Grid.Row="2" Margin="{StaticResource LargeThickness}">
                     <!--  Tab hang ton  -->
                     <tlrGrid:RadDataGrid
                         Margin="{StaticResource CommonThickness}"
                         AutoGenerateColumns="False"
                         SelectionMode="None"
                         ItemsSource="{Binding ListItemBindProp, Mode=OneWay}"
-                        UserEditMode="None" UserFilterMode="Disabled" UserSortMode="None" UserGroupMode="Disabled">
+                        UserEditMode="None" UserFilterMode="Disabled" 
+                        UserSortMode="None" UserGroupMode="Disabled">
                         <tlrGrid:RadDataGrid.Columns>
                             <tlrGrid:DataGridTextColumn PropertyName="ItemName" HeaderText="Tên hàng tồn" SizeMode="Stretch">
                                 <tlrGrid:DataGridTextColumn.HeaderStyle>
@@ -189,218 +190,166 @@
                     </tlrGrid:RadDataGrid>
                 </StackLayout>
                 <!--  danh sach hang sap het  -->
-                <Grid Grid.Row="2" IsVisible="False">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    
+                <StackLayout IsVisible="{Binding RunOutItemVisibleBindProp}" Grid.Row="2" Margin="{StaticResource LargeThickness}">
+                   
                     <!--  Tab hang ton  -->
-                    <!--<tlrGrid:RadDataGrid
-                            Grid.Row="1"
-                            Margin="{StaticResource CommonThicknessAll}"
-                            AutoGenerateColumns="False"
-                            IsVisible="{Binding HangTonVisibleBindProp, Mode=OneWay}"
-                            ItemsSource="{Binding ListHangSapHetBindProp, Mode=OneWay}"
-                            StyleClass="TelerikTheme" UserEditMode="None" UserFilterMode="Disabled" UserSortMode="None">
+                    <tlrGrid:RadDataGrid
+                        Margin="{StaticResource CommonThickness}"
+                        AutoGenerateColumns="False"
+                        SelectionMode="None"
+                        ItemsSource="{Binding ListRunOutItemBindProp, Mode=OneWay}"
+                        UserEditMode="None" UserFilterMode="Disabled" 
+                        UserSortMode="None" UserGroupMode="Disabled">
                         <tlrGrid:RadDataGrid.Columns>
-                            <tlrGrid:DataGridTemplateColumn Width="150" HeaderText="Tên hàng tồn" SizeMode="Fixed">
+                            <tlrGrid:DataGridTextColumn PropertyName="ItemName" HeaderText="Tên hàng tồn" SizeMode="Stretch">
+                                <tlrGrid:DataGridTextColumn.HeaderStyle>
+                                    <tlrGrid:DataGridColumnHeaderStyle
+                                        TextFontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontSize="20" />
+                                </tlrGrid:DataGridTextColumn.HeaderStyle>
+                                <tlrGrid:DataGridTextColumn.CellContentStyle>
+                                    <tlrGrid:DataGridTextCellStyle 
+                                        HorizontalTextAlignment="Start"
+                                        VerticalTextAlignment="Center"
+                                        FontSize="17" />
+                                </tlrGrid:DataGridTextColumn.CellContentStyle>
+                            </tlrGrid:DataGridTextColumn>
+
+                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Tối thiểu" PropertyName="MinQuantity" SizeMode="Fixed">
+                                <tlrGrid:DataGridNumericalColumn.HeaderStyle>
+                                    <tlrGrid:DataGridColumnHeaderStyle
+                                        TextFontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontSize="20" />
+                                </tlrGrid:DataGridNumericalColumn.HeaderStyle>
+                                <tlrGrid:DataGridNumericalColumn.CellContentStyle>
+                                    <tlrGrid:DataGridTextCellStyle
+                                        FontSize="17" HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
+                                </tlrGrid:DataGridNumericalColumn.CellContentStyle>
+                            </tlrGrid:DataGridNumericalColumn>
+
+                            <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
+                                        TextFontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                                     <DataTemplate>
-                                        <Label
-                                                Margin="{StaticResource CommonThicknessAll}"
-                                                FontSize="17" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
-                                                Text="{Binding Name}"
-                                                VerticalTextAlignment="Center">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.RowTapCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </DataTemplate>
-                                </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                            </tlrGrid:DataGridTemplateColumn>
-                            <tlrGrid:DataGridTemplateColumn Width="100" HeaderText="Đơn vị" SizeMode="Fixed">
-                                <tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                    <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
-                                </tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                                    <DataTemplate>
-                                        <Label
-                                                Margin="{StaticResource CommonThicknessAll}"
-                                                FontSize="17" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"
-                                                Text="{Binding Unit}"
-                                                VerticalTextAlignment="Center">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.RowTapCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </DataTemplate>
-                                </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                            </tlrGrid:DataGridTemplateColumn>
-                            <tlrGrid:DataGridTemplateColumn Width="100" HeaderText="Tối thiểu" SizeMode="Fixed">
-                                <tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                    <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
-                                </tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                                    <DataTemplate>
-                                        <Label
-                                                Margin="{StaticResource CommonThicknessAll}"
-                                                FontSize="17" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"
-                                                Text="{Binding MinQuantity}"
-                                                VerticalTextAlignment="Center">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.RowTapCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
+                                        <mr:Label Style="{StaticResource CommonHeaderRightIcon}" 
+                                               Text="{x:Static lcModels:FontAwesomeIcon.PlusCircle}"
+                                               TappedCommand="{Binding BindingContext.AddQuantityCommand, Source={x:Reference csm_06Page}}"
+                                               TappedCommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                             </tlrGrid:DataGridTemplateColumn>
 
-                            <tlrGrid:DataGridTemplateColumn SizeMode="Stretch">
-                                <tlrGrid:DataGridTemplateColumn.HeaderStyle>
+                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Số lượng" PropertyName="CurrentQuantity" SizeMode="Fixed">
+                                <tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
-                                </tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                                    <DataTemplate>
-                                        <Label Style="{StaticResource CommonHeaderRightIcon}" Text="{x:Static lcModels:FontAwesomePro5Solid.IconMinusCircle_Delete}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.TapDecrementCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </DataTemplate>
-                                </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                            </tlrGrid:DataGridTemplateColumn>
+                                        TextFontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontSize="20" />
+                                </tlrGrid:DataGridNumericalColumn.HeaderStyle>
+                                <tlrGrid:DataGridNumericalColumn.CellContentStyle>
+                                    <tlrGrid:DataGridTextCellStyle
+                                        FontSize="17" HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"/>
+                                </tlrGrid:DataGridNumericalColumn.CellContentStyle>
+                            </tlrGrid:DataGridNumericalColumn>
 
-                            <tlrGrid:DataGridTemplateColumn Width="100" HeaderText="Số lượng" SizeMode="Fixed">
+                            <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
+                                        TextFontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                                     <DataTemplate>
-                                        <Label
-                                                Margin="{StaticResource CommonThicknessAll}"
-                                                FontSize="17" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"
-                                                Text="{Binding Quantity}"
-                                                TextColor="#ff1a1a" VerticalTextAlignment="Center">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.RowTapCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </DataTemplate>
-                                </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                            </tlrGrid:DataGridTemplateColumn>
-
-                            <tlrGrid:DataGridTemplateColumn SizeMode="Stretch">
-                                <tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                    <tlrGrid:DataGridColumnHeaderStyle
-                                            BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                            TextColor="{StaticResource AccentColor1}"
-                                            TextFontSize="17" />
-                                </tlrGrid:DataGridTemplateColumn.HeaderStyle>
-                                <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
-                                    <DataTemplate>
-                                        <Label Style="{StaticResource CommonHeaderRightIcon}" Text="{x:Static lcModels:FontAwesomePro5Solid.CommonAdd}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding BindingContext.TapIncrementCommand, Source={x:Reference POS_06_00}, Mode=OneWay}" CommandParameter="{Binding}" NumberOfTapsRequired="1" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
+                                        <mr:Label Style="{StaticResource CommonHeaderRightIcon}" 
+                                               Text="{x:Static lcModels:FontAwesomeIcon.MinusCircle}"
+                                               TappedCommand="{Binding BindingContext.MinusQuantityCommand, Source={x:Reference csm_06Page}}"
+                                               TappedCommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                             </tlrGrid:DataGridTemplateColumn>
 
                         </tlrGrid:RadDataGrid.Columns>
-                    </tlrGrid:RadDataGrid>-->
-                </Grid>
+                    </tlrGrid:RadDataGrid>
+                </StackLayout>
 
                 <!--  Lich su  -->
-                <!--<tlrGrid:RadDataGrid
-                        Grid.Row="2"
-                        AutoGenerateColumns="False"
-                        IsVisible="{Binding LichSuVisibleBindProp, Mode=OneWay}"
-                        ItemsSource="{Binding ListHistoryBindProp, Mode=OneWay}"
-                        SelectionMode="None" StyleClass="TelerikTheme" UserSortMode="None">
+                <tlrGrid:RadDataGrid
+                    Grid.Row="2"
+                    AutoGenerateColumns="False"
+                    IsVisible="{Binding HistoryVisibleBindProp, Mode=OneWay}"
+                    ItemsSource="{Binding ListHistoryBindProp, Mode=OneWay}"
+                    SelectionMode="None" UserSortMode="None" UserEditMode="None" 
+                    UserFilterMode="Disabled" UserGroupMode="Disabled">
                     <tlrGrid:RadDataGrid.Columns>
                         <tlrGrid:DataGridTimeColumn
                                 Width="200"
-                                HeaderText="Thời gian" PropertyName="Time" SizeMode="Fixed">
+                                HeaderText="Thời gian" PropertyName="CreationDate" SizeMode="Fixed">
                             <tlrGrid:DataGridTimeColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
                                         BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
-                                        TextColor="{StaticResource AccentColor1}"
                                         TextFontSize="17" />
                             </tlrGrid:DataGridTimeColumn.HeaderStyle>
                             <tlrGrid:DataGridTimeColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
                                         FontSize="17" HorizontalTextAlignment="Start"
-                                        TextMargin="{StaticResource CommonThicknessAll}"
+                                        TextMargin="{StaticResource CommonThickness}"
                                         VerticalTextAlignment="Center" />
                             </tlrGrid:DataGridTimeColumn.CellContentStyle>
 
                         </tlrGrid:DataGridTimeColumn>
-                        <tlrGrid:DataGridTextColumn HeaderText="Nguyên liệu" PropertyName="MaterialName">
+                        <tlrGrid:DataGridTextColumn HeaderText="Mặt hàng" PropertyName="Item">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
                                         BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextColor="{StaticResource AccentColor1}"
                                         TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
                                         FontSize="17" HorizontalTextAlignment="Center"
-                                        TextMargin="{StaticResource CommonThicknessAll}"
+                                        TextMargin="{StaticResource CommonThickness}"
                                         VerticalTextAlignment="Center" />
                             </tlrGrid:DataGridTextColumn.CellContentStyle>
                         </tlrGrid:DataGridTextColumn>
-                        <tlrGrid:DataGridTextColumn HeaderText="Ghi chú" PropertyName="Note">
+                        <tlrGrid:DataGridTextColumn HeaderText="Ghi chú" PropertyName="Reason">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
                                         BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextColor="{StaticResource AccentColor1}"
                                         TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
                                         FontSize="17" HorizontalTextAlignment="Center"
-                                        TextMargin="{StaticResource CommonThicknessAll}"
+                                        TextMargin="{StaticResource CommonThickness}"
                                         VerticalTextAlignment="Center" />
                             </tlrGrid:DataGridTextColumn.CellContentStyle>
                         </tlrGrid:DataGridTextColumn>
 
-                        <tlrGrid:DataGridTextColumn HeaderText="Tăng" PropertyName="Increment">
+                        <tlrGrid:DataGridTextColumn HeaderText="Số lượng" PropertyName="Quantity">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
                                         BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextColor="{StaticResource AccentColor1}"
                                         TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
                                         FontSize="17" HorizontalTextAlignment="Center"
-                                        TextMargin="{StaticResource CommonThicknessAll}"
+                                        TextMargin="{StaticResource CommonThickness}"
                                         VerticalTextAlignment="Center" />
                             </tlrGrid:DataGridTextColumn.CellContentStyle>
                         </tlrGrid:DataGridTextColumn>
 
                     </tlrGrid:RadDataGrid.Columns>
-                </tlrGrid:RadDataGrid>-->
+                </tlrGrid:RadDataGrid>
             </Grid>
         </Grid>
         <tlrPrimitives:RadBusyIndicator Style="{StaticResource LoadingIndicator}"/>

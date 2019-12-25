@@ -111,6 +111,25 @@ namespace CSM.Logic
 
             return item;
         }
+        public async Task<Item> ModifyQuantityAsync(Item obj, bool saveChange = true)
+        {
+            var item = await _DbContext.Item.FirstOrDefaultAsync(h => h.Id == obj.Id);
+
+            item.CurrentQuantity += obj.CurrentQuantity;
+            try
+            {
+                if (saveChange)
+                {
+                    await _DbContext.SaveChangesAsync().ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return item;
+        }
 
         public async Task<bool> DeleteAsync(string id, bool saveChange = true)
         {

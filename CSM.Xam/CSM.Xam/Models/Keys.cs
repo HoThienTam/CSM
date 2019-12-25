@@ -60,5 +60,10 @@ namespace CSM.Xam.Models
         /// Truyen employee 
         /// </summary>
         public const string EMPLOYEE = "EMPLOYEE";
+
+        /// <summary>
+        /// Truyen lich su 
+        /// </summary>
+        public const string HISTORY = "HISTORY";
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using CSM.EFCore;
 using CSM.Logic;
 using CSM.Xam.Models;
 using CSM.Xam.Views;
@@ -22,8 +23,34 @@ namespace CSM.Xam.ViewModels
                 new SideBarModel{Title = "Lịch sử", IsSelected = false},
             };
             Title = "Danh sách hàng tồn";
-            GetListItem();
         }
+
+        #region RunOutItemVisibleBindProp   
+        private bool _RunOutItemVisibleBindProp = false;
+        public bool RunOutItemVisibleBindProp
+        {
+            get { return _RunOutItemVisibleBindProp; }
+            set { SetProperty(ref _RunOutItemVisibleBindProp, value); }
+        }
+        #endregion
+
+        #region ItemVisibleBindProp
+        private bool _ItemVisibleBindProp = true;
+        public bool ItemVisibleBindProp
+        {
+            get { return _ItemVisibleBindProp; }
+            set { SetProperty(ref _ItemVisibleBindProp, value); }
+        }
+        #endregion
+
+        #region HistoryVisibleBindProp
+        private bool _HistoryVisibleBindProp = false;
+        public bool HistoryVisibleBindProp
+        {
+            get { return _HistoryVisibleBindProp; }
+            set { SetProperty(ref _HistoryVisibleBindProp, value); }
+        }
+        #endregion
 
         #region ListItemBindProp
         private ObservableCollection<VisualItemModel> _ListItemBindProp = null;
@@ -31,6 +58,24 @@ namespace CSM.Xam.ViewModels
         {
             get { return _ListItemBindProp; }
             set { SetProperty(ref _ListItemBindProp, value); }
+        }
+        #endregion
+
+        #region ListHistoryBindProp
+        private ObservableCollection<VisualHistoryModel> _ListHistoryBindProp = null;
+        public ObservableCollection<VisualHistoryModel> ListHistoryBindProp
+        {
+            get { return _ListHistoryBindProp; }
+            set { SetProperty(ref _ListHistoryBindProp, value); }
+        }
+        #endregion
+
+        #region ListRunOutItemBindProp
+        private ObservableCollection<VisualItemModel> _ListRunOutItemBindProp = null;
+        public ObservableCollection<VisualItemModel> ListRunOutItemBindProp
+        {
+            get { return _ListRunOutItemBindProp; }
+            set { SetProperty(ref _ListRunOutItemBindProp, value); }
         }
         #endregion
 
@@ -65,6 +110,24 @@ namespace CSM.Xam.ViewModels
                 var sidebar = obj as SideBarModel;
                 sidebar.IsSelected = true;
                 Title = sidebar.Title;
+                switch (sidebar.Title)
+                {
+                    case "Danh sách hàng tồn":
+                        RunOutItemVisibleBindProp = false;
+                        HistoryVisibleBindProp = false;
+                        ItemVisibleBindProp = true;
+                        break;
+                    case "Hàng sắp hết":
+                        RunOutItemVisibleBindProp = true;
+                        HistoryVisibleBindProp = false;
+                        ItemVisibleBindProp = false;
+                        break;
+                    case "Lịch sử":
+                        RunOutItemVisibleBindProp = false;
+                        HistoryVisibleBindProp = true;
+                        ItemVisibleBindProp = false;
+                        break;
+                }
             }
             catch (Exception e)
             {
@@ -167,12 +230,49 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
-        private async void GetListItem()
+        private async void GetData()
         {
+            var historyLogic = new ImportExportHistoryLogic(Helper.GetDataContext());
             var itemLogic = new ItemLogic(Helper.GetDataContext());
+
+            var listHistory = await historyLogic.GetAllAsync();
             var listItem = await itemLogic.GetAllAsync();
-            var listVisualItem = Mapper.Map<List<VisualItemModel>>(listItem.Where(h => h.IsManaged == 1));
+            
+            var listVisualItem = Mapper.Map<List<VisualItemModel>>(listItem.Where(h => h.IsManaged == 1 && h.CurrentQuantity > h.MinQuantity));
+            var listVisualRunOutItem = Mapper.Map<List<VisualItemModel>>(listItem.Where(h => h.IsManaged == 1 && h.CurrentQuantity <= h.MinQuantity));
+            var listVisualHistory = Mapper.Map<List<VisualHistoryModel>>(listHistory);
+
+            foreach (var history in listVisualHistory)
+            {
+                history.Item = listItem.FirstOrDefault(h => h.Id == history.FkItemOrMaterial).ItemName;
+            }
+
             ListItemBindProp = new ObservableCollection<VisualItemModel>(listVisualItem);
+            ListRunOutItemBindProp = new ObservableCollection<VisualItemModel>(listVisualRunOutItem);
+            ListHistoryBindProp = new ObservableCollection<VisualHistoryModel>(listVisualHistory);
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            switch (parameters.GetNavigationMode())
+            {
+                case NavigationMode.Back:
+                    if (parameters.ContainsKey(Keys.HISTORY))
+                    {
+                        var history = parameters[Keys.HISTORY] as VisualHistoryModel;
+                        ListHistoryBindProp.Insert(0, history);
+                    }
+                    break;
+                case NavigationMode.New:
+                    GetData();
+                    break;
+                case NavigationMode.Forward:
+                    break;
+                case NavigationMode.Refresh:
+                    break;
+            }
         }
     }
 }

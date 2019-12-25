@@ -23,6 +23,7 @@ namespace CSM.Xam.Models
                 cfg.CreateMap<Invoice, VisualInvoiceModel>();
                 cfg.CreateMap<Zone, VisualZoneModel>();
                 cfg.CreateMap<Item, VisualItemModel>();
+                cfg.CreateMap<ImportExportHistory, VisualHistoryModel>();
 
                 cfg.CreateMap<Item, VisualItemMenuModel>()
                 .ForMember(destination => destination.Name,

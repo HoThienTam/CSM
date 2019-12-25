@@ -54,8 +54,11 @@
                                     HorizontalOptions="FillAndExpand"
                                     Text="Số lượng" />
                                 <tlrInput:RadNumericInput
+                                    Minimum="0"
+                                    Maximum="999999"
+                                    WidthRequest="200"
                                     ControlTemplate="{StaticResource CustomRadNumericInput_ControlTemplate}"
-                                    Value="{Binding QuantityBindProp, Mode=OneWay}"/>
+                                    Value="{Binding QuantityBindProp, Mode=OneWayToSource}"/>
                             </StackLayout>
                         </tlrPrimitives:RadBorder>
 
@@ -102,7 +105,7 @@
                                                 <tlrInput:RadEntry
                                                     IsEnabled="{Binding IsSelectingOtherReason}"
                                                     Style="{StaticResource CommonLeftEntry}"
-                                                    Text="{Binding OtherReason}"
+                                                    Text="{Binding OtherReason, Mode=OneWayToSource}"
                                                     WatermarkText="Nhập lí do khác">
                                                 </tlrInput:RadEntry>
                                             </mr:StackLayout>

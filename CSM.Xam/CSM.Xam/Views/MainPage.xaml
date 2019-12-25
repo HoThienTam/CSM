@@ -533,12 +533,18 @@
                                                    Margin="{StaticResource CommonHorizontalThickness}">
                                             <Label.Triggers>
                                                 <DataTrigger Binding="{Binding IsInPercent}" Value="True" TargetType="Label">
-                                                    <Setter Property="Text" Value="{Binding Value, StringFormat='{0} %'}"/>
+                                                    <Setter Property="Text" Value="{Binding Value, StringFormat='{0}%'}"/>
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
                                         <!--Icon bao thieu hang-->
-                                        <!--<Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red" />-->
+                                        <Label IsVisible="False" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" TextColor="Red">
+                                            <Label.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentQuantity}" Value="True" TargetType="Label">
+                                                    <Setter Property="IsVisible" Value="True"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
                                     </mr:StackLayout>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
