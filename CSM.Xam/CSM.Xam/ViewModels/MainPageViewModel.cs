@@ -12,11 +12,14 @@ using CSM.Logic.Enums;
 using Xamarin.Forms;
 using Menu = CSM.EFCore.Menu;
 using Telerik.XamarinForms.DataControls.ListView.Commands;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Threading.Tasks;
 
 namespace CSM.Xam.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+        HubConnection connection;
         private dataContext _dbContext = Helper.GetDataContext();
         private Dictionary<string, List<VisualTableModel>> _tableInZone;
         private Dictionary<string, List<VisualItemMenuModel>> _itemInMenu;
@@ -29,6 +32,20 @@ namespace CSM.Xam.ViewModels
             MessagingCenter.Subscribe<ObservableCollection<VisualTableModel>>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
             MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
             MessagingCenter.Subscribe<VisualCategoryModel>(this, Messages.CATEGORY_MESSAGE, ReceiveCategoryMessageHandler);
+            connection = new HubConnectionBuilder()
+                   .WithUrl("http://8cd84a42.ngrok.io/messageHub")
+                   .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 1000);
+                await connection.StartAsync();
+            };
+
+            connection.On<Invoice>("ReceiveInvoice", (invoice) =>
+            {
+                SaveInvoice(invoice);
+            });
         }
 
         #region Bind Property
@@ -654,6 +671,7 @@ namespace CSM.Xam.ViewModels
                 else
                 {
                     inv = await invoiceLogic.CreateAsync(invoice, false);
+                    //await connection.SendAsync("SendInvoice", invoice);
                 }
 
                 await tableLogic.ChangeStatusAsync(new Table
@@ -1564,7 +1582,11 @@ namespace CSM.Xam.ViewModels
         #endregion
 
         #region Method
-
+        private async void SaveInvoice(Invoice invoice)
+        {
+            var invoiceLogic = new InvoiceLogic(_dbContext);
+            await invoiceLogic.CreateAsync(invoice);
+        }
         private async void GetAllInvoice()
         {
             var invoiceLogic = new InvoiceLogic(_dbContext);
@@ -1765,7 +1787,7 @@ namespace CSM.Xam.ViewModels
             }
         }
         #endregion
-
+        
         #region Navigate
         public async override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -1840,6 +1862,7 @@ namespace CSM.Xam.ViewModels
                     }
                     break;
                 case NavigationMode.New:
+                    //await connection.StartAsync();
                     Title = "Thư viện";
                     GetAllMenuItem();
                     GetAllZone();
