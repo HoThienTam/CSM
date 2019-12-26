@@ -9,6 +9,7 @@
              xmlns:listView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls"
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:commands="clr-namespace:Telerik.XamarinForms.DataControls.ListView.Commands;assembly=Telerik.XamarinForms.DataControls"
+             xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="CSM.Xam.Views.MainPage"
              NavigationPage.HasNavigationBar="False"
              x:Name="mainPage">
@@ -243,9 +244,17 @@
                     <dataControls:RadListView.LoadOnDemandItemTemplate>
                         <DataTemplate>
                             <mr:Grid Padding="{StaticResource SmallThickness}" TappedCommand="{Binding AddItemToMenuCommand}">
-                                <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}"  Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}"/>
+                                <ffImage:CachedImage
+                                     HeightRequest="100"
+                                     Aspect="AspectFill"
+                                     DownsampleToViewSize="true"
+                                    WidthRequest="120"
+                                     BackgroundColor="{StaticResource MainColor}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"/>
                                 <Label Style="{StaticResource CommonLabelIcon}" TextColor="{StaticResource BackgroundColor}" FontSize="Large" Text="{x:Static lcModels:FontAwesomeIcon.Plus}"/>
                             </mr:Grid>
+    
                         </DataTemplate>
                     </dataControls:RadListView.LoadOnDemandItemTemplate>
 
@@ -257,10 +266,28 @@
                         <DataTemplate>
                             <listView:ListViewTemplateCell>
                                 <listView:ListViewTemplateCell.View>
-                                    <mr:Grid TappedCommand="{Binding BindingContext.SelectItemInMenuCommand, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
-                                        <Label Style="{StaticResource CommonLabelIcon}" FontSize="{StaticResource MenuItemSize}" Text="{x:Static lcModels:FontAwesomeIcon.Rectangle}" />
-                                        <Label Text="{Binding Name}" HorizontalOptions="Center" VerticalOptions="End" />
-                                    </mr:Grid>
+                                    <tlrPrimitives:RadBorder HeightRequest="100" Style="{StaticResource CommonBorder}">
+                                        <mr:Grid 
+                                                 TappedCommand="{Binding BindingContext.SelectItemInMenuCommand, Source={x:Reference mainPage}}" 
+                                                 TappedCommandParameter="{Binding}"
+                                                 Style="{StaticResource CommonWrapper}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <ffImage:CachedImage
+                                                Aspect="Fill"
+                                                HeightRequest="100"
+                                                DownsampleToViewSize="true"
+                                                WidthRequest="150"
+                                                BackgroundColor="{StaticResource MainColor}"
+                                                HorizontalOptions="Center"
+                                                Source="{Binding ItemImage}"
+                                                Margin="0"
+                                                VerticalOptions="Center"/>
+                                            <Label Grid.Row="1" Text="{Binding Name}" HorizontalOptions="Center" VerticalOptions="End" />
+                                        </mr:Grid>
+                                    </tlrPrimitives:RadBorder>
                                 </listView:ListViewTemplateCell.View>
                             </listView:ListViewTemplateCell>
                         </DataTemplate>
@@ -524,7 +551,16 @@
                                 <DataTemplate>
                                     <mr:StackLayout Orientation="Horizontal"  TappedCommand="{Binding BindingContext.SelectItemCommand, Mode=OneWay, Source={x:Reference mainPage}}" TappedCommandParameter="{Binding}">
                                         <!--Anh mat hang-->
-                                        <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                        <ffImage:CachedImage
+                                            Aspect="AspectFill"
+                                            DownsampleToViewSize="true"
+                                            HeightRequest="50"
+                                            Margin="{StaticResource CommonRightThickness}"
+                                            BackgroundColor="{StaticResource MainColor}"
+                                            HorizontalOptions="Center"
+                                            Source="{Binding ItemImage}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="50" />
                                         <!--Ten mat hang-->
                                         <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
                                         <!--Gia-->

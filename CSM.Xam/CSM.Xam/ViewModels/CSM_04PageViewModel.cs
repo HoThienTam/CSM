@@ -7,6 +7,7 @@ using CSM.EFCore;
 using CSM.Logic;
 using CSM.Logic.Enums;
 using CSM.Xam.Models;
+using Prism.Commands;
 
 namespace CSM.Xam.ViewModels
 {
@@ -53,6 +54,43 @@ namespace CSM.Xam.ViewModels
             get { return _CurrentBillBindProp; }
             set { SetProperty(ref _CurrentBillBindProp, value); }
         }
+        #endregion
+
+        #region SelectBillCommand
+
+        public DelegateCommand<object> SelectBillCommand { get; private set; }
+        private async void OnSelectBill(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                var bill = obj as VisualInvoiceModel;
+                CurrentBillBindProp = bill;
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitSelectBillCommand()
+        {
+            SelectBillCommand = new DelegateCommand<object>(OnSelectBill);
+            SelectBillCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
         #endregion
 
         private async void GetAllInvoice()

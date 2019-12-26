@@ -66,6 +66,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #region ImagePathBindProp
+        private string _ImagePathBindProp = string.Empty;
+        public string ImagePathBindProp
+        {
+            get { return _ImagePathBindProp; }
+            set { SetProperty(ref _ImagePathBindProp, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Command
@@ -141,8 +150,10 @@ namespace CSM.Xam.ViewModels
                     Price = ItemBindProp.Value,
                     IsManaged = IsManaged == true ? 1 : 0,
                     MinQuantity = MinQuantityBindProp,
+                    ItemImage = ImagePathBindProp
                 };
                 ItemBindProp.FkCategory = CategoryBindProp.Id;
+                ItemBindProp.ItemImage = ImagePathBindProp;
                 if (IsEditing)
                 {
                     await itemLogic.UpdateAsync(item);
@@ -224,6 +235,43 @@ namespace CSM.Xam.ViewModels
 
         #endregion
 
+        #region PickImageCommand
+
+        public DelegateCommand<object> PickImageCommand { get; private set; }
+        private async void OnPickImage(object obj)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                // Thuc hien cong viec tai day
+                await NavigationService.NavigateAsync(nameof(CSM_02_02Page));
+            }
+            catch (Exception e)
+            {
+                await ShowError(e);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+        [Initialize]
+        private void InitPickImageCommand()
+        {
+            PickImageCommand = new DelegateCommand<object>(OnPickImage);
+            PickImageCommand.ObservesCanExecute(() => IsNotBusy);
+        }
+
+        #endregion
+
+
         #endregion
 
         #region Navigate
@@ -238,6 +286,10 @@ namespace CSM.Xam.ViewModels
                     {
                         CategoryBindProp = parameters[Keys.CATEGORY] as VisualCategoryModel;
                     }
+                    if (parameters.ContainsKey(Keys.IMAGE))
+                    {
+                        ImagePathBindProp = parameters[Keys.IMAGE] as string;
+                    }
                     break;
                 case NavigationMode.New:
                     if (parameters.ContainsKey(Keys.ITEM))
@@ -245,15 +297,16 @@ namespace CSM.Xam.ViewModels
                         IsEditing = true;
                         Title = "Chỉnh sửa mặt hàng";
                         var item = parameters[Keys.ITEM] as VisualItemMenuModel;
-                        var category = parameters[Keys.CATEGORY] as VisualCategoryModel;
 
                         var itemLogic = new ItemLogic(_dbContext);
+                        var categoryLogic = new CategoryLogic(_dbContext);
                         var dbItem = await itemLogic.GetAsync(item.Id);
+                        var dbCategory = await categoryLogic.GetAsync(item.FkCategory);
 
                         MinQuantityBindProp = dbItem.MinQuantity;
                         IsManaged = dbItem.IsManaged == 1 ? true : false;
                         ItemBindProp = item;
-                        CategoryBindProp = category;
+                        CategoryBindProp = Mapper.Map<VisualCategoryModel>(dbCategory);
                     }
                     else
                     {

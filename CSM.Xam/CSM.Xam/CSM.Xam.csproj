@@ -8,17 +8,22 @@
     <None Remove="Files\9.png" />
     <None Remove="Files\background.jpg" />
     <None Remove="Files\data.db" />
+    <None Remove="Images\background.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Files\background.jpg" />
     <EmbeddedResource Include="Files\data.db" />
+    <EmbeddedResource Include="Images\background.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.0" />
+    <PackageReference Include="Xam.Plugin.Media" Version="4.4.10-beta" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+    <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.2.0.1367" />
   </ItemGroup>
@@ -75,6 +80,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\CSM_02_01Page.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CSM_02_02Page.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\CSM_03Page.xaml">

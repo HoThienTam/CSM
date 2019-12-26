@@ -65,5 +65,10 @@ namespace CSM.Xam.Models
         /// Truyen lich su 
         /// </summary>
         public const string HISTORY = "HISTORY";
+
+        /// <summary>
+        /// Truyen duong dan anh
+        /// </summary>
+        public const string IMAGE = "IMAGE";
     }
 }

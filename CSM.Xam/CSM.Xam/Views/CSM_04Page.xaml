@@ -73,7 +73,7 @@
                         <dataControls:RadListView.ItemTemplate>
                             <DataTemplate>
                                 <listView:ListViewTemplateCell>
-                                    <mr:Grid TappedCommand="{Binding Command, Source={x:Reference csm_04Page}}" TappedCommandParameter="{Binding}">
+                                    <mr:Grid TappedCommand="{Binding BindingContext.SelectBillCommand, Source={x:Reference csm_04Page}}" TappedCommandParameter="{Binding}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -107,33 +107,9 @@
            
             <!--  Chi tiết hóa đơn  -->
             <Grid Grid.Column="2" Style="{StaticResource CommonWrapper}" Margin="{StaticResource LargeFrameThickness}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid Style="{StaticResource CommonWrapper}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}" />
-
-                    <!--  Title  -->
-                    <Label Style="{StaticResource CommonHeaderText}" Text="{Binding Title, Mode=OneWay}" />
-
-                    <!--  Right text  -->
-                    <mr:Label Style="{StaticResource CommonHeaderRightIcon}" />
-                </Grid>
-
-                <!--  Seperate header bottom line  -->
-                <BoxView Grid.Row="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                 <!--  Hóa đơn chi tiết  -->
-                <ScrollView Grid.Row="2">
+                <ScrollView>
                     <StackLayout Margin="{StaticResource LargeThickness}">
                         <!--  biên lai  -->
                         <Grid>
@@ -147,8 +123,14 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding CurrentBillBindProp.IsTakeAway, Mode=OneWay}"
-                                    VerticalOptions="Center" />
+                                    Text="Dùng tại bàn"
+                                    VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsTakeAway}" Value="1">
+                                        <Setter Property="Text" Value="Mang đi"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                         </StackLayout>
 
                         <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
@@ -214,32 +196,32 @@
                                     HorizontalOptions="FillAndExpand" Text="Mặt hàng"
                                     VerticalOptions="Center" />
                             <Label
-                                    HorizontalOptions="End"
-                                    Text="{Binding CurrentBillBindProp.ListSubItem, Mode=OneWay}"
+                                    Style="{StaticResource CommonLabelIcon}"
+                                    Text="{x:Static lcModels:FontAwesomeIcon.AngleDown}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 
                         <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
 
                         <!--  Đanh sách mặt hàng  -->
-                        <StackLayout BindableLayout.ItemsSource="{Binding CurrentBillBindProp.ListSubItem, Mode=OneWay}">
+                        <StackLayout Margin="{StaticResource LargeHorizontalThickness}" BindableLayout.ItemsSource="{Binding CurrentBillBindProp.ListItemInBill, Mode=OneWay}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Label FontSize="5" Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Bell}" />
+                                        <Label FontSize="5" Style="{StaticResource CommonHeaderLeftIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Circle}" />
 
-                                        <Label LineBreakMode="TailTruncation" Style="{StaticResource Bill_ItemName}" Text="{Binding Name}" />
+                                        <Label Grid.Column="1" LineBreakMode="TailTruncation" Style="{StaticResource Bill_ItemName}" Text="{Binding Name}" />
 
-                                        <Label Style="{StaticResource Bill_ItemCount}" Text="{Binding Quantity}" />
+                                        <Label Grid.Column="2" Style="{StaticResource Bill_ItemCount}" Text="{Binding Quantity, StringFormat='x{0}'}" />
 
-                                        <Label Style="{StaticResource Bill_ItemPrice}" Text="{Binding Value}" />
+                                        <Label Grid.Column="3" Style="{StaticResource Bill_ItemPrice}" Text="{Binding Value, StringFormat='{0:C}'}" />
 
                                     </Grid>
                                 </DataTemplate>
@@ -253,7 +235,7 @@
                                     VerticalOptions="Center" />
                             <Label
                                     HorizontalOptions="End"
-                                    Text="{Binding CurrentBillBindProp.ReceivedMoney, Mode=OneWay}"
+                                    Text="{Binding CurrentBillBindProp.PaidAmount, Mode=OneWay}"
                                     VerticalOptions="Center" />
                         </StackLayout>
 

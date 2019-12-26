@@ -24,7 +24,6 @@ namespace CSM.Xam.ViewModels
         private Dictionary<string, List<VisualTableModel>> _tableInZone;
         private Dictionary<string, List<VisualItemMenuModel>> _itemInMenu;
         private string _menuId;
-        private VisualCategoryModel _selectedCategory;
         private VisualTableModel _oldTable;
         public MainPageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
@@ -396,7 +395,6 @@ namespace CSM.Xam.ViewModels
                     {
                         var param = new NavigationParameters();
                         param.Add(Keys.ITEM, item);
-                        param.Add(Keys.CATEGORY, _selectedCategory);
                         await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
                         IsVisibleListCategoryBindProp = true;
                     }
@@ -436,9 +434,10 @@ namespace CSM.Xam.ViewModels
             try
             {
                 // Thuc hien cong viec tai day
+                string selectedCategory = "";
                 if (obj is ItemTapCommandContext itemTap)
                 {
-                    _selectedCategory = itemTap.Item as VisualCategoryModel;
+                    selectedCategory = (itemTap.Item as VisualCategoryModel).Id;
                     Title = (itemTap.Item as VisualCategoryModel).CategoryName;
                 }
                 if (obj is string category)
@@ -458,7 +457,7 @@ namespace CSM.Xam.ViewModels
                 }
                 else
                 {
-                    var listItem = ListItem.Where(h => h.FkCategory == _selectedCategory.Id).ToList();
+                    var listItem = ListItem.Where(h => h.FkCategory == selectedCategory).ToList();
                     ListItemBindProp = new ObservableCollection<VisualItemMenuModel>(listItem);
                 }
                 IsVisibleListCategoryBindProp = false;

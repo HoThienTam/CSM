@@ -65,7 +65,7 @@ namespace CSM.Logic
                 FkStore = "fg",
                 FkCategory = obj.FkCategory,
                 IsDeleted = (int)IsDelete.Normal,
-                ItemImage = "a",
+                ItemImage = obj.ItemImage,
                 ItemName = obj.ItemName,
                 IsManaged = obj.IsManaged,
                 Price = obj.Price,
@@ -97,6 +97,7 @@ namespace CSM.Logic
             item.FkCategory = obj.FkCategory;
             item.Price = obj.Price;
             item.IsManaged = obj.IsManaged;
+            item.ItemImage = obj.ItemImage;
             try
             {
                 if (saveChange)

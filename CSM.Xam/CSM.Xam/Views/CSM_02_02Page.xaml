@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
+             x:Name="csm_02_02Page"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             mc:Ignorable="d"
+             x:Class="CSM.Xam.Views.CSM_02_02Page"
+             NavigationPage.HasNavigationBar="False"            
+             Padding="{StaticResource LargeThickness}">
+    
+    <Grid Style="{StaticResource CommonWrapper}"  Margin="{StaticResource CommonThickness}">
+        <tlrPrimitives:RadBorder Style="{StaticResource CommonBorder}">
+            <Grid Style="{StaticResource CommonWrapper}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Navigation bar -->
+                <Grid Style="{StaticResource CommonWrapper}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <!--Title-->
+                    <Label Style="{StaticResource CommonHeaderText}"
+                                Text="{Binding Title}" />
+                    <!--Back icon-->
+                    <mr:Label Style="{StaticResource CommonHeaderLeftIcon}"
+                                Text="{x:Static lcModels:FontAwesomeIcon.ArrowLeft}"
+                                TappedCommand="{Binding GoBackCommand}" />
+                    <!--Right text-->
+                    <mr:Label Text="Lưu" Style="{StaticResource CommonHeaderRightText}" TappedCommand="{Binding SaveCommand}"/>
+                </Grid>
+
+                <BoxView Grid.Row="1"
+                            BackgroundColor="{StaticResource SubColor}"
+                            HeightRequest="1" />
+
+                <ScrollView Grid.Row="2" Margin="{StaticResource LargeFrameThickness}">
+
+                    <StackLayout>
+
+                        <ffImage:CachedImage
+                            Margin="0,0,0,20"
+                            Aspect="Fill"
+                            DownsampleToViewSize="true"
+                            HeightRequest="100"
+                            BackgroundColor="{StaticResource MainColor}"
+                            HorizontalOptions="Center"
+                            Source="{Binding ImagePathBindProp}"
+                            VerticalOptions="Center"
+                            WidthRequest="150" />
+
+                        <tlrPrimitives:RadBorder Grid.Row="1" Margin="{StaticResource CommonTopThickness}" Style="{StaticResource CommonBorder}">
+                            <StackLayout Spacing="0" Orientation="Vertical">
+                                <mr:StackLayout 
+                                    Margin="{StaticResource CommonThickness}" 
+                                    TappedCommand="{Binding TakeImageCommand}"
+                                    Orientation="Horizontal">
+                                    <Label
+                                                        HorizontalOptions="FillAndExpand"
+                                                        Text="Chụp hình" />
+
+                                    <Label Margin="{StaticResource CommonHorizontalThickness}" 
+                                                           Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}" 
+                                                           Style="{StaticResource CommonLabelIcon}"/>
+                                </mr:StackLayout>
+
+                                <BoxView BackgroundColor="{StaticResource SubColor}"  HeightRequest="1" />
+
+                                <mr:StackLayout 
+                                    Margin="{StaticResource CommonThickness}" 
+                                    Orientation="Horizontal"
+                                    TappedCommand="{Binding SelectImageCommand}">
+                                    <Label
+                                                        HorizontalOptions="FillAndExpand"
+                                                        Text="Chọn ảnh từ thư viện hình ảnh" />
+                                    <Label Margin="{StaticResource CommonHorizontalThickness}" 
+                                                           Text="{x:Static lcModels:FontAwesomeIcon.AngleRight}" 
+                                                           Style="{StaticResource CommonLabelIcon}"/>
+
+                                </mr:StackLayout>
+                            </StackLayout>
+                        </tlrPrimitives:RadBorder>
+                    </StackLayout>
+
+                </ScrollView>
+
+               
+            </Grid>
+        </tlrPrimitives:RadBorder>
+        <tlrPrimitives:RadBusyIndicator Style="{x:StaticResource LoadingIndicator}" />
+    </Grid>
+</ContentPage>

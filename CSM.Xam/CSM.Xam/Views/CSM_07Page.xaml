@@ -51,37 +51,37 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <mr:StackLayout Spacing="0" TappedCommand="{Binding BindingContext.TapEmployeeCommand, Source={x:Reference csm_07Page}, Mode=OneWay}" TappedCommandParameter="{Binding}">
-                                <StackLayout.Triggers>
-                                    <DataTrigger TargetType="StackLayout" Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
-                                    </DataTrigger>
-                                </StackLayout.Triggers>
                                 <Grid Style="{StaticResource CommonWrapper}" Padding="{StaticResource CommonThickness}">
+                                    <Grid.Triggers>
+                                        <DataTrigger TargetType="Grid" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource SelectedColor}"/>
+                                        </DataTrigger>
+                                    </Grid.Triggers>
                                     <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <Label Style="{StaticResource CommonLabelIcon}" Margin="{StaticResource CommonRightThickness}" Text="{x:Static lcModels:FontAwesomeIcon.User}">
-                                </Label>
+                                    <Label Style="{StaticResource CommonLabelIcon}" Margin="{StaticResource CommonRightThickness}" Text="{x:Static lcModels:FontAwesomeIcon.User}">
+                                    </Label>
 
-                                <Label
-                                    Grid.Column="1"
-                                    InputTransparent="True"
-                                    Text="{Binding FullName}"/>
+                                    <Label
+                                        Grid.Column="1"
+                                        InputTransparent="True"
+                                        Text="{Binding FullName}"/>
 
-                                <Label
-                                    Grid.Column="2"
-                                    InputTransparent="True"
-                                    HorizontalOptions="End"
-                                    Text="{Binding Role, Converter={StaticResource LongToRoleConverter}}"/>
+                                    <Label
+                                        Grid.Column="2"
+                                        InputTransparent="True"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Role, Converter={StaticResource LongToRoleConverter}}"/>
 
-                            </Grid>
+                                </Grid>
 
                                 <BoxView BackgroundColor="{StaticResource SubColor}" HeightRequest="1" />
                             </mr:StackLayout>
@@ -138,7 +138,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Image x:Name="background" Aspect="AspectFill" BackgroundColor="Red" Source="CSM.Xam.Files.background.jpg" HeightRequest="200"/>
+                    <Image x:Name="background" Aspect="AspectFill" BackgroundColor="Red" HeightRequest="200"/>
                     <StackLayout VerticalOptions="Center">
                         <Label Text="Tên tài khoản" FontSize="Small" TextColor="White" HorizontalOptions="Center"/>
                         <Label Text="{Binding SelectedEmployeeBindProp.EmployeeName}" TextColor="White" FontSize="Large" HorizontalOptions="Center"/>

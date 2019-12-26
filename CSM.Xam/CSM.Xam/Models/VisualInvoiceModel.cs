@@ -89,12 +89,12 @@ namespace CSM.Xam.Models
         }
         #endregion
 
-        #region ReceivedMoney
-        private double _ReceivedMoney;
-        public double ReceivedMoney
+        #region PaidAmount
+        private double _PaidAmount;
+        public double PaidAmount
         {
-            get { return _ReceivedMoney; }
-            set { SetProperty(ref _ReceivedMoney, value); }
+            get { return _PaidAmount; }
+            set { SetProperty(ref _PaidAmount, value); }
         }
         #endregion
 

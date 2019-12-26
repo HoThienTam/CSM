@@ -8,6 +8,7 @@ using System.IO;
 using System;
 using Xamarin.Essentials;
 using Android.Runtime;
+using Plugin.CurrentActivity;
 
 namespace CSM.Xam.Droid
 {
@@ -23,6 +24,9 @@ namespace CSM.Xam.Droid
             Platform.Init(this, bundle);
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
 
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            CrossCurrentActivity.Current.Init(this, bundle);
+
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App(new AndroidInitializer()));
         }
@@ -30,9 +34,11 @@ namespace CSM.Xam.Droid
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
     }
 
     public class AndroidInitializer : IPlatformInitializer

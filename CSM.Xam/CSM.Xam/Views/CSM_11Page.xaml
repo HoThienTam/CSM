@@ -9,6 +9,7 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Name="csm_11Page"
              x:Class="CSM.Xam.Views.CSM_11Page"
              NavigationPage.HasNavigationBar="False"
@@ -63,7 +64,16 @@
                                         </DataTrigger>
                                     </StackLayout.Triggers>
                                     <!--Anh mat hang-->
-                                    <Image WidthRequest="50" HeightRequest="50" BackgroundColor="{StaticResource MainColor}" Margin="{StaticResource CommonRightThickness}"/>
+                                    <ffImage:CachedImage
+                                            Aspect="AspectFill"
+                                            DownsampleToViewSize="true"
+                                            HeightRequest="50"
+                                            Margin="{StaticResource CommonRightThickness}"
+                                            BackgroundColor="{StaticResource MainColor}"
+                                            HorizontalOptions="Center"
+                                            Source="{Binding ItemImage}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="50" />
                                     <!--Ten mat hang-->
                                     <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
                                     <!--Gia-->

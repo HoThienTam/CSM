@@ -6,7 +6,9 @@
              xmlns:tlrPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:tlrInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
-             xmlns:lcModels="clr-namespace:CSM.Xam.Models" mc:Ignorable="d"
+             xmlns:lcModels="clr-namespace:CSM.Xam.Models"
+             xmlns:ffImage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+        mc:Ignorable="d"
              x:Class="CSM.Xam.Views.CSM_02Page"
              NavigationPage.HasNavigationBar="False"
              Padding="{StaticResource LargeThickness}">
@@ -62,15 +64,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!--  Hinh  -->
-                                <tlrPrimitives:RadBorder
-                                        Margin="{StaticResource LargeRightThickness}"
-                                        Grid.RowSpan="2"
-                                        Style="{StaticResource CommonBorder}">
-                                    <BoxView
-                                            BackgroundColor="{StaticResource MainColor}"
-                                            WidthRequest="150">
-                                    </BoxView>
-                                </tlrPrimitives:RadBorder>
+                                <mr:StackLayout
+                                    Margin="{StaticResource LargeRightThickness}"
+                                    Grid.RowSpan="2"
+                                    TappedCommand="{Binding PickImageCommand}">
+                                    <ffImage:CachedImage
+                                        Aspect="Fill"
+                                        DownsampleToViewSize="true"
+                                        HeightRequest="100"
+                                        BackgroundColor="{StaticResource MainColor}"
+                                        HorizontalOptions="Center"
+                                        Source="{Binding ImagePathBindProp}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="150" />
+                                </mr:StackLayout>
 
                                 <!--  ten mat hang  -->
                                 <tlrPrimitives:RadBorder Grid.Column="1"
