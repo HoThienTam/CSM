@@ -58,22 +58,8 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                              <!--Loai giam gia-->  
-                            <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonUpperBorder}">
-                                <StackLayout Orientation="Horizontal" Margin="{StaticResource CommonLeftThickness}">
-                                    <Label
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="FillAndExpand"
-                                        Text="Loại giảm giá"/>
-                                    <tlrInput:RadEntry
-                                        Style="{StaticResource CommonRightEntry}"
-                                        InputTransparent="True"
-                                        Text="Giảm giá thường" />
-                                </StackLayout>
-                            </tlrPrimitives:RadBorder>
-
                               <!--Ten giam gia-->  
-                            <tlrPrimitives:RadBorder  Grid.Row="1" Grid.Column="1" Style="{StaticResource CommonLowerBorder}">
+                            <tlrPrimitives:RadBorder Grid.Column="1" Style="{StaticResource CommonUpperBorder}">
                                 <StackLayout Orientation="Horizontal">
                                     <Label
                                         Style="{StaticResource CommonLeftText}" 
@@ -85,17 +71,33 @@
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
 
+                              <!--Loai giam gia-->  
+                            <tlrPrimitives:RadBorder  Grid.Row="1" Grid.Column="1" Style="{StaticResource CommonLowerBorder}">
+                                <StackLayout Orientation="Horizontal" Margin="{StaticResource CommonLeftThickness}">
+                                    <Label
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="FillAndExpand"
+                                        Text="Giá trị tối đa"/>
+                                    <tlrInput:RadNumericInput
+                                        IsEnabled="{Binding IsPercentCheckedBindProp}"
+                                        Style="{StaticResource CommonRightNumericInput}"
+                                        ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
+                                        StringFormat="{}{0:C}"
+                                        Maximum="999999" Minimum="0"                                  
+                                        Value="{Binding DiscountBindProp.MaxValue, Mode=TwoWay}" />
+                                </StackLayout>
+                            </tlrPrimitives:RadBorder>
+
                             <tlrPrimitives:RadBorder
                                         Margin="{StaticResource CommonRightThickness}"
                                         Grid.RowSpan="2"
                                         Style="{StaticResource CommonBorder}">
                                 <Grid WidthRequest="100">
                                     <BoxView BackgroundColor="{StaticResource MainColor}"/>
-
                                     <Label
-                                    HorizontalOptions="Center"
-                                    Text="10%"
-                                    TextColor="White" VerticalOptions="Center" />
+                                        Text="{x:Static lcModels:FontAwesomeIcon.Tags}"
+                                        Style="{StaticResource CommonLabelIcon}"
+                                        TextColor="White"/>
                                 </Grid>
                             </tlrPrimitives:RadBorder>
                         </Grid>
@@ -107,11 +109,11 @@
 
                                 <StackLayout Margin="{StaticResource CommonHorizontalThickness}" Orientation="Horizontal" Spacing="{StaticResource CommonThickness}">
 
-                                    <tlrPrimitives:RadCheckBox
+                                    <CheckBox
                                         VerticalOptions="Center"
                                         IsEnabled="{Binding IsMoneyCheckedBindProp}"
                                         IsChecked="{Binding IsPercentCheckedBindProp, Mode=TwoWay}">
-                                    </tlrPrimitives:RadCheckBox>
+                                    </CheckBox>
 
                                     <Label
                                         HorizontalOptions="FillAndExpand" Text="Phần trăm"
@@ -133,6 +135,14 @@
                             <tlrPrimitives:RadBorder Style="{StaticResource CommonLowerBorder}">
                                 <StackLayout  Margin="{StaticResource CommonHorizontalThickness}" Orientation="Horizontal" Spacing="{StaticResource CommonThickness}">
 
+                                    <!--<tlrPrimitives:RadCheckBox
+                                         VerticalOptions="Center"                                        
+                                         IsEnabled="{Binding IsPercentCheckedBindProp}"
+                                         IsChecked="{Binding IsMoneyCheckedBindProp, Mode=TwoWay}">
+                                        <tlrPrimitives:RadCheckBox.Commands>
+                                            <commands:CheckBoxUserCommand Command="{Binding IsCheckedChangedCommand}" Id="IsCheckedChanged" SuppressDefaultCommand="False"/>
+                                        </tlrPrimitives:RadCheckBox.Commands>
+                                    </tlrPrimitives:RadCheckBox>-->
                                     <tlrPrimitives:RadCheckBox
                                          VerticalOptions="Center"                                        
                                          IsEnabled="{Binding IsPercentCheckedBindProp}"
@@ -141,7 +151,6 @@
                                             <commands:CheckBoxUserCommand Command="{Binding IsCheckedChangedCommand}" Id="IsCheckedChanged" SuppressDefaultCommand="False"/>
                                         </tlrPrimitives:RadCheckBox.Commands>
                                     </tlrPrimitives:RadCheckBox>
-
                                     <Label
                                         HorizontalOptions="FillAndExpand" Text="Số tiền"
                                         VerticalOptions="Center" />
@@ -150,20 +159,12 @@
                                         IsEnabled="{Binding IsMoneyCheckedBindProp}"
                                         Style="{StaticResource CommonRightNumericInput}"
                                         ControlTemplate="{StaticResource CustomRadNumericInputControlTemplate}"
-                                        Minimum="0" 
+                                        Minimum="0"                                        
                                         StringFormat="{}{0:C}"
                                         Maximum="1000000000"                               
-                                        Value="{Binding NormalDiscountValueBindProp, Mode=TwoWay}" />
+                                        Value="{Binding NormalDiscountValueBindProp, Mode=TwoWay}"/>
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
-
-                            <StackLayout Orientation="Horizontal" Spacing="0">
-                                <Label FontSize="Small" Margin="{StaticResource CommonRightThickness}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.InfoCircle}" />
-                                <Label FontSize="Small" 
-                                       Text="Mức giảm giá để trống sẽ được nhập tại thời điểm bán hàng. Giảm giá áp dụng vào phiếu trước khi tính thuế." 
-                                       VerticalOptions="Center" />
-                            </StackLayout>
-
                         </StackLayout>
                      
                     </StackLayout>

@@ -197,7 +197,7 @@ namespace CSM.Xam.ViewModels
                             DiscountName = DiscountBindProp.Name,
                             DiscountValue = NormalDiscountPercentBindProp,
                             IsInPercent = 1,
-                            MaxValue = 0,
+                            MaxValue = DiscountBindProp.MaxValue,
                         });
                         DiscountBindProp.Value = NormalDiscountPercentBindProp;
                         DiscountBindProp.IsInPercent = true;
@@ -228,7 +228,7 @@ namespace CSM.Xam.ViewModels
                             DiscountName = DiscountBindProp.Name,
                             DiscountValue = NormalDiscountPercentBindProp,
                             IsInPercent = 1,
-                            MaxValue = 0,
+                            MaxValue = DiscountBindProp.MaxValue,
                         });
                         DiscountBindProp.Value = NormalDiscountPercentBindProp;
                         DiscountBindProp.IsInPercent = true;
@@ -335,6 +335,7 @@ namespace CSM.Xam.ViewModels
                         else
                         {
                             NormalDiscountValueBindProp = DiscountBindProp.Value;
+                            IsPercentCheckedBindProp = false;
                         }
                     }
                     else

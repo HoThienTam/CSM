@@ -357,6 +357,10 @@ namespace CSM.Xam.ViewModels
                                     //Giu gia tri % lai
                                     Quantity = (int)item.Value
                                 };
+                                if (discount.Value > item.MaxValue)
+                                {
+                                    discount.Value = item.MaxValue;
+                                }
                                 CurrentBillBindProp.ListDiscount.Add(discount);
                                 CurrentBillBindProp.TotalPrice -= discount.Value;
                             }
@@ -394,9 +398,19 @@ namespace CSM.Xam.ViewModels
                     else
                     {
                         var param = new NavigationParameters();
-                        param.Add(Keys.ITEM, item);
-                        await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
-                        IsVisibleListCategoryBindProp = true;
+                        if (item.IsDiscount)
+                        {
+                            param.Add(Keys.DISCOUNT, item);
+                            await NavigationService.NavigateAsync(nameof(CSM_03Page), param);
+                        }
+                        else
+                        {
+                            var category = ListCategoryBindProp.FirstOrDefault(h => h.Id == item.FkCategory);
+
+                            param.Add(Keys.CATEGORY, category);
+                            param.Add(Keys.ITEM, item);
+                            await NavigationService.NavigateAsync(nameof(CSM_02Page), param);
+                        }
                     }
                 }
             }
@@ -1480,6 +1494,10 @@ namespace CSM.Xam.ViewModels
                                 Status = Status.New,
                                 Value = discount.Value * SelectedItem.Value / 100
                             };
+                            if (newDiscount.Value > discount.MaxValue)
+                            {
+                                newDiscount.Value = discount.MaxValue;
+                            }
                             SelectedItem.ListSubItem.Add(newDiscount);
                             SelectedItem.Value -= newDiscount.Value;
                         }

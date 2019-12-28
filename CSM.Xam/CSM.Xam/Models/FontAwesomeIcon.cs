@@ -238,5 +238,10 @@ namespace CSM.Xam.Models
         /// map-marker-check
         /// </summary>
         public const string MapMakerCheck = "\uf606";
+
+        /// <summary>
+        /// tags
+        /// </summary>
+        public const string Tags = "\uf02c";
     }
 }

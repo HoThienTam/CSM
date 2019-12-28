@@ -124,7 +124,7 @@ namespace CSM.Xam.ViewModels
                         await employeeLogic.UpdateAsync(new Employee
                         {
                             Id = EmployeeBindProp.Id,
-                            Password = PasswordBindProp,
+                            Password = Helper.GetMd5Hash(PasswordBindProp),
                         });
                     }
                     if (IsChangingInfo)
@@ -145,7 +145,7 @@ namespace CSM.Xam.ViewModels
                         Id = EmployeeBindProp.Id,
                         EmployeeName = EmployeeBindProp.EmployeeName,
                         FullName = EmployeeBindProp.FullName,
-                        Password = PasswordBindProp,
+                        Password = Helper.GetMd5Hash(PasswordBindProp),
                         Role = EmployeeBindProp.Role
                     });
 

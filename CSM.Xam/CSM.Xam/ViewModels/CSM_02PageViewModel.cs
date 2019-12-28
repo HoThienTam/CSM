@@ -297,16 +297,14 @@ namespace CSM.Xam.ViewModels
                         IsEditing = true;
                         Title = "Chỉnh sửa mặt hàng";
                         var item = parameters[Keys.ITEM] as VisualItemMenuModel;
-
+                        var category = parameters[Keys.CATEGORY] as VisualCategoryModel;
                         var itemLogic = new ItemLogic(_dbContext);
-                        var categoryLogic = new CategoryLogic(_dbContext);
                         var dbItem = await itemLogic.GetAsync(item.Id);
-                        var dbCategory = await categoryLogic.GetAsync(item.FkCategory);
 
                         MinQuantityBindProp = dbItem.MinQuantity;
                         IsManaged = dbItem.IsManaged == 1 ? true : false;
                         ItemBindProp = item;
-                        CategoryBindProp = Mapper.Map<VisualCategoryModel>(dbCategory);
+                        CategoryBindProp = category;
                     }
                     else
                     {

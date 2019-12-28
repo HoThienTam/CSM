@@ -560,7 +560,22 @@
                                             HorizontalOptions="Center"
                                             Source="{Binding ItemImage}"
                                             VerticalOptions="Center"
-                                            WidthRequest="50" />
+                                            WidthRequest="50">
+                                            <ffImage:CachedImage.Triggers>
+                                                <DataTrigger TargetType="ffImage:CachedImage" Binding="{Binding IsDiscount}" Value="True">
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </DataTrigger>
+                                            </ffImage:CachedImage.Triggers>
+                                        </ffImage:CachedImage>
+
+                                        <Grid WidthRequest="50" HeightRequest="50" IsVisible="{Binding IsDiscount}">
+                                            <BoxView BackgroundColor="{StaticResource MainColor}"/>
+
+                                            <Label
+                                                TextColor="White"
+                                                Text="{x:Static lcModels:FontAwesomeIcon.Tags}"
+                                                Style="{StaticResource CommonLabelIcon}"/>
+                                        </Grid>
                                         <!--Ten mat hang-->
                                         <Label Text="{Binding Name}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
                                         <!--Gia-->
