@@ -50,16 +50,16 @@ namespace CSM.Logic
             return item;
         }
 
-        public async Task<bool> LoginAsync(string username, string password)
+        public async Task<Employee> LoginAsync(string username, string password)
         {
 
             var item = await _DbContext.Employee.FirstOrDefaultAsync(h => h.EmployeeName == username.Trim().ToLower() && h.Password == password.Trim().ToLower());
 
-            if (item != null)
+            if (item == null)
             {
-                return true;
+                return null;
             }
-            return false;
+            return item;
         }
         public async Task<Employee> CreateAsync(Employee obj, bool saveChange = true)
         {

@@ -26,7 +26,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <!-- Navigation bar -->
                 <Grid Style="{StaticResource CommonWrapper}">
@@ -53,7 +52,7 @@
                             <Label Style="{StaticResource Sidebar_ItemText}" Text="Quản lý khu vực"/>
                             <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         </StackLayout>
-                                <!--<Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
+                        <!--<Label Style="{StaticResource Sidebar_ItemText}" Text="Thông tin cửa hàng"/>
                         <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
                         <Label Style="{StaticResource Sidebar_ItemText}" Text="Ngôn ngữ"/>
                         <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>
@@ -61,12 +60,6 @@
                         <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" HeightRequest="1"/>-->
                     </StackLayout>
                 </ScrollView>
-
-                <Grid Grid.Row="3" Padding="{StaticResource CommonThickness}">
-                    <tlrPrimitives:RadBorder HorizontalOptions="FillAndExpand" Style="{StaticResource CommonButtonBorder}">
-                        <tlrInput:RadButton Command="{Binding LogOutCommand}" Text="Đăng xuất"/>
-                    </tlrPrimitives:RadBorder>
-                </Grid>
             </Grid>
 
             <BoxView Grid.Column="1" BackgroundColor="{StaticResource SubColor}" WidthRequest="1"/>

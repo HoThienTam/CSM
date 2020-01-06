@@ -37,7 +37,7 @@ namespace CSM.Xam
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data.db");
             DbConnectionString = $"Data Source={dbPath};";
 
-            File.Delete(dbPath);
+            //File.Delete(dbPath);
             if (File.Exists(dbPath) == false)
             {
                 var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;

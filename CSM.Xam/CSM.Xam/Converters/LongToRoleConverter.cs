@@ -16,6 +16,8 @@ namespace CSM.Xam.Converters
                     return "Nhân viên";
                 case 1:
                     return "Quản lý";
+                case 2:
+                    return "Chủ cửa hàng";
             }
             return "Nhân viên";
         }

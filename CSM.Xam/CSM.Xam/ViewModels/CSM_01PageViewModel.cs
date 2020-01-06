@@ -73,10 +73,11 @@ namespace CSM.Xam.ViewModels
                 // Thuc hien cong viec tai day
                 var employeeLogic = new EmployeeLogic(_dbContext);
 
-                var canLogin = await employeeLogic.LoginAsync(UsernameBindProp, Helper.GetMd5Hash(PasswordBindProp));
-                if (canLogin)
+                var employee = await employeeLogic.LoginAsync(UsernameBindProp, Helper.GetMd5Hash(PasswordBindProp));
+                if (employee != null)
                 {
-                    Application.Current.Properties["Employee"] = "Tam";
+                    Application.Current.Properties["Employee"] = employee.Id;
+                    Application.Current.Properties["Role"] = employee.Role;
                     await Application.Current.SavePropertiesAsync();
 
                     await NavigationService.NavigateAsync(nameof(MainPage));

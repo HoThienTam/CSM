@@ -170,9 +170,16 @@ namespace CSM.Xam.ViewModels
                             invoice.ItemCount += invoiceItem.Quantity;
                             invoice.OriginalPrice += invoiceItem.Value;
                         }
-                        var table = listTable.First(h => h.Id == invoice.FkTable);
-                        var zone = listZone.First(h => h.Id == table.FkZone);
-                        invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
+                        if (invoice.IsTakeAway == 0)
+                        {
+                            var table = listTable.First(h => h.Id == invoice.FkTable);
+                            var zone = listZone.First(h => h.Id == table.FkZone);
+                            invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
+                        }
+                        else
+                        {
+                            invoice.TableName = $"MANG ĐI";
+                        }
                     }
                 }
                 ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);

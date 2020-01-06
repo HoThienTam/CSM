@@ -124,11 +124,12 @@
                                 </tlrGrid:DataGridTextColumn.CellContentStyle>
                             </tlrGrid:DataGridTextColumn>
 
-                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Tối thiểu" PropertyName="MinQuantity" SizeMode="Fixed">
+                            <tlrGrid:DataGridNumericalColumn Width="120" HeaderText="Tối thiểu" PropertyName="MinQuantity" SizeMode="Fixed">
                                 <tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextMargin="0,0,0,6"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                 <tlrGrid:DataGridNumericalColumn.CellContentStyle>
@@ -141,8 +142,8 @@
                             <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
@@ -155,11 +156,11 @@
                                 </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                             </tlrGrid:DataGridTemplateColumn>
 
-                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Số lượng" PropertyName="CurrentQuantity" SizeMode="Fixed">
+                            <tlrGrid:DataGridNumericalColumn Width="120" HeaderText="Số lượng" PropertyName="CurrentQuantity" SizeMode="Fixed">
                                 <tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                 <tlrGrid:DataGridNumericalColumn.CellContentStyle>
@@ -172,8 +173,8 @@
                             <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
@@ -204,7 +205,7 @@
                             <tlrGrid:DataGridTextColumn PropertyName="ItemName" HeaderText="Tên hàng tồn" SizeMode="Stretch">
                                 <tlrGrid:DataGridTextColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
+                                        TextFontAttributes="Bold" TextColor="Black"
                                         BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridTextColumn.HeaderStyle>
@@ -216,11 +217,12 @@
                                 </tlrGrid:DataGridTextColumn.CellContentStyle>
                             </tlrGrid:DataGridTextColumn>
 
-                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Tối thiểu" PropertyName="MinQuantity" SizeMode="Fixed">
+                            <tlrGrid:DataGridNumericalColumn Width="120" HeaderText="Tối thiểu" PropertyName="MinQuantity" SizeMode="Fixed">
                                 <tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextMargin="0,0,0,6"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                 <tlrGrid:DataGridNumericalColumn.CellContentStyle>
@@ -233,8 +235,8 @@
                             <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
@@ -247,11 +249,11 @@
                                 </tlrGrid:DataGridTemplateColumn.CellContentTemplate>
                             </tlrGrid:DataGridTemplateColumn>
 
-                            <tlrGrid:DataGridNumericalColumn Width="100" HeaderText="Số lượng" PropertyName="CurrentQuantity" SizeMode="Fixed">
+                            <tlrGrid:DataGridNumericalColumn Width="120" HeaderText="Số lượng" PropertyName="CurrentQuantity" SizeMode="Fixed">
                                 <tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridNumericalColumn.HeaderStyle>
                                 <tlrGrid:DataGridNumericalColumn.CellContentStyle>
@@ -260,12 +262,12 @@
                                         VerticalTextAlignment="Center"/>
                                 </tlrGrid:DataGridNumericalColumn.CellContentStyle>
                             </tlrGrid:DataGridNumericalColumn>
-
+                            
                             <tlrGrid:DataGridTemplateColumn SizeMode="Fixed" Width="50">
                                 <tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                     <tlrGrid:DataGridColumnHeaderStyle
-                                        TextFontAttributes="Bold"
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                        TextFontAttributes="Bold" TextColor="Black"
+                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
                                         TextFontSize="20" />
                                 </tlrGrid:DataGridTemplateColumn.HeaderStyle>
                                 <tlrGrid:DataGridTemplateColumn.CellContentTemplate>
@@ -288,6 +290,7 @@
                     AutoGenerateColumns="False"
                     IsVisible="{Binding HistoryVisibleBindProp, Mode=OneWay}"
                     ItemsSource="{Binding ListHistoryBindProp, Mode=OneWay}"
+                    Margin="{StaticResource CommonThickness}"
                     SelectionMode="None" UserSortMode="None" UserEditMode="None" 
                     UserFilterMode="Disabled" UserGroupMode="Disabled">
                     <tlrGrid:RadDataGrid.Columns>
@@ -296,8 +299,9 @@
                                 HeaderText="Thời gian" PropertyName="CreationDate" SizeMode="Fixed">
                             <tlrGrid:DataGridTimeColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
-                                        BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
-                                        TextFontSize="17" />
+                                    TextFontAttributes="Bold" TextColor="Black"
+                                    BackgroundColor="White" HorizontalTextAlignment="Start" OptionsButtonTextColor="Transparent"
+                                    TextFontSize="17" />
                             </tlrGrid:DataGridTimeColumn.HeaderStyle>
                             <tlrGrid:DataGridTimeColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
@@ -310,8 +314,9 @@
                         <tlrGrid:DataGridTextColumn HeaderText="Mặt hàng" PropertyName="Item">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
-                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextFontSize="17" />
+                                    TextFontAttributes="Bold" TextColor="Black"
+                                    BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
+                                    TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
@@ -323,8 +328,9 @@
                         <tlrGrid:DataGridTextColumn HeaderText="Ghi chú" PropertyName="Reason">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
-                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextFontSize="17" />
+                                    TextFontAttributes="Bold" TextColor="Black"
+                                    BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
+                                    TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle
@@ -337,8 +343,9 @@
                         <tlrGrid:DataGridTextColumn HeaderText="Số lượng" PropertyName="Quantity">
                             <tlrGrid:DataGridTextColumn.HeaderStyle>
                                 <tlrGrid:DataGridColumnHeaderStyle
-                                        BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
-                                        TextFontSize="17" />
+                                    TextFontAttributes="Bold" TextColor="Black"
+                                    BackgroundColor="White" HorizontalTextAlignment="Center" OptionsButtonTextColor="Transparent"
+                                    TextFontSize="17" />
                             </tlrGrid:DataGridTextColumn.HeaderStyle>
                             <tlrGrid:DataGridTextColumn.CellContentStyle>
                                 <tlrGrid:DataGridTextCellStyle

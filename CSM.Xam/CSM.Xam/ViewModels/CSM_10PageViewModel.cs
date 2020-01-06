@@ -187,6 +187,8 @@ namespace CSM.Xam.ViewModels
                     var invoiceItemLogic = new InvoiceItemLogic(_dbContext);
                     var tableLogic = new TableLogic(_dbContext);
                     var subItemLogic = new ItemDiscountLogic(_dbContext);
+                    var itemLogic = new ItemLogic(_dbContext);
+
                     var invoice = new Invoice 
                     {
                         Id = BillBindProp.Id,
@@ -210,11 +212,14 @@ namespace CSM.Xam.ViewModels
                         await invoiceLogic.CreateAsync(invoice, false);
                     }
 
-                    await tableLogic.ChangeStatusAsync(new Table
+                    if (BillBindProp.IsTakeAway == 0)
                     {
-                        Id = BillBindProp.FkTable,
-                        IsSelected = 0
-                    }, false);
+                        await tableLogic.ChangeStatusAsync(new Table
+                        {
+                            Id = BillBindProp.FkTable,
+                            IsSelected = 0
+                        }, false);
+                    }
 
                     foreach (var item in BillBindProp.ListItemInBill)
                     {
@@ -239,6 +244,7 @@ namespace CSM.Xam.ViewModels
                                 }, false);
                             }
                         }
+                        await itemLogic.ModifyQuantityAsync(item.Id, -item.Quantity ,false);
                     }
 
                     foreach (var item in BillBindProp.ListDiscount)

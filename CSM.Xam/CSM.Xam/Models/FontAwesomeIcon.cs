@@ -243,5 +243,10 @@ namespace CSM.Xam.Models
         /// tags
         /// </summary>
         public const string Tags = "\uf02c";
+
+        /// <summary>
+        /// sign out
+        /// </summary>
+        public const string SignOut = "\uf2f5";
     }
 }

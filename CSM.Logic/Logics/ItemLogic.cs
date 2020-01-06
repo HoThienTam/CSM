@@ -112,11 +112,11 @@ namespace CSM.Logic
 
             return item;
         }
-        public async Task<Item> ModifyQuantityAsync(Item obj, bool saveChange = true)
+        public async Task<Item> ModifyQuantityAsync(string itemId, long quantity, bool saveChange = true)
         {
-            var item = await _DbContext.Item.FirstOrDefaultAsync(h => h.Id == obj.Id);
+            var item = await _DbContext.Item.FirstOrDefaultAsync(h => h.Id == itemId);
 
-            item.CurrentQuantity += obj.CurrentQuantity;
+            item.CurrentQuantity += quantity;
             try
             {
                 if (saveChange)

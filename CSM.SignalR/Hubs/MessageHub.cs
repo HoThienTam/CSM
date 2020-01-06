@@ -11,7 +11,7 @@ namespace CSM.SignalR.Hubs
     {
         public async Task SendInvoice(Invoice invoice)
         {
-            await Clients.All.SendAsync("ReceiveInvoice", invoice);
+            await Clients.Others.SendAsync("ReceiveInvoice", invoice);
         }
         public async Task SendInvoiceItem(InvoiceItemOrDiscount invoiceItem)
         {

@@ -139,7 +139,13 @@
                                         </StackLayout>
                                         <StackLayout Grid.Column="1" Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.MapMakerCheck}" />
-                                            <Label Style="{StaticResource Invoice_BodyText}" Text="Dùng tại bàn" />
+                                            <Label Style="{StaticResource Invoice_BodyText}" Text="Dùng tại bàn">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsTakeAway}" Value="1">
+                                                        <Setter Property="Text" Value="Mang đi"/>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                         </StackLayout>
                                         <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal">
                                             <Label Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Clock}" />
@@ -375,12 +381,9 @@
                                   Text="{Binding CurrentBillBindProp.TableName}" 
                                   TappedCommand="{Binding SelectTableCommand}"
                                   IsVisible="{Binding IsInPlace}"/>
-                        <tlrInput:RadEntry Grid.Column="2"  
-                                   Style="{StaticResource CommonLeftEntry}"
-                                   Padding="0"
-                                   IsVisible="{Binding IsTakeAway}"
-                                   Text="{Binding CurrentBillBindProp.FkTable}"
-                                   WatermarkText="Tên đơn hàng"/>
+                        <mr:Label Grid.Column="2" Style="{StaticResource Bill_Table}" 
+                                  Text="MANG ĐI"
+                                  IsVisible="{Binding IsTakeAway}"/>
                         <!--Seperate line-->
                         <BoxView IsVisible="{Binding IsInPlace}" Grid.Column="3" WidthRequest="1" BackgroundColor="{StaticResource SubColor}"/>
                         <!--Right icon-->
@@ -532,6 +535,9 @@
                                   TappedCommandParameter="chinhsua">
                             <mr:Label.Triggers>
                                 <DataTrigger TargetType="mr:Label" Binding="{Binding IsEditing}" Value="True">
+                                    <Setter Property="Text" Value=""/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="mr:Label" Binding="{Binding IsManager}" Value="False">
                                     <Setter Property="Text" Value=""/>
                                 </DataTrigger>
                             </mr:Label.Triggers>
@@ -739,15 +745,15 @@
                                     Style="{StaticResource CommonBorder}" 
                                     Margin="{StaticResource CommonThickness}">
                                 <StackLayout Padding="{StaticResource CommonThickness}">
-                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hoatdong">
+                                    <mr:StackLayout IsVisible="{Binding IsManager}" Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hoatdong">
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.BallotCheck}" />
                                         <Label Text="Hoạt động" />
                                     </mr:StackLayout>
-                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="thongke">
+                                    <mr:StackLayout IsVisible="{Binding IsManager}" Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="thongke">
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.ChartBar}" />
                                         <Label Text="Thống kê" />
                                     </mr:StackLayout>
-                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hanghoa">
+                                    <mr:StackLayout IsVisible="{Binding IsManager}" Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="hanghoa">
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Boxes}" />
                                         <Label Text="Hàng hóa" />
                                     </mr:StackLayout>
@@ -755,7 +761,7 @@
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Users}" />
                                         <Label Text="Nhân viên" />
                                     </mr:StackLayout>
-                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="caidat">
+                                    <mr:StackLayout IsVisible="{Binding IsManager}" Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="caidat">
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.Cogs}" />
                                         <Label Text="Cài đặt" />
                                     </mr:StackLayout>
@@ -763,6 +769,11 @@
                                         <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.CashRegister}" />
                                         <Label Text="Phiên làm việc" />
                                     </mr:StackLayout>-->
+
+                                    <mr:StackLayout Orientation="Horizontal" TappedCommand="{Binding NavigateCommand}" TappedCommandParameter="dangxuat">
+                                        <Label WidthRequest="{StaticResource Width}" Style="{StaticResource CommonLabelIcon}" Text="{x:Static lcModels:FontAwesomeIcon.SignOut}" />
+                                        <Label Text="Đăng xuất" />
+                                    </mr:StackLayout>
                                 </StackLayout>
                             </tlrPrimitives:RadBorder>
                         </tlrPrimitives:RadPopup>

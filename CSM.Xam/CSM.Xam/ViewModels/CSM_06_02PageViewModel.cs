@@ -143,17 +143,11 @@ namespace CSM.Xam.ViewModels
 
                 if (QuantityBindProp > 0)
                 {
-                    var item = new Item
-                    {
-                        Id = Item.Id,
-                        CurrentQuantity = -QuantityBindProp
-                    };
-
-                    await itemLogic.ModifyQuantityAsync(item, false);
+                    await itemLogic.ModifyQuantityAsync(Item.Id, -QuantityBindProp, false);
 
                     var history = new ImportExportHistory
                     {
-                        FkItemOrMaterial = item.Id,
+                        FkItemOrMaterial = Item.Id,
                         IsImported = 0,
                         Quantity = -QuantityBindProp,
                         Reason = IsSelectingOtherReason == true ? OtherReasonBindProp : _reason

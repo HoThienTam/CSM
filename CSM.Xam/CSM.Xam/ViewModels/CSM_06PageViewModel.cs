@@ -14,6 +14,7 @@ namespace CSM.Xam.ViewModels
 {
     public class CSM_06PageViewModel : ViewModelBase
     {
+        private VisualItemModel _item;
         public CSM_06PageViewModel(InitParamVm initParamVm) : base(initParamVm)
         {
             SideBarBindProp = new ObservableCollection<SideBarModel>
@@ -167,6 +168,7 @@ namespace CSM.Xam.ViewModels
                 {
                     var param = new NavigationParameters();
                     param.Add(Keys.ITEM, item);
+                    _item = item;
                     await NavigationService.NavigateAsync(nameof(CSM_06_01Page), param);
                 }
             }
@@ -208,6 +210,7 @@ namespace CSM.Xam.ViewModels
                 {
                     var param = new NavigationParameters();
                     param.Add(Keys.ITEM, item);
+                    _item = item;
                     await NavigationService.NavigateAsync(nameof(CSM_06_02Page), param);
                 }
             }
@@ -263,6 +266,25 @@ namespace CSM.Xam.ViewModels
                     {
                         var history = parameters[Keys.HISTORY] as VisualHistoryModel;
                         ListHistoryBindProp.Insert(0, history);
+                        RaisePropertyChanged(nameof(ListHistoryBindProp));
+                    }
+                    if (_item.CurrentQuantity > _item.MinQuantity)
+                    {
+                        if(ListRunOutItemBindProp.Any(h => h.Id == _item.Id))
+                        {
+                            ListRunOutItemBindProp.Remove(_item);
+                            ListItemBindProp.Add(_item);
+                            RaisePropertyChanged(nameof(ListItemBindProp));
+                        }
+                    }
+                    else
+                    {
+                        if (ListItemBindProp.Any(h => h.Id == _item.Id))
+                        {
+                            ListItemBindProp.Remove(_item);
+                            ListRunOutItemBindProp.Add(_item);
+                            RaisePropertyChanged(nameof(ListRunOutItemBindProp));
+                        }
                     }
                     break;
                 case NavigationMode.New:

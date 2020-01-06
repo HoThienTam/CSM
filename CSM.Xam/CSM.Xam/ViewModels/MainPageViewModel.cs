@@ -31,8 +31,17 @@ namespace CSM.Xam.ViewModels
             MessagingCenter.Subscribe<ObservableCollection<VisualTableModel>>(this, Messages.TABLE_MESSAGE, ReceiveTableMessageHandler);
             MessagingCenter.Subscribe<VisualZoneModel>(this, Messages.ZONE_MESSAGE, ReceiveZoneMessageHandler);
             MessagingCenter.Subscribe<VisualCategoryModel>(this, Messages.CATEGORY_MESSAGE, ReceiveCategoryMessageHandler);
+            var role = Application.Current.Properties["Role"] as long?;
+            if (role > 0)
+            {
+                IsManager = true;
+            }
+            else
+            {
+                IsManager = false;
+            }
             connection = new HubConnectionBuilder()
-                   .WithUrl("http://8cd84a42.ngrok.io/messageHub")
+                   .WithUrl("https://6b16c36e.ngrok.io/messageHub")
                    .Build();
 
             connection.Closed += async (error) =>
@@ -149,6 +158,15 @@ namespace CSM.Xam.ViewModels
         }
         #endregion
 
+        #endregion
+
+        #region IsManager
+        private bool _IsManager = false;
+        public bool IsManager
+        {
+            get { return _IsManager; }
+            set { SetProperty(ref _IsManager, value); }
+        }
         #endregion
 
         //Menu duoi
@@ -602,6 +620,10 @@ namespace CSM.Xam.ViewModels
                             break;
                         case "phienlamviec":
                             break;
+                        case "dangxuat":
+                            Application.Current.Properties.Remove("Employee");
+                            await NavigationService.NavigateAsync("Pos.Xam:///NavigationPage/CSM_01Page");
+                            break;
                     }
                 }
             }
@@ -653,7 +675,7 @@ namespace CSM.Xam.ViewModels
                 var subItemLogic = new ItemDiscountLogic(_dbContext);
                 var tableLogic = new TableLogic(_dbContext);
 
-                if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable))
+                if (string.IsNullOrWhiteSpace(CurrentBillBindProp.FkTable) && !IsTakeAway)
                 {
                     if (CurrentBillBindProp.IsTakeAway == 0)
                     {
@@ -671,11 +693,10 @@ namespace CSM.Xam.ViewModels
                     Tip = 0,
                     InvoiceNumber = "",
                     IsTakeAway = IsTakeAway == true ? 1 : 0,
-                    FkTable = CurrentBillBindProp.FkTable,
+                    FkTable = IsTakeAway == true ? "MANG ĐI" : CurrentBillBindProp.FkTable,
                     CloseDate = DateTime.Now.ToString(),
                     CustomerCount = 1
                 };
-
                 Invoice inv;
                 if (IsEditingBill)
                 {
@@ -687,12 +708,20 @@ namespace CSM.Xam.ViewModels
                     //await connection.SendAsync("SendInvoice", invoice);
                 }
 
-                await tableLogic.ChangeStatusAsync(new Table
+                if (!IsTakeAway)
                 {
-                    Id = CurrentBillBindProp.FkTable,
-                    IsSelected = 1
-                }, false);
-
+                    await tableLogic.ChangeStatusAsync(new Table
+                    {
+                        Id = CurrentBillBindProp.FkTable,
+                        IsSelected = 1
+                    }, false);
+                }
+                else
+                {
+                    CurrentBillBindProp.IsTakeAway = 1;
+                    CurrentBillBindProp.TableName = "MANG ĐI";
+                    CurrentBillBindProp.FkTable = "MANG ĐI";
+                }
 
                 foreach (var item in CurrentBillBindProp.ListItemInBill)
                 {
@@ -1595,14 +1624,15 @@ namespace CSM.Xam.ViewModels
         }
 
         #endregion
-
         #endregion
 
         #region Method
         private async void SaveInvoice(Invoice invoice)
         {
-            var invoiceLogic = new InvoiceLogic(_dbContext);
-            await invoiceLogic.CreateAsync(invoice);
+            var visualInvoice = Mapper.Map<VisualInvoiceModel>(invoice);
+            visualInvoice.TableName = "Khu vuc 1 - B";
+            visualInvoice.CreationDate = DateTime.Now.ToString();
+            ListInvoiceBindProp.Add(visualInvoice);
         }
         private async void GetAllInvoice()
         {
@@ -1669,9 +1699,16 @@ namespace CSM.Xam.ViewModels
                         invoice.ItemCount += invoiceItem.Quantity;
                         invoice.OriginalPrice += invoiceItem.Value;
                     }
-                    var table = listTable.First(h => h.Id == invoice.FkTable);
-                    var zone = listZone.First(h => h.Id == table.FkZone);
-                    invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
+                    if (invoice.IsTakeAway == 0)
+                    {
+                        var table = listTable.First(h => h.Id == invoice.FkTable);
+                        var zone = listZone.First(h => h.Id == table.FkZone);
+                        invoice.TableName = $"{zone.ZoneName} - {table.TableName}";
+                    }
+                    else
+                    {
+                        invoice.TableName = $"MANG ĐI";
+                    }
                 }
             }
             ListInvoiceBindProp = new ObservableCollection<VisualInvoiceModel>(listVisualInvoice);
@@ -1879,7 +1916,7 @@ namespace CSM.Xam.ViewModels
                     }
                     break;
                 case NavigationMode.New:
-                    //await connection.StartAsync();
+                    await connection.StartAsync();
                     Title = "Thư viện";
                     GetAllMenuItem();
                     GetAllZone();
